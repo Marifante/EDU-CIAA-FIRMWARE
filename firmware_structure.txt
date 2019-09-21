@@ -1,0 +1,34 @@
+Estrucutra del firmware para la EDU-CIAA: 
+
+3 tipos de bibliotecas principales: 
+
+tipo 0: bibliotecas madre: son las bibliotecas que nada mas deben incluir los programas main. En estas se encuentra todo lo necesario para manipular la placa.
+
+- data_types.h (tipos de datos que se usan en todo el resto de los programas)
+- lpc_4337_chip.h (incluye todas las bibliotecas del tipo 1)
+- edu_ciaa_hl.h (incluye todas las bibliotecas del tipo 2)
+
+tipo 1: biblitecas para manipular los perifericos del micro:
+	inicializar las estructuras correspondientes a cada periferico y funciones para poder configurarlas
+
+- gpio_peripheral.h/.c
+- scu_peripheral.h/.c
+- timer_peripheral.h/.c
+- nvic_peripheral.h/.c
+
+tipo 2: bibliotecas para manipular las prestaciones de la edu-ciaa con mayor nivel (writeGpio, readGpio, toggleGpio)
+
+- delay.h/.c
+- gpio_edu_ciaa.h/.c
+- interrupts.h/.c
+
+Las bibliotecas el tipo 2 usan funciones y tipos de datos definidos en las bibliotecas el tipo 1. 
+
+
+Funcionamiento de las bibliotecas y las capas de abstraccion:
+
+
+
+estructura del periferico = contiene los VALORES de los registros que hay que modificar para configurar el periferico. 
+
+La estructura del periferico entra en una funcion  
