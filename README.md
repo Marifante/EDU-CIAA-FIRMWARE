@@ -1,10 +1,10 @@
-### EDU-CIAA-FIRMWARE
+# EDU-CIAA-FIRMWARE
 Firmware for the EDU-CIAA 
 
 ## Debug/Run configuration:
 Debug As -> Debugger -> GDB OpenOCD Debugging
 
-# In the label Debugger:
+### In the label Debugger:
 
   -OpenOCD Setup:
 
@@ -24,7 +24,7 @@ Debug As -> Debugger -> GDB OpenOCD Debugging
    
    Commands: set mem inaccessible-by-default off
    
-# In the label Main:
+### In the label Main:
 
   Project: project to debug/run
   
