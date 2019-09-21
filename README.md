@@ -29,5 +29,4 @@ Debug As -> Debugger -> GDB OpenOCD Debugging
   Project: project to debug/run
   
   C/C++ Application: .axf of the project to debug/run
-  
-   
+     
