@@ -45,7 +45,10 @@ typedef signed int int32_t;
 typedef unsigned long long uint64_t;
 
 /* Define Boolean Data Type */
-typedef uint8_t bool_t;
+typedef enum {
+	false, true
+}bool_t;
+
 
 /* Define Tick Data Type */
 typedef uint64_t tick_t;

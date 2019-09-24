@@ -15,6 +15,6 @@
 #include "gpio_board.h"
 #include "delay.h"
 #include "interrupts_board.h"
-
+#include "dac_board.h"
 
 #endif /*_EDU_CIAA_HL_H_*/

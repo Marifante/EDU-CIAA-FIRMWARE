@@ -32,21 +32,20 @@ int main(void) {
 	configLed(LED2, &led2);
 	configLed(LED3, &led3);
 
-//	/*
-//	 * The pin of the DAC is the P4_4 with ANALOG SEL, select func 0 per default
-//	 * */
-//	SCU_SetPinFunc(4, 4, 0);
-//
-//	/*
-//	 * Enables analog func for P4_4. Analog function have priority over any other digital function.
-//	 * */
-//	SCU->ENAIO[0] |= (0x01); //enables DAC for pin P4_4
-//
-//	/*
-//	 * Enables DMA_ENA bit in the DAC control register.
-//	 * */
-//	LPC_DAC->CTRL |= (0x01)<<3;
-	enableDAC();
+	/*
+	 * The pin of the DAC is the P4_4 with ANALOG SEL, select func 0 per default
+	 * */
+	SCU_SetPinFunc(4, 4, 0);
+
+	/*
+	 * Enables analog func for P4_4. Analog function have priority over any other digital function.
+	 * */
+	SCU->ENAIO[0] |= (0x01); //enables DAC for pin P4_4
+
+	/*
+	 * Enables DMA_ENA bit in the DAC control register.
+	 * */
+	LPC_DAC->CTRL |= (0x01)<<3;
 
 	uint32_t output_val = 0;
 

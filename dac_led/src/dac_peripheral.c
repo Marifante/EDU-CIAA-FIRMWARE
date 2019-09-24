@@ -28,3 +28,4 @@ void Chip_DAC_UpdateValue(LPC_DAC_T *pDAC, uint32_t dac_value){
 
 	return;
 }
+
