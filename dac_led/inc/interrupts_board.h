@@ -17,7 +17,7 @@
 
 /*
  * @brief Configuracion de interrupcion para las teclas
- * @boton	 Boton que se configurara
+ * @tecla	 Boton que se configurara
  * @modo	 Modo flanco (0) o nivel (1)
  * @asc_desc	Interrupcion por flanco ascendente/descendente
  */
