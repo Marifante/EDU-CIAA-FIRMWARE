@@ -1,0 +1,48 @@
+Objetivos
+
+- Manipular los motores del auto: 
+Como son 4 motores y se manejan con drivers l293d se necesitan 4 salidas digitales para controlar la direccion de los motores y 4 señales pwm para controlar la velocidad de los motores. 
+Se necesitan 4 señales digitales porque se usa una salida y la misma negada para alimentar la logica digital del l293d.
+
+Para las 4 señale digitales de direccion: 
+- Se necesitan 4 GPIO configurado en forma de salida.
+Para configurar un pin como salida hay que hacer 2 cosas:
+1) Configurar el registro de SCU (System Control Unit) del pin.
+2) Configurar el registro de direccion del puerto GPIO.
+
+
+Si se usan los siguientes GPIO (ver pinout de la EDU-CIAA) se tiene que: 
+
+	 _______________________________________________________
+	|__GPIOx_(EDU-CIAA)__|_Nombre_pin_del_micro__|__FUNC0___|
+	|__GPIO2_____________|______P6_5_____________|_GPIO3[4]_|
+	|__GPIO5_____________|______P6_9_____________|_GPIO3[5]_|
+	|__GPIO6_____________|______P6_10____________|_GPIO3[6]_|
+	|__GPIO7_____________|______P6_11____________|_GPIO3[7]_|
+
+Este cuadro significa que para el GPIO2 de la EDU-CIAA se tiene el puerto 6 y pin 5 de la SCU. 
+
+Entonces, si se mira el datasheet del LPC4337 (tabla 190, pagina 406) y se quiere configurar el pin P6_5 (GPI02 de la EDU-CIAA) se ve que:
+
+Nombre registro: SFSP6_5
+Tipo acceso: R/W
+Address offset: 0x314
+
+Entonces la direccion de este registro es: 
+reg_address = SCU_BASE + SFSP2_10 = 0x40086000 + 0x128
+
+Este registro es de 8 bits y tiene la siguiente forma 
+
+	 ____________________________________________________________
+	|_ZIF_|_EZI_|_EHS_|_EPUN_|_EPD_|_MODE[2]_|_MODE[1]_|_MODE[0]_|
+
+MODE:
+Cada pin del micro tiene señales multiplexadas, y modificando los bits [2:0] de este registro se elige que señal va a ir al pin. En este caso nosotros queremos que los pines tengan la FUNC0. Entonces los bits MODE[2:0] tienen que tener el valor 0x0.
+
+FUNC0 => MODE[2:0] = 0x0
+FUNC1 => MODE[2:0] = 0x1
+...
+FUNC6 => MODE[2:0] = 0x6
+FUNC7 => MODE[2:0] = 0x7
+
+
