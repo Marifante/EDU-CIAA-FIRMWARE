@@ -210,5 +210,42 @@ void toggleGpio(gpioPin_t* gpioToToggle){
 	return;
 }
 
+/*
+ * @brief config a certain led of the board
+ * */
+void configLed(gpioMap_t ledToConfig, gpioPin_t *ledStruct){
+	switch(ledToConfig){
+	case LED0_R:
+		SCU_SetPinFunc(2, 0, 0);
+		configGpio(LED0_R, ledStruct, OUTPUT_GPIO);
+		break;
+	case LED0_G:
+		SCU_SetPinFunc(2, 1, 0);
+		configGpio(LED0_G, ledStruct, OUTPUT_GPIO);
+		break;
+	case LED0_B:
+		SCU_SetPinFunc(2, 2, 0);
+		configGpio(LED0_B, ledStruct, OUTPUT_GPIO);
+		break;
+	case LED1:
+		SCU_SetPinFunc(2, 10, 0);
+		configGpio(LED1, ledStruct, OUTPUT_GPIO);
+		break;
+	case LED2:
+		SCU_SetPinFunc(2, 11, 0);
+		configGpio(LED2, ledStruct, OUTPUT_GPIO);
+		break;
+	case LED3:
+		SCU_SetPinFunc(2, 12, 0);
+		configGpio(LED3, ledStruct, OUTPUT_GPIO);
+		break;
+	default:
+		return;
+	}
+	writeGpio(ledStruct, LOW);
+	return;
+}
+
+
 /*===================[external functions for interrupts]=====================*/
 

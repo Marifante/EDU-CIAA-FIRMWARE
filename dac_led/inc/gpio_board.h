@@ -65,4 +65,9 @@ void writeGpio(gpioPin_t* gpioToWrite, uint8_t logicState);
  */
 void toggleGpio(gpioPin_t* gpioToToggle);
 
+/*
+ * @brief config a certain led of the board
+ * */
+void configLed(gpioMap_t ledToConfig, gpioPin_t *ledStruct);
+
 #endif /*_GPIO_BOARD_H_*/

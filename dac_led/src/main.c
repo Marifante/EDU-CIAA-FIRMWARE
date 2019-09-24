@@ -25,24 +25,12 @@ int main(void) {
 
 	//To swtich off the leds
 	gpioPin_t led0_r, led0_g, led0_b, led1, led2, led3;
-	SCU_SetPinFunc(2, 0, 0);
-	SCU_SetPinFunc(2, 1, 0);
-	SCU_SetPinFunc(2, 2, 0);
-	SCU_SetPinFunc(2, 10, 0);
-	SCU_SetPinFunc(2, 11, 0);
-	SCU_SetPinFunc(2, 12, 0);
-	configGpio(LED0_R, &led0_r, OUTPUT_GPIO);
-	configGpio(LED0_G, &led0_g, OUTPUT_GPIO);
-	configGpio(LED0_B, &led0_b, OUTPUT_GPIO);
-	configGpio(LED1, &led1, OUTPUT_GPIO);
-	configGpio(LED2, &led2, OUTPUT_GPIO);
-	configGpio(LED3, &led3, OUTPUT_GPIO);
-	writeGpio(&led0_r, LOW);
-	writeGpio(&led0_g, LOW);
-	writeGpio(&led0_b, LOW);
-	writeGpio(&led1, LOW);
-	writeGpio(&led2, LOW);
-	writeGpio(&led3, LOW);
+	configLed(LED0_R, &led0_r);
+	configLed(LED0_G, &led0_g);
+	configLed(LED0_B, &led0_b);
+	configLed(LED1, &led1);
+	configLed(LED2, &led2);
+	configLed(LED3, &led3);
 
 	/*
 	 * The pin of the DAC is the P4_4 with ANALOG SEL, select func 0 per default
