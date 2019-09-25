@@ -43,6 +43,7 @@ typedef struct {			/*!< DAC Structure          */
 #define DAC_VALUE(n)        ((uint32_t) ((n & 0x3FF) << 6))
 /*==================[external functions declaration]=========================*/
 
+
 /**
  * @brief	Update the values of the DAC buffer
  * @param	pDAC		: pointer to struct of the DAC LPC_DAC_T
