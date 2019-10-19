@@ -246,6 +246,27 @@ void configLed(gpioMap_t ledToConfig, gpioPin_t *ledStruct){
 	return;
 }
 
+/* @brief check the state of a button. */
+uint8_t checkButtonState( gpioMap_t tec )
+{
+	uint8_t state;
+	switch( tec )
+	{
+	case TEC1:
+		state = ( GPIO_GetPinPIN( 0, 4 ) >> 4 );
+		break;
+	case TEC2:
+		state = ( GPIO_GetPinPIN( 0, 8 ) >> 8 );
+		break;
+	case TEC3:
+		state = ( GPIO_GetPinPIN( 0, 9 ) >> 9 );
+		break;
+	case TEC4:
+		state = ( GPIO_GetPinPIN( 1, 9 ) >> 9 );
+		break;
+	default:
+		return -1;
+	}
 
-/*===================[external functions for interrupts]=====================*/
-
+	return state;
+}

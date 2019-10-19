@@ -128,7 +128,6 @@ uint8_t GPIO_GetPinNOT(uint8_t port, uint8_t pin){
  * n = port, x = pin
  * @port the port in question
  * @pin the pin in question
- * @return 0 or 1 (0 LOW, 1 HIGH)
  */
 uint8_t GPIO_GetPinPIN(uint8_t port, uint8_t pin){
 	uint8_t value = (pGPIO_T->PIN[port]) & (1<<pin);
