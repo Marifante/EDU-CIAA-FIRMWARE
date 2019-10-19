@@ -72,4 +72,7 @@ void toggleGpio(gpioPin_t* gpioToToggle);
  * */
 void configLed(gpioMap_t ledToConfig, gpioPin_t *ledStruct);
 
+/* @brief check the state of a button. */
+uint8_t checkButtonState( gpioMap_t tec );
+
 #endif /*_GPIO_BOARD_H_*/
