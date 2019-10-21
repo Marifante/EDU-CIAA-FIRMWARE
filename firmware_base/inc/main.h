@@ -17,8 +17,8 @@
 
 #define pi 3.14159265
 
-#define MINORFREQ 			1000
-#define SAMPLES				256
+#define MINORFREQ 			10		//1000
+#define SAMPLES				512 	//256
 
 #define AMPLITUD 			1023
 
@@ -38,6 +38,7 @@ typedef enum{
 
 /* @brief Lista que contiene todos los valores de la salida. */
 int outputValues[SAMPLES];
+int sinList[SAMPLES];
 
 /* @brief Este arreglo contiene los datos para cada una de las listas enlazadas para la
  * transferencia de datos del DMA. */
@@ -72,13 +73,11 @@ void WriteOutputValues( void );
  * */
 void DMATransferEnds( void );
 
+/* @brief Funcion para marcar cuando termina de transferirse buffer. */
 void ToggleBuffer( void );
-
-/* @brief Configura los leds y los apaga. */
-void InitializateAllLeds( void );
 
 /* @brief Configuro las 4 teclas.*/
 void ConfigAllButtons( void );
 
-/* @brief Funcion antirebote. */
-bool isABounce( gpioMap_t tecla );
+/* @brief Configuro los leds que se van a usar. */
+void configLeds( void );

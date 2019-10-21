@@ -27,7 +27,7 @@
 
 //hay que calcular esto, en funcion del timer
 //#define FREQ_SYS_TICK 1600000
-#define MINOR_FREQ 1000
+#define MINOR_FREQ 10
 //#define CANTIDAD_MUESTRAS (FREQ_SYS_TICK/MINOR_FREQ)	// CANTIDAD_MUESTRAS = frecuencia timer/ frecuancia menor
 #define CANTIDAD_MUESTRAS 512
 

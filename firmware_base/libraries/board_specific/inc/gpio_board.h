@@ -67,12 +67,17 @@ void writeGpio(gpioPin_t* gpioToWrite, uint8_t logicState);
  */
 void toggleGpio(gpioPin_t* gpioToToggle);
 
-/*
- * @brief config a certain led of the board
- * */
+/* @brief config a certain led of the board. */
 void configLed(gpioMap_t ledToConfig, gpioPin_t *ledStruct);
 
 /* @brief check the state of a button. */
 uint8_t checkButtonState( gpioMap_t tec );
+
+/* @brief Configura los leds y los apaga. */
+void InitializateAllLeds( void );
+
+/* @brief Blocking antibounce function for a desired button. */
+bool isABounce( gpioMap_t tecla );
+
 
 #endif /*_GPIO_BOARD_H_*/

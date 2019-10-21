@@ -12,8 +12,8 @@
 #include "../inc/main.h"
 
 
-gpioPin_t led0_r, led0_g, led0_b, led1, led2, led3;
-gpioPin_t tec1, tec2, tec3, tec4;
+static gpioPin_t led0_r, led0_g, led0_b, led1, led2, led3;
+static gpioPin_t tec1, tec2, tec3, tec4;
 
 int main( void )
 {
@@ -23,10 +23,10 @@ int main( void )
 	/* Escribo la lista en 0 */
 	WriteOutputValues();
 
-	/*Habilito el DAC */
 	enableDAC();
 
-	/* Configuro teclas */
+	configLeds();
+
 	ConfigAllButtons();
 
 	/* Config DMA mux in the CREG */
@@ -48,20 +48,21 @@ int main( void )
 										true );
 
 
-	/*	Creates the lli for the transference */
+	/*	Creates the lli for the transference. */
 	GPDMA_CreateLLI(	&first_data_lli,
 						(uint32_t) &lliValues[0],
 						(uint32_t) &(LPC_DAC->CR),
 						(uint32_t) &second_data_lli,
 						ctrl_word );
 
-	/*	Create the second lli for the transference*/
+	/*	Create the second lli for the transference. */
 	GPDMA_CreateLLI(	&second_data_lli,
 						(uint32_t) &lliValues[1],
 						(uint32_t) &(LPC_DAC->CR),
 						(uint32_t) &first_data_lli,
 						ctrl_word );
 
+	/* Creates the config word for the channel. */
 	uint32_t cfg_wrd = 		1				//enables channel of DMA
 						| 	(0<<1) 			//don't care, i gonna use the memory as the source of the transfer
 						| 	(0x0F<<6) 		//select DAC as dest peripheral
@@ -78,7 +79,7 @@ int main( void )
 							ctrl_word,
 							cfg_wrd);
 
-	// Configurar el DAC para que envie la request signal al DMA controller
+	/* Configurar el DAC para que envie la request signal al DMA controller. */
 	LPC_DAC->CTRL = 	(1<<0)		//DMA request, this bit its cleared after every write to the DAC->CR register
 					|	(1<<1)		//enable double buffering
 					|	(1<<2)		//DMA time-out counter enabled
@@ -112,9 +113,7 @@ int main( void )
 
 }
 
-
 /*===================[functions definition]==================================*/
-
 
 /* @brief Calcula el valor de la senal de salida requerida.
  * Los valores son guardados a un vector => outputValues. */
@@ -123,16 +122,19 @@ void WriteOutputValues( void )
 	float aux;
 	for (int i=0; i<SAMPLES; i++)
 	{
+		// Genero la senoidal
 		aux =	buttonFlags[0]*sin(1*2*pi*i/SAMPLES)+
 				buttonFlags[1]*sin(2*2*pi*i/SAMPLES)+
 				buttonFlags[2]*sin(4*2*pi*i/SAMPLES)+
-				buttonFlags[3]*sin(8*2*pi*i/SAMPLES); //genero senoidal
+				buttonFlags[3]*sin(8*2*pi*i/SAMPLES);
 
-		aux = (aux/(buttonFlags[0]+buttonFlags[1]+buttonFlags[2]+buttonFlags[3])); //normalizo en funcion de la cantidad de senoidales
+		// Normalizo en funcion de la cantidad de teclas presionadas
+		aux = (aux/(buttonFlags[0]+buttonFlags[1]+buttonFlags[2]+buttonFlags[3]));
 
-		outputValues[i] = (unsigned int)((aux+1)*(AMPLITUD/2)); //amplitud y offset
+		sinList[i] = (unsigned int)((aux+1)*(AMPLITUD/2)); //amplitud y offset
 
-		outputValues[i] = DAC_VALUE(outputValues[i]) | DAC_BIAS_EN ; //Adapto el valor para que lo muestre el DAC (shifteo 6 el valor y activo el bit de bias)
+		//Adapto el valor para que lo muestre el DAC (shifteo 6 el valor y activo el bit de bias)
+		outputValues[i] = DAC_VALUE(sinList[i]) | DAC_BIAS_EN ;
 	}
 }
 
@@ -148,127 +150,90 @@ void DMATransferEnds( void )
 {
 	// Se escribe sobre el buffer que termino recientemente
 	for( int i = 0; i<SAMPLES; i++ )
-	{
 		lliValues[whoBufferGoes][i] = outputValues[i];
-	}
+
 	ToggleBuffer();
 }
 
+/* @brief Funcion para marcar cuando termina de transferirse buffer. */
 void ToggleBuffer( void )
 {
 	if( whoBufferGoes == FIRSTBUFFER )
-	{
 		whoBufferGoes = SECONDBUFFER;
-	}
 	else
-	{
 		whoBufferGoes = FIRSTBUFFER;
-	}
-}
-
-/* @brief Configura los leds y los apaga. */
-void InitializateAllLeds( void )
-{
-	//	configuro leds
-	configLed(LED0_R, &led0_r);
-	configLed(LED0_G, &led0_g);
-	configLed(LED0_B, &led0_b);
-	configLed(LED1, &led1);
-	configLed(LED2, &led2);
-	configLed(LED3, &led3);
-
-	//	pongo todo en 0
-	writeGpio(&led0_r, LOW);
-	writeGpio(&led0_g, LOW);
-	writeGpio(&led0_b, LOW);
-	writeGpio(&led1, LOW);
-	writeGpio(&led2, LOW);
-	writeGpio(&led3, LOW);
 }
 
 /* @brief Configuro las 4 teclas.*/
 void ConfigAllButtons( void )
 {
 	/* Tecla 1 */
-	configGpio(TEC1, &tec1, INPUT_GPIO);
-	configTecInterrupts(&tec1, 0, ASCENDENT);
+	configGpio( TEC1, &tec1, INPUT_GPIO );
+	configTecInterrupts( &tec1, 0, ASCENDENT );
 	/* Tecla 2 */
 	configGpio(TEC2, &tec2, INPUT_GPIO);
-	configTecInterrupts(&tec2, 1, ASCENDENT);
+	configTecInterrupts( &tec2, 1, ASCENDENT );
 	/* Tecla 3 */
-	configGpio(TEC3, &tec3, INPUT_GPIO);
-	configTecInterrupts(&tec3, 2, ASCENDENT);
+	configGpio( TEC3, &tec3, INPUT_GPIO );
+	configTecInterrupts( &tec3, 2, ASCENDENT );
 	/* Tecla 4 */
-	configGpio(TEC4, &tec4, INPUT_GPIO);
-	configTecInterrupts(&tec4, 3, ASCENDENT);
+	configGpio( TEC4, &tec4, INPUT_GPIO );
+	configTecInterrupts( &tec4, 3, ASCENDENT );
 }
 
-/* Definicion de las funciones de los handlers de las interrupciones de las
- * teclas y el DMA. */
+/* @brief configuro los leds que se van a usar. */
+void configLeds( void )
+{
+	configLed( LED0_R,	&led0_r );
+	configLed( LED1,	&led1 );
+	configLed( LED2,	&led2 );
+	configLed( LED3,	&led3 );
+}
+
+/*===================[interrupt handlers]====================================*/
+
 void GPIO0_IRQHandler( void )
 {
 	clearGPIOInterruptFlag( 0 );
 
-	if ( isABounce( TEC1 ) == false )
-	{
-		buttonFlags[0] = !buttonFlags[0];
-		programState = NEWBUTTON;
-		toggleGpio(&led0_r);
-	}
+	buttonFlags[0] = !buttonFlags[0];
+	programState = NEWBUTTON;
+	toggleGpio(&led0_r);
 }
 
 void GPIO1_IRQHandler( void )
 {
 	clearGPIOInterruptFlag( 1 );
 
-	if ( isABounce( TEC2 ) == false )
-	{
-		buttonFlags[1] = !buttonFlags[1];
-		programState = NEWBUTTON;
-		toggleGpio(&led1);
-	}
+	buttonFlags[1] = !buttonFlags[1];
+	programState = NEWBUTTON;
+	toggleGpio(&led1);
+
 }
 
 void GPIO2_IRQHandler( void )
 {
 	clearGPIOInterruptFlag( 2 );
 
-	if ( isABounce( TEC3 ) == false )
-	{
-		buttonFlags[2] = !buttonFlags[2];
-		programState = NEWBUTTON;
-		toggleGpio(&led2);
-	}
+	buttonFlags[2] = !buttonFlags[2];
+	programState = NEWBUTTON;
+	toggleGpio(&led2);
+
 }
 
 void GPIO3_IRQHandler( void )
 {
 	clearGPIOInterruptFlag( 3 );
 
-	if ( isABounce( TEC4 ) == false )
-	{
-		buttonFlags[3] = !buttonFlags[3];
-		programState = NEWBUTTON;
-		toggleGpio(&led3);
-	}
+	buttonFlags[3] = !buttonFlags[3];
+	programState = NEWBUTTON;
+	toggleGpio(&led3);
 
  }
 
-/* @brief la interrupcion del DMA esta configurar para que se dispare cada vez
- *  que una transferencia se complete. */
 void DMA_IRQHandler( void ){
 	LPC_GPDMA->INTTCCLEAR |= 0x1; //clear terminal count interrupt
 	programState = DMAEND;
 }
 
-/* @brief Funcion antirebote. */
-bool isABounce( gpioMap_t tecla )
-{
-	uint8_t initialState = checkButtonState( tecla );
-	delay_us( 100 );
-	uint8_t finalState = checkButtonState( tecla );
-	if ( finalState == initialState )
-		return false;
-	else
-		return true;
-}
+
