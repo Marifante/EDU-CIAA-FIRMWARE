@@ -20,7 +20,7 @@
  * DMA.
  * @return Group to who belongs the desired pheripheral to connect to DMA.
  * */
-uint8_t configDMAmux( gpdma_mux_peripheral gpdma_peripheral_connection_number )
+uint8_t CREG_configDMAmux( gpdma_mux_peripheral gpdma_peripheral_connection_number )
 {
 	uint8_t group, function;
 
