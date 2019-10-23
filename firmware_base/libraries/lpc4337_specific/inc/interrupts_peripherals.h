@@ -5,12 +5,13 @@
  * Contains the functions to configure and manage the interruptions of the
  * peripherals of the LPC4337
  *
+ * Handler for GPIO interrupt x void GPIOx_IRQHandler(void);
  * Autor: Julian Rodriguez
  * email: jnrodriguezz@hotmail.com
  *****************************************************************************/
 
-#ifndef _INTERRUPTS_H_
-#define _INTERRUPTS_H_
+#ifndef _LIBRARIES_LPC4337_SPECIFIC_INC_INTERRUPTS_H_
+#define _LIBRARIES_LPC4337_SPECIFIC_INC_INTERRUPTS_H_
 
 /*==================[inclusions]=============================================*/
 
@@ -47,12 +48,4 @@ void setFallEdgeGPIOInterrupt( uint8_t gpioPinInterruptNum );
 /* @brief clear GPIO interrupt N flag */
 void clearGPIOInterruptFlag( uint8_t gpioPinInterruptNum );
 
-/*
- * @brief	GPIO PORT 0 Interrupt Handler Function
- * Funcion la cual se ejecuta cuando se hay una interrupcion en el puerto 0 de los GPIO
- */
-void GPIO0_IRQHandler(void);
-
-
-
-#endif /*_INTERRUPTS_H_*/
+#endif /*_LIBRARIES_LPC4337_SPECIFIC_INC_INTERRUPTS_H_*/

@@ -7,7 +7,7 @@
  * email: jnrodriguezz@hotmail.com
  *****************************************************************************/
 
-#ifndef _CREG_PERIPHERAL_H_
+#ifndef _LIBRARIES_LPC4337_SPECIFIC_INC_CREG_PERIPHERAL_H_
 #define _CREG_PERIPHERAL_H_
 
 /*==================[inclusions]=============================================*/
@@ -116,7 +116,7 @@ typedef enum{
  * DMA.
  * @return Group to who belongs the desired pheripheral to connect to DMA.
  * */
-uint8_t configDMAmux( gpdma_mux_peripheral peripheral_connection_number );
+uint8_t CREG_configDMAmux( gpdma_mux_peripheral peripheral_connection_number );
 
 
 #endif /* _CREG_PERIPHERAL_H_ */

@@ -9,10 +9,7 @@
  * email: jnrodriguezz@hotmail.com
  *****************************************************************************/
 
-#ifndef _ADC_PERIPHERAL_H_
-#define _PERIPHERAL_H_
+#ifndef _LIBRARIES_LPC4337_SPECIFIC_INC_ADC_PERIPHERAL_H_
+#define _LIBRARIES_LPC4337_SPECIFIC_INC_PERIPHERAL_H_
 
-
-
-
-#endif /* _ADC_PERIPHERAL_H_ */
+#endif /*_LIBRARIES_LPC4337_SPECIFIC_INC_ADC_PERIPHERAL_H_ */

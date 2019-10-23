@@ -301,11 +301,11 @@ uint8_t checkButtonState( gpioMap_t tec )
 }
 
 /* @brief Blocking antibounce function for a desired button. */
-bool isABounce( gpioMap_t tecla )
+bool isABounce( gpioMap_t button )
 {
-	uint8_t initialState = checkButtonState( tecla );
+	uint8_t initialState = checkButtonState( button );
 	delay_us( 10000 ); // wait for 10ms
-	uint8_t finalState = checkButtonState( tecla );
+	uint8_t finalState = checkButtonState( button );
 	if ( finalState == initialState )
 		return false;
 	else

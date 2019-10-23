@@ -9,6 +9,8 @@
  * email: jnrodriguezz@hotmail.com
  *****************************************************************************/
 
+#ifndef _LIBRARIES_BOARD_SPECIFIC_INC_INTERRUPTS_BOARD_H_
+#define _LIBRARIES_BOARD_SPECIFIC_INC_INTERRUPTS_BOARD_H_
 /*==================[inclusions]=============================================*/
 
 #include "../../utils.h"
@@ -32,3 +34,5 @@ typedef enum{
  * @asc_desc	Interrupcion por flanco ascendente/descendente
  */
 void configTecInterrupts(gpioPin_t *gpioStruct, uint8_t gpioPinInterruptNum, edgeTypeInt_t asc_desc);
+
+#endif /*_LIBRARIES_BOARD_SPECIFIC_INC_INTERRUPTS_BOARD_H_*/

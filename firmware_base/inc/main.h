@@ -7,6 +7,8 @@
  * email: jnrodriguezz@hotmail.com /
  *****************************************************************************/
 
+#ifndef _INC_MAIN_H_
+#define _INC_MAIN_H_
 
 /*==================[inclusions]=============================================*/
 
@@ -26,6 +28,7 @@
 #define SECONDBUFFER 		1
 
 /*==================[external data declaration]==============================*/
+
 /* @brief El flujo del programa puede tener 3 estados.
  * Cada estado determina que es lo que debe hacer el super loop. */
 typedef enum{
@@ -35,6 +38,10 @@ typedef enum{
 }State_t;
 
 /*==================[external data definition]===============================*/
+
+/* gpioPin structs for leds & buttons. */
+gpioPin_t led0_r, led0_g, led0_b, led1, led2, led3;
+gpioPin_t tec1, tec2, tec3, tec4;
 
 /* @brief Lista que contiene todos los valores de la salida. */
 int outputValues[SAMPLES];
@@ -49,15 +56,13 @@ uint8_t whoBufferGoes = FIRSTBUFFER;
 
 State_t programState = NOTHING;
 
-/*@brief flags que indican que boton está presionado. */
+/* @brief flags que indican que boton está presionado. */
 bool buttonFlags[4] = {0, 0, 0, 0};
 
 /*	Listas enlazadas a usar	*/
-lli_t first_data_lli, second_data_lli;
-
+lli_t firstDataLLI, secondDataLLI;
 
 /*==================[external function declaration]==========================*/
-
 
 /* @brief Calcula el valor de la senal de salida requerida.
  * Los valores son guardados a un vector => outputValues. */
@@ -80,4 +85,7 @@ void ToggleBuffer( void );
 void ConfigAllButtons( void );
 
 /* @brief Configuro los leds que se van a usar. */
-void configLeds( void );
+void ConfigLeds( void );
+
+#endif /*_INC_MAIN_H_*/
+

@@ -11,8 +11,8 @@
  * email: jnrodriguezz@hotmail.com
  *****************************************************************************/
 
-#ifndef _GPIO_PERIPHERAL_H_
-#define _GPIO_PERIPHERAL_H_
+#ifndef _LIBRARIES_LPC4337_SPECIFIC_INC_GPIO_PERIPHERAL_H_
+#define _LIBRARIES_LPC4337_SPECIFIC_INC_GPIO_PERIPHERAL_H_
 
 /*==================[inclusions]=============================================*/
 
@@ -231,4 +231,4 @@ void GPIO_SetPinNOT(uint8_t port, uint8_t pin);
 
 
 
-#endif /*__GPIO_PERIPHERAL_H_*/
+#endif /*_LIBRARIES_LPC4337_SPECIFIC_INC_GPIO_PERIPHERAL_H_*/

@@ -7,8 +7,8 @@
  * email: jnrodriguezz@hotmail.com
  *****************************************************************************/
 
-#ifndef _DELAY_H_
-#define _DELAY_H_
+#ifndef _LIBRARIES_BOARD_SPECIFIC_INC_DELAY_H_
+#define _LIBRARIES_BOARD_SPECIFIC_INC_DELAY_H_
 
 /*==================[inclusions]=============================================*/
 
@@ -17,12 +17,15 @@
 
 /*==================[macros and definitions]=================================*/
 
-#define CLOCK_EDU_CIAA 204000000 // Clock del micro
 
 /*==================[external functions declaration]==========================*/
 
 /* @brief	Blocking delay function */
 void delay_us( uint32_t us );
 
+/* @brief non-blocking delay function
+ * When use this function, must to config the corresponding interrupt handler
+ * of the desired timer to used. */
+void Delay_initNonBlockingDelay( uint32_t us, uint8_t chosenTimer, uint8_t matchNumber );
 
-#endif /*_DELAY_H_*/
+#endif /*_LIBRARIES_BOARD_SPECIFIC_INC_DELAY_H_*/

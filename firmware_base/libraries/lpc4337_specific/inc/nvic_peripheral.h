@@ -7,8 +7,8 @@
  * email: jnrodriguezz@hotmail.com
  *****************************************************************************/
 
-#ifndef _NVIC_PERIPHERAL_H_
-#define _NVIC_PERIPHERAL_H_
+#ifndef _LIBRARIES_LPC4337_SPECIFIC_INC_NVIC_PERIPHERAL_H_
+#define _LIBRARIES_LPC4337_SPECIFIC_INC_NVIC_PERIPHERAL_H_
 
 /*==================[inclusions]=============================================*/
 
@@ -120,4 +120,4 @@ typedef enum {
  * */
 void NVIC_EnaIRQ(IRQn_Type IRQn);
 
-#endif /*_NVIC_PERIPHERAL_H_*/
+#endif /*_LIBRARIES_LPC4337_SPECIFIC_INC_NVIC_PERIPHERAL_H_*/

@@ -11,26 +11,21 @@
 
 #include "../inc/main.h"
 
-
-static gpioPin_t led0_r, led0_g, led0_b, led1, led2, led3;
-static gpioPin_t tec1, tec2, tec3, tec4;
-
 int main( void )
 {
-
 	InitializateAllLeds();
 
 	/* Escribo la lista en 0 */
 	WriteOutputValues();
 
-	enableDAC();
+	DAC_init();
 
-	configLeds();
+	ConfigLeds();
 
 	ConfigAllButtons();
 
 	/* Config DMA mux in the CREG */
-	configDMAmux( GPDMA_CONN_DAC );
+	CREG_configDMAmux( GPDMA_CONN_DAC );
 
 	/* Creates the control word for the channel	*/
 	uint32_t ctrl_word = GPDMA_CtrlWrd(	SAMPLES,
@@ -52,14 +47,14 @@ int main( void )
 	GPDMA_CreateLLI(	&first_data_lli,
 						(uint32_t) &lliValues[0],
 						(uint32_t) &(LPC_DAC->CR),
-						(uint32_t) &second_data_lli,
+						(uint32_t) &secondDataLLI,
 						ctrl_word );
 
 	/*	Create the second lli for the transference. */
 	GPDMA_CreateLLI(	&second_data_lli,
 						(uint32_t) &lliValues[1],
 						(uint32_t) &(LPC_DAC->CR),
-						(uint32_t) &first_data_lli,
+						(uint32_t) &firstDataLLI,
 						ctrl_word );
 
 	/* Creates the config word for the channel. */
@@ -88,7 +83,7 @@ int main( void )
 
 	DAC_configToSample( MINORFREQ, SAMPLES );
 
-	// Habilitar interrupcion del DMA
+	// Enabling DMA interrupt in the NVIC
 	NVIC_EnaIRQ( DMA_IRQn );
 
 	while(1){
@@ -116,13 +111,12 @@ int main( void )
 /*===================[functions definition]==================================*/
 
 /* @brief Calcula el valor de la senal de salida requerida.
- * Los valores son guardados a un vector => outputValues. */
+ * Los valores son guardados al vecotr outputValues. */
 void WriteOutputValues( void )
 {
 	float aux;
 	for (int i=0; i<SAMPLES; i++)
 	{
-		// Genero la senoidal
 		aux =	buttonFlags[0]*sin(1*2*pi*i/SAMPLES)+
 				buttonFlags[1]*sin(2*2*pi*i/SAMPLES)+
 				buttonFlags[2]*sin(4*2*pi*i/SAMPLES)+
@@ -131,7 +125,7 @@ void WriteOutputValues( void )
 		// Normalizo en funcion de la cantidad de teclas presionadas
 		aux = (aux/(buttonFlags[0]+buttonFlags[1]+buttonFlags[2]+buttonFlags[3]));
 
-		sinList[i] = (unsigned int)((aux+1)*(AMPLITUD/2)); //amplitud y offset
+		sinList[i] = (unsigned int) ((aux+1)*(AMPLITUD/2));
 
 		//Adapto el valor para que lo muestre el DAC (shifteo 6 el valor y activo el bit de bias)
 		outputValues[i] = DAC_VALUE(sinList[i]) | DAC_BIAS_EN ;
@@ -144,8 +138,7 @@ void WriteOutputValues( void )
  * otro buffer.
  * NOTA: el programa empieza con el primer buffer, por lo cual, en el primer disparo
  * de la interrupcion del DMA se copian los valores de la lista de salida al
- * primer buffer.
- * */
+ * primer buffer. */
 void DMATransferEnds( void )
 {
 	// Se escribe sobre el buffer que termino recientemente
@@ -182,7 +175,7 @@ void ConfigAllButtons( void )
 }
 
 /* @brief configuro los leds que se van a usar. */
-void configLeds( void )
+void ConfigLeds( void )
 {
 	configLed( LED0_R,	&led0_r );
 	configLed( LED1,	&led1 );
@@ -231,7 +224,8 @@ void GPIO3_IRQHandler( void )
 
  }
 
-void DMA_IRQHandler( void ){
+void DMA_IRQHandler( void )
+{
 	LPC_GPDMA->INTTCCLEAR |= 0x1; //clear terminal count interrupt
 	programState = DMAEND;
 }

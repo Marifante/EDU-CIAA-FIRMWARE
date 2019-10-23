@@ -7,8 +7,8 @@
  * email: jnrodriguezz@hotmail.com
  *****************************************************************************/
 
-#ifndef _DAC_PERIPHERAL_H_
-#define _DAC_PERIPHERAL_H_
+#ifndef _LIBRARIES_LPC4337_SPECIFIC_INC_DAC_PERIPHERAL_H_
+#define _LIBRARIES_LPC4337_SPECIFIC_INC_DAC_PERIPHERAL_H_
 
 /*==================[inclusions]=============================================*/
 
@@ -44,15 +44,15 @@ typedef struct {			/*!< DAC Structure          */
 #define DAC_VALUE(n)        ((uint32_t) ((n & 0x3FF) << 6))
 /*==================[external functions declaration]=========================*/
 
-/**
- * @brief	Update the values of the DAC buffer
+/* @brief enables DAC on the pin P4_4. */
+void DAC_init();
+
+/* @brief	Update the values of the DAC buffer
  * @param	pDAC		: pointer to struct of the DAC LPC_DAC_T
- * @param	dac_value	: value 10 bit to be converted to output
- * @return	Nothing
- */
+ * @param	dac_value	: value 10 bit to be converted to output */
 void DAC_UpdateValue(LPC_DAC_T *pDAC, uint32_t dac_value);
 
 /* @brief config the DAC to sample a certain waveform */
 void DAC_configToSample( uint32_t freq_to_sample, uint32_t num_of_samples );
 
-#endif /*DAC_PERIPHERAL_H_*/
+#endif /*_LIBRARIES_LPC4337_SPECIFIC_INC_DAC_PERIPHERAL_H_*/

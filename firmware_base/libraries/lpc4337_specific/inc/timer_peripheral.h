@@ -7,8 +7,8 @@
  * email: jnrodriguezz@hotmail.com
  *****************************************************************************/
 
-#ifndef _TIMER_PERIPHERAL_H_
-#define _TIMER_PERIPHERAL_H_
+#ifndef _LIBRARIES_LPC4337_SPECIFIC_INC_TIMER_PERIPHERAL_H_
+#define _LIBRARIES_LPC4337_SPECIFIC_INC_TIMER_PERIPHERAL_H_
 
 /*==================[inclusions]=============================================*/
 
@@ -46,9 +46,9 @@
 #define CTCR0_OFFSET 0x070
 
 // Clock address for Timer 0
-#define CCU1_BASE 0x40051000
-#define CLK_M4_TIMER0_CFG_OFFSET 0x520
-#define CLK_M4_TIMER0_STAT_OFFSET 0x524
+#define CCU1_BASE 					0x40051000
+#define CLK_M4_TIMER0_CFG_OFFSET 	0x520
+#define CLK_M4_TIMER0_STAT_OFFSET 	0x524
 
 // Macros to chose a timer with the diferent functions
 #define ANYTIMER	99
@@ -56,6 +56,12 @@
 #define TIMER1		1
 #define TIMER2		2
 #define TIMER3		3
+
+// Macros to chose a match of each timer
+#define MATCH0		0
+#define MATCH1		1
+#define MATCH2		2
+#define MATCH3		3
 
 /*==================[external data declaration]==============================*/
 
@@ -81,32 +87,17 @@ typedef struct {					/*!< TIMERn Structure       */
 
 /*==================[external functions declaration]==========================*/
 
-/* @brief checks if a timer is counting or not. */
-bool Timer_isCounting( LPC_TIMER_T* timerStruct );
+/* @brief	Function to init timer0/1/2/3
+ * @return	pointer to register TC, this registers have the actual count of the timer. */
+uint32_t* Timer_init( uint8_t chosenTimer, uint32_t timerFrequency );
 
-/* @brief set a certain frequency on a timer.
- * The frequency of the timer gonna be the frequency of the peripheral clock
- * divided the value of the PR register minus one.
- * The maths are:
- * PPCLK * (PR-1) = P
- * Where: PCLK = 1/PCLK_MAX_FREQ , P = 1/frequency, PR = value of PR register
- * */
-void Timer_setFrequency( LPC_TIMER_T* timerStruct, uint32_t frequency );
+/* @brief stop timer. */
+void Timer_deInit( uint8_t chosenTimer );
 
-/*
- * @Brief	Function to init timer0/1/2/3
- * @timer_to_choose timer to init
- * @return	pointer to register TC
- * @comment This function is designed so that the timer TC advances once every 1 microsecond
-*/
-uint32_t* initTimer( uint8_t timer_to_choose, uint32_t timerFrequency );
+/* @brief config timer match interrupts */
+void Timer_configMatchInterrupt( uint8_t chosenTimer, uint8_t matchNumber, uint32_t matchValue);
 
-/*
- * @Brief	Function to stop timer0
- * @timer_to_choose timer to stop
- * @return	nothing
-*/
-void stopTimer( uint8_t timer_to_choose );
-
+/* @brief clear match interrupt flag of a timer. */
+void Timer_clearMatchIntFlag( LPC_TIMER_T* timerStruct, uint8_t matchNumber );
 
 #endif /*_TIMER_PERIPHERAL_H_*/
