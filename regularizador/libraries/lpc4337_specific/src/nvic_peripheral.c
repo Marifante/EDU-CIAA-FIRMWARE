@@ -13,10 +13,9 @@
 
 /*====================[external functions definition]========================*/
 
-/*
- * @brief
- * @IRQn
- * */
-void NVIC_EnaIRQ(IRQn_Type IRQn){
+/* @brief enable one interrupt in the NVIC
+ * @IRQn desired interrupt to enable. */
+void NVIC_EnaIRQ( IRQn_Type IRQn )
+{
 	_NVIC->ISER[(unsigned int)((int)IRQn) >> 5] = (unsigned int)(1 << ((unsigned int)((uint32_t)IRQn) & (unsigned int)0x1F));
 }

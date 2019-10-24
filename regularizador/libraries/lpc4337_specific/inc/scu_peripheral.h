@@ -16,8 +16,8 @@
  *****************************************************************************/
 
 
-#ifndef _SCU_PERIPHERAL_H_
-#define _SCU_PERIPHERAL_H_
+#ifndef _LIBRARIES_LPC4337_SPECIFIC_INC_SCU_PERIPHERAL_H_
+#define _LIBRARIES_LPC4337_SPECIFIC_INC_SCU_PERIPHERAL_H_
 
 /*==================[inclusions]=============================================*/
 
@@ -71,4 +71,4 @@ void SCU_SetPinFunc(uint8_t group, uint8_t pin, uint8_t func);
 void SCU_activateInputBuffer(uint8_t group, uint8_t pin);
 
 
-#endif /*__SCU_PERIPHERAL_*/
+#endif /*_LIBRARIES_LPC4337_SPECIFIC_INC_SCU_PERIPHERAL_*/

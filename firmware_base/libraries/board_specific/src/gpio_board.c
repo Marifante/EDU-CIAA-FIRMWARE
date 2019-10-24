@@ -132,7 +132,8 @@ void fillGPIOBasicSettings( gpioMap_t boardGpioPin, gpioPin_t* gpioPinStruct )
  * @boardGpioPin GPIO of the EDU-CIAA to config (see gpioMap_t enum).
  * @gpioPinStruct pointer to the struct of the gpio of the EDU-CIAA.
  * @direction OUTPUT_GPIO (1) or INPUT_GPIO (0). */
-void configGpio(gpioMap_t boardGpioPin, gpioPin_t* gpioPinStruct, uint8_t direction){
+void configGpio( gpioMap_t boardGpioPin, gpioPin_t* gpioPinStruct, uint8_t direction )
+{
 	gpioPinStruct->boardGpioPin = boardGpioPin;
 
 	fillGPIOBasicSettings( boardGpioPin, gpioPinStruct );
@@ -169,7 +170,8 @@ void configGpio(gpioMap_t boardGpioPin, gpioPin_t* gpioPinStruct, uint8_t direct
  * tuve que negar la senial que se lee del registro byte, para que sea mas usable la funcion.
  * @return 0 if LOW, 1 if HIGH
  */
-uint8_t readGpio(gpioPin_t* gpioToRead){
+uint8_t readGpio( gpioPin_t* gpioToRead )
+{
 	uint8_t read_value;
 
 	if(gpioToRead->boardGpioPin<6){
@@ -209,7 +211,8 @@ void writeGpio(gpioPin_t* gpioToWrite, uint8_t logicState){
 /**
  * @brief toggle value in GPIO pin (GPION[x])
  */
-void toggleGpio(gpioPin_t* gpioToToggle){
+void toggleGpio( gpioPin_t* gpioToToggle )
+{
 	GPIO_SetPinNOT(gpioToToggle->gpio_port, gpioToToggle->gpio_pin);
 	return;
 }
@@ -217,7 +220,8 @@ void toggleGpio(gpioPin_t* gpioToToggle){
 /*
  * @brief config a certain led of the board
  * */
-void configLed(gpioMap_t ledToConfig, gpioPin_t *ledStruct){
+void configLed( gpioMap_t ledToConfig, gpioPin_t *ledStruct )
+{
 	switch(ledToConfig){
 	case LED0_R:
 		SCU_SetPinFunc(2, 0, 0);
@@ -254,8 +258,8 @@ void configLed(gpioMap_t ledToConfig, gpioPin_t *ledStruct){
 /* @brief Configura los leds y los apaga. */
 void InitializateAllLeds( void )
 {
-	static gpioPin_t tempLed0_r, tempLed0_g, tempLed0_b, tempLed1, tempLed2, tempLed3;
-	static gpioPin_t tempTec1, tempTec2, tempTec3, tempTec4;
+	gpioPin_t tempLed0_r, tempLed0_g, tempLed0_b, tempLed1, tempLed2, tempLed3;
+	gpioPin_t tempTec1, tempTec2, tempTec3, tempTec4;
 
 	//	configuro leds
 	configLed( LED0_R,	&tempLed0_r );

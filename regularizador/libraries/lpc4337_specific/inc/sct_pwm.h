@@ -9,8 +9,8 @@
  * email: jnrodriguezz@hotmail.com
  *****************************************************************************/
 
-#ifndef _SCT_PWM_H_
-#define _SCT_PWM_H_
+#ifndef _LIBRARIES_LPC4337_SPECIFIC_INC_SCT_PWM_H_
+#define _LIBRARIES_LPC4337_SPECIFIC_INC_SCT_PWM_H_
 
 /*==================[inclusions]=============================================*/
 

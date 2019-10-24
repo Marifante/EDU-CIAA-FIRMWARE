@@ -54,8 +54,11 @@ bool Timer_isCounting( LPC_TIMER_T* timerStruct );
  * Where: PCLK = 1/PCLK_MAX_FREQ , P = 1/frequency, PR = value of PR register */
 void Timer_setFrequency( LPC_TIMER_T* timerStruct, uint32_t frequency );
 
-/* @brief config timer match interrupts. */
-void Timer_configMatchInterrupt( uint8_t chosenTimer, uint8_t matchNumber, uint32_t matchValue );
+/* @brief enable interrupt for match. */
+void Timer_enableMatchInterrupt( LPC_TIMER_T* timerStruct, uint8_t matchNumber );
+
+/* @brief config the timer to reset for match. */
+void Timer_setResetOnMatch( LPC_TIMER_T* timerStruct, uint8_t matchNumber );
 
 /*==================[internal functions definition]==========================*/
 
@@ -141,8 +144,21 @@ bool Timer_isCounting( LPC_TIMER_T* timerStruct )
  * Where: PCLK = 1/PCLK_MAX_FREQ , P = 1/frequency, PR = value of PR register */
 void Timer_setFrequency( LPC_TIMER_T* timerStruct, uint32_t frequency )
 {
-	timerStruct->PR = ( (uint32_t) PCLK_MAX_FREQ/frequency + 1 );
+	timerStruct->PR = ( (uint32_t) PCLK_MAX_FREQ/frequency - 1 );
 }
+
+/* @brief enable interrupt for match. */
+void Timer_enableMatchInterrupt( LPC_TIMER_T* timerStruct, uint8_t matchNumber )
+{
+	timerStruct->MCR |= (0x1 << ( matchNumber*3 ) );
+}
+
+/* @brief config the timer to reset for match. */
+void Timer_setResetOnMatch( LPC_TIMER_T* timerStruct, uint8_t matchNumber )
+{
+	timerStruct->MCR |= (0x2 << ( matchNumber*3 ) );
+}
+
 
 /*==================[external functions definition]==========================*/
 
@@ -151,6 +167,8 @@ void Timer_setFrequency( LPC_TIMER_T* timerStruct, uint32_t frequency )
 uint32_t* Timer_init( uint8_t chosenTimer, uint32_t timerFrequency )
 {
 	LPC_TIMER_T* pTimerStruct = Timer_getPtrStruct( chosenTimer );
+
+	CCU_enableTimerClock( chosenTimer );
 
 	Timer_setTimerMode( pTimerStruct );
 
@@ -172,18 +190,26 @@ void Timer_deInit( uint8_t chosenTimer )
 	timerStruct->TCR &= ~(0x1);
 }
 
+/* @brief clear match interrupt flag of a timer. */
+void Timer_clearMatchIntFlag( uint8_t chosenTimer, uint8_t matchNumber )
+{
+	LPC_TIMER_T* timerStruct = Timer_getPtrStruct( chosenTimer );
+	timerStruct->IR = (0x1 << matchNumber);
+}
+
+
 /* @brief config timer match interrupts. */
 void Timer_configMatchInterrupt( uint8_t chosenTimer, uint8_t matchNumber, uint32_t matchValue )
 {
 	LPC_TIMER_T* timerStruct = Timer_getPtrStruct( chosenTimer );
-	timerStruct->MCR = (0x1 << (matchNumber*3));
+
+	Timer_enableMatchInterrupt( timerStruct, matchNumber );
+
+	Timer_setResetOnMatch( timerStruct, matchNumber );
+
 	Timer_setMatchValue( timerStruct, matchNumber, matchValue );
+
 }
 
-/* @brief clear match interrupt flag of a timer. */
-void Timer_clearMatchIntFlag( LPC_TIMER_T* timerStruct, uint8_t matchNumber )
-{
-	timerStruct->IR = (0x1 << matchNumber);
-}
 
 
