@@ -165,13 +165,13 @@ void ConfigAllButtons( void )
 	configTecInterrupts( &tec1, 0, DESCENDENT );
 	/* Tecla 2 */
 	configGpio(TEC2, &tec2, INPUT_GPIO);
-	configTecInterrupts( &tec2, 1, ASCENDENT );
+	configTecInterrupts( &tec2, 1, DESCENDENT );
 	/* Tecla 3 */
 	configGpio( TEC3, &tec3, INPUT_GPIO );
-	configTecInterrupts( &tec3, 2, ASCENDENT );
+	configTecInterrupts( &tec3, 2, DESCENDENT );
 	/* Tecla 4 */
 	configGpio( TEC4, &tec4, INPUT_GPIO );
-	configTecInterrupts( &tec4, 3, ASCENDENT );
+	configTecInterrupts( &tec4, 3, DESCENDENT );
 }
 
 /* @brief configuro los leds que se van a usar. */
@@ -223,6 +223,42 @@ void TIMER0_IRQHandler( void )
 	Timer_deInit( TIMER0 );
 }
 
+void TIMER1_IRQHandler( void )
+{
+	Timer_clearMatchIntFlag( TIMER1, MATCH0 );
+
+	if( checkButtonState( TEC2 ) == HIGH )
+		buttonState[ TEC2 - TEC1 ] = PRESSED;
+	else
+		buttonState[ TEC2 - TEC1 ] = NOTPRESSED;
+
+	Timer_deInit( TIMER1 );
+}
+
+void TIMER2_IRQHandler( void )
+{
+	Timer_clearMatchIntFlag( TIMER2, MATCH0 );
+
+	if( checkButtonState( TEC3 ) == HIGH )
+		buttonState[ TEC3 - TEC1 ] = PRESSED;
+	else
+		buttonState[ TEC3 - TEC1 ] = NOTPRESSED;
+
+	Timer_deInit( TIMER2 );
+}
+
+void TIMER3_IRQHandler( void )
+{
+	Timer_clearMatchIntFlag( TIMER3, MATCH0 );
+
+	if( checkButtonState( TEC4 ) == HIGH )
+		buttonState[ TEC4 - TEC1 ] = PRESSED;
+	else
+		buttonState[ TEC4 - TEC1 ] = NOTPRESSED;
+
+	Timer_deInit( TIMER3 );
+}
+
 void GPIO0_IRQHandler( void )
 {
 	clearGPIOInterruptFlag( 0 );
@@ -239,31 +275,40 @@ void GPIO0_IRQHandler( void )
 void GPIO1_IRQHandler( void )
 {
 	clearGPIOInterruptFlag( 1 );
+	bool buttIsPressed = nonBlockingDebounce( &tec2, TIMER1, MATCH0 );
 
-	buttonFlags[1] = !buttonFlags[1];
-	programState = NEWBUTTON;
-	toggleGpio(&led1);
-
+	if( buttIsPressed == true )
+	{
+		buttonFlags[1] = !buttonFlags[1];
+		programState = NEWBUTTON;
+		toggleGpio(&led1);
+	}
 }
 
 void GPIO2_IRQHandler( void )
 {
 	clearGPIOInterruptFlag( 2 );
+	bool buttIsPressed = nonBlockingDebounce( &tec3, TIMER2, MATCH0 );
 
-	buttonFlags[2] = !buttonFlags[2];
-	programState = NEWBUTTON;
-	toggleGpio(&led2);
-
+	if( buttIsPressed == true )
+	{
+		buttonFlags[2] = !buttonFlags[2];
+		programState = NEWBUTTON;
+		toggleGpio(&led2);
+	}
 }
 
 void GPIO3_IRQHandler( void )
 {
 	clearGPIOInterruptFlag( 3 );
+	bool buttIsPressed = nonBlockingDebounce( &tec3, TIMER2, MATCH0 );
 
-	buttonFlags[3] = !buttonFlags[3];
-	programState = NEWBUTTON;
-	toggleGpio(&led3);
-
+	if( buttIsPressed == true )
+	{
+		buttonFlags[3] = !buttonFlags[3];
+		programState = NEWBUTTON;
+		toggleGpio(&led3);
+	}
  }
 
 void DMA_IRQHandler( void )
