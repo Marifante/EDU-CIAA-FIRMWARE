@@ -301,6 +301,12 @@ uint8_t checkButtonState( gpioMap_t tec )
 		return -1;
 	}
 
+	// como los botones de la edu ciaa estan negados
+	if( state == 1 )
+		state = 0;
+	else
+		state = 1;
+
 	return state;
 }
 

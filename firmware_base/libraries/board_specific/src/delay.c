@@ -50,7 +50,12 @@ IRQn_Type Delay_getIRQn( uint8_t chosenTimer )
 /* @brief convert time of the delay & timer frequency to match value. */
 uint32_t Delay_timeToMatchValue( uint32_t us, uint32_t timerFreq )
 {
-	uint32_t matchValue = ( (us / 1000000 ) * timerFreq );
+	uint32_t matchValue = 0;
+	if( us > 1000000 )
+		matchValue = ( (us / 1000000 ) * timerFreq );
+	else
+		matchValue = ( (us * timerFreq) / 1000000 );
+
 	return matchValue;
 }
 

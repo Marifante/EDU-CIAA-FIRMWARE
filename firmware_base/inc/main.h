@@ -27,15 +27,26 @@
 #define FIRSTBUFFER 		0
 #define SECONDBUFFER 		1
 
+#define DEBOUNCETIME		1000	//1ms
+
+
 /*==================[external data declaration]==============================*/
 
 /* @brief El flujo del programa puede tener 3 estados.
  * Cada estado determina que es lo que debe hacer el super loop. */
-typedef enum{
+typedef enum
+{
 	NOTHING,			// No debe hacer nada
 	NEWBUTTON,			// Se presiono una tecla, por lo tanto, se debe volver a escribir la lista de los valores de salida
 	DMAEND				// Termino una transferencia el DMA, por lo tanto, se debe ejecutar la funcion DMATransferEnds()
 }State_t;
+
+typedef enum
+{
+	UNDEFINED = -1,
+	NOTPRESSED = 0,
+	PRESSED = 1
+}ButtonState_t;
 
 /*==================[external data definition]===============================*/
 
@@ -59,8 +70,11 @@ State_t programState = NOTHING;
 /* @brief flags que indican que boton está presionado. */
 bool buttonFlags[4] = {0, 0, 0, 0};
 
-/*	Listas enlazadas a usar	*/
+/* Listas enlazadas a usar	*/
 lli_t firstDataLLI, secondDataLLI;
+
+/* Array con los estados de los botones. */
+ButtonState_t buttonState[ 4 ] = { NOTPRESSED, NOTPRESSED, NOTPRESSED, NOTPRESSED };
 
 /*==================[external function declaration]==========================*/
 
@@ -87,5 +101,9 @@ void ConfigAllButtons( void );
 /* @brief Configuro los leds que se van a usar. */
 void ConfigLeds( void );
 
+/* @brief Antirebote no bloqueante para cada una de las teclas. */
+bool nonBlockingDebounce( gpioPin_t *buttonStruct,
+							uint8_t chosenTimer,
+							uint8_t matchNumber );
 #endif /*_INC_MAIN_H_*/
 
