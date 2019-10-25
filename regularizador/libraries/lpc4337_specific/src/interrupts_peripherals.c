@@ -38,16 +38,19 @@ void setEdgeDetectionGPIOInterrupt(uint8_t gpioInterruptNumber){
 	GPIO_PIN_INT->ISEL &= ~(1 << gpioInterruptNumber);
 }
 
-/*
- * @brief sets GPIO interrupt N as rise edge detection
- * */
+/* @brief sets GPIO interrupt N as rise edge detection */
 void setRiseEdgeGPIOInterrupt(uint8_t gpioPinInterruptNum){
 	GPIO_PIN_INT->SIENR |= (1 << gpioPinInterruptNum);
 }
 
-/*
- * @brief sets GPIO interrupt N as fall edge detection
- * */
-void setFallEdgeGPIOInterrupt(uint8_t gpioPinInterruptNum){
+/* @brief sets GPIO interrupt N as fall edge detection */
+void setFallEdgeGPIOInterrupt( uint8_t gpioPinInterruptNum )
+{
 	GPIO_PIN_INT->SIENF |=  (1 << gpioPinInterruptNum);
 }
+
+/* @brief clear GPIO interrupt N flag */
+void clearGPIOInterruptFlag( uint8_t gpioPinInterruptNum ){
+	GPIO_PIN_INT->IST = (1 << gpioPinInterruptNum);
+}
+

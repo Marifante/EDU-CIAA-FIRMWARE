@@ -7,8 +7,8 @@
  * email: jnrodriguezz@hotmail.com
  *****************************************************************************/
 
-#ifndef _GPDMA_PERIPHERAL_H_
-#define _GPDMA_PERIPHERAL_H_
+#ifndef _LIBRARIES_LPC4337_SPECIFIC_INC_GPDMA_PERIPHERAL_H_
+#define _LIBRARIES_LPC4337_SPECIFIC_INC_GPDMA_PERIPHERAL_H_
 
 /*==================[inclusions]=============================================*/
 
@@ -200,4 +200,4 @@ void GPDMA_configChannel( DMA_channel_t channel, uint32_t src_address, uint32_t 
 uint32_t GPDMA_samplingFreq2Ticks( uint32_t freq );
 
 
-#endif /* _GPDMA_PERIPHERAL_H_ */
+#endif /*_LIBRARIES_LPC4337_SPECIFIC_INC_GPDMA_PERIPHERAL_H_ */

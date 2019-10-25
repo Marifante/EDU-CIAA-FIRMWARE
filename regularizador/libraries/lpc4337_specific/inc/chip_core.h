@@ -7,8 +7,8 @@
  * email: jnrodriguezz@hotmail.com
  *****************************************************************************/
 
-#ifndef _CHIP_CORE_H_
-#define _CHIP_CORE_H_
+#ifndef _LIBRARIES_LPC4337_SPECIFIC_INC_CHIP_CORE_H_
+#define _LIBRARIES_LPC4337_SPECIFIC_INC_CHIP_CORE_H_
 
 /*==================[inclusions]=============================================*/
 
@@ -46,4 +46,4 @@ void enable_IntSysTick(float time_ms);
 
 
 
-#endif /*_CHIP_CORE_*/
+#endif /*_LIBRARIES_LPC4337_SPECIFIC_INC_CHIP_CORE_*/

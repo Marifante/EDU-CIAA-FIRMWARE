@@ -9,6 +9,9 @@
  * email: jnrodriguezz@hotmail.com
  *****************************************************************************/
 
+#ifndef _LIBRARIES_BOARD_SPECIFIC_INC_PWM_BOARD_H_
+#define _LIBRARIES_BOARD_SPECIFIC_INC_PWM_BOARD_H_
+
 /*==================[inclusions]=============================================*/
 
 #include "../../utils.h"
@@ -19,5 +22,6 @@
 /**
  * @brief
  * */
-void singlePWM(void);
+void singlePWM( void );
 
+#endif /*_LIBRARIES_BOARD_SPECIFIC_INC_PWM_BOARD_H_*/

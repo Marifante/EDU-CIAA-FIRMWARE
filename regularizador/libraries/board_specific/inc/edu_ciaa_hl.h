@@ -6,8 +6,8 @@
  *
  */
 
-#ifndef _EDU_CIAA_HL_H_
-#define _EDU_CIAA_HL_H_
+#ifndef LIBRARIES_BOARD_SPECIFIC_INC_EDU_CIAA_HL_H_
+#define LIBRARIES_BOARD_SPECIFIC_INC_EDU_CIAA_HL_H_
 
 /*==================[inclusions]=============================================*/
 
@@ -16,6 +16,5 @@
 #include "gpio_board.h"
 #include "delay.h"
 #include "interrupts_board.h"
-#include "dac_board.h"
 
-#endif /*_EDU_CIAA_HL_H_*/
+#endif /*LIBRARIES_BOARD_SPECIFIC_INC_EDU_CIAA_HL_H_*/

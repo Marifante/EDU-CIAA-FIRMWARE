@@ -3,6 +3,13 @@
  *
  * Library: timer_peripheral
  *
+ * NOTE: the interrupt handlers for timers are
+ *
+ *	void TIMER0_IRQHandler( void )
+ *	void TIMER1_IRQHandler( void )
+ *	void TIMER2_IRQHandler( void )
+ *	void TIMER3_IRQHandler( void )
+ *
  * Autor: Julian Rodriguez
  * email: jnrodriguezz@hotmail.com
  *****************************************************************************/
@@ -11,85 +18,188 @@
 
 #include "../inc/timer_peripheral.h"
 
-/*==================[external functions definition]==========================*/
 
-/*
- * @Brief	Function to init timer0/1/2/3
- * @timer_to_choose timer to init
- * @return	pointer to register TC
- * @comment This function is designed so that the timer TC advances once every 1 microsecond
-*/
-uint32_t*  initTimer(uint8_t timer_to_choose){
-	LPC_TIMER_T* aux_tmr_pointer;
+/*==================[internal functions declaration]=========================*/
 
-	switch(timer_to_choose){
-	case(0):
-		aux_tmr_pointer = LPC_TIMER0;
+/* @brief enables timer. */
+void Timer_enableTimer( LPC_TIMER_T* pTimerStruct );
+
+/* @brief Resets the TC and PC registers on the next clock positive edge. */
+void Timer_resetOnNextEdge( LPC_TIMER_T* pTimerStruct );
+
+/* @brief Don't reset the TC and PC registers on the next clock positive edge. */
+void Timer_dontResetOnNextEdge( LPC_TIMER_T* pTimerStruct );
+
+/* @brief checks what timer is available and return one of them. */
+LPC_TIMER_T* Timer_getAvailableTimer( void );
+
+/* @brief returns a pointer to the chosen timer struct. */
+LPC_TIMER_T* Timer_getPtrStruct( uint8_t chosenTimer );
+
+/* @brief chose timer mode for the selected timer.
+ * Note: Exists 2 modes for each timer: Counter mode and Timer mode. */
+void Timer_setTimerMode ( LPC_TIMER_T* pTimerStruct );
+
+/* @brief set match value. This value is continuosly compared with
+ * TC register value and can trigger some events if they are configured. */
+void Timer_setMatchValue( LPC_TIMER_T* timerStruct, uint8_t matchNumber, uint32_t matchValue );
+
+/* @brief checks if a timer is counting or not. */
+bool Timer_isCounting( LPC_TIMER_T* timerStruct );
+
+/* @brief set a certain frequency on a timer.
+ * The frequency of the timer gonna be the frequency of the peripheral clock
+ * divided the value of the PR register minus one.
+ * The maths are: PPCLK * (PR-1) = P
+ * Where: PCLK = 1/PCLK_MAX_FREQ , P = 1/frequency, PR = value of PR register */
+void Timer_setFrequency( LPC_TIMER_T* timerStruct, uint32_t frequency );
+
+/* @brief enable interrupt for match. */
+void Timer_enableMatchInterrupt( LPC_TIMER_T* timerStruct, uint8_t matchNumber );
+
+/* @brief config the timer to reset for match. */
+void Timer_setResetOnMatch( LPC_TIMER_T* timerStruct, uint8_t matchNumber );
+
+/*==================[internal functions definition]==========================*/
+
+/* @brief Resets the TC and PC registers on the next clock positive edge. */
+void Timer_resetOnNextEdge( LPC_TIMER_T* pTimerStruct )
+{
+	pTimerStruct->TCR |= 0x02;
+}
+
+/* @brief Don't reset the TC and PC registers on the next clock positive edge. */
+void Timer_dontResetOnNextEdge( LPC_TIMER_T* pTimerStruct )
+{
+	pTimerStruct->TCR &= ~(0x02);
+}
+
+/* @brief enables timer. */
+void Timer_enableTimer( LPC_TIMER_T* pTimerStruct )
+{
+	pTimerStruct->TCR |= 0x01;
+}
+
+/* @brief checks what timer is available and return one of them. */
+LPC_TIMER_T* Timer_getAvailableTimer( void )
+{
+	LPC_TIMER_T* pTimers[4] = { LPC_TIMER0, LPC_TIMER1, LPC_TIMER2, LPC_TIMER3 };
+
+	for( int i=0; i<4; i++ )
+		if ( Timer_isCounting( pTimers[i] ) == false ) return pTimers[i];
+
+	return NULL;
+}
+
+/* @brief returns a pointer to the chosen timer struct. */
+LPC_TIMER_T* Timer_getPtrStruct( uint8_t chosenTimer )
+{
+	switch( chosenTimer )
+	{
+	case(TIMER0):
+		return LPC_TIMER0;
 		break;
-	case(1):
-		aux_tmr_pointer = LPC_TIMER1;
+	case(TIMER1):
+		return LPC_TIMER1;
 		break;
-	case(2):
-		aux_tmr_pointer = LPC_TIMER2;
+	case(TIMER2):
+		return LPC_TIMER2;
 		break;
-	case(3):
-		aux_tmr_pointer = LPC_TIMER3;
+	case(TIMER3):
+		return LPC_TIMER3;
+		break;
+	case(ANYTIMER):
+		return Timer_getAvailableTimer();
 		break;
 	default:
-		return 0;
+		return NULL;
 	}
+}
 
-	/*Enable timer*/
-
-	// Seteo el timer0 en modo timer, entonces el registro TC
-	// se va a incrementar en 1 cada vez que el registro PC llegue
-	// al mismo valor que hay en el registro PR
-	aux_tmr_pointer->CTCR = 0x0;
-
-	// Seteo el registro PR. Cuando el registro PC llegue al mismo valor
-	// que este registro, el TC se va a incrementar en 1.
-	// Si yo quiero que el PC se incremente 1 vez cada 1 micro segundo
-	// entonces:
-	// Ttc = Tpclk*(PR-1)
-	// PR  = (Ttc*Freq_PCLK)-1
-	aux_tmr_pointer->PR = (PCLK_MAX_FREQ/1000000)-1;
-
-	// Resetea el timer, cuando esta en 1 el segundo bit del TCR, el
-	// timer y el prescaler son reiniciados sincronicamente en el
-	// siguiente flanco ascendente del PCLK
-	aux_tmr_pointer->TCR = 0x02;
-
-	// Habilita el timer a contar
-	aux_tmr_pointer->TCR = 0x01;
-
-	// Devuelvo un puntero hacia el registro TC, es el cual hay que
-	// mirar continuamente
-	return (uint32_t*) &(aux_tmr_pointer->TC);
+/* @brief chose timer mode for the selected timer.
+ * Note: Exists 2 modes for each timer: Counter mode and Timer mode. */
+void Timer_setTimerMode ( LPC_TIMER_T* pTimerStruct )
+{
+	pTimerStruct->CTCR &= ~(0x1);
 }
 
 
-/*
- * @Brief	Function to stop timer0
- * @timer_to_choose timer to stop
- * @return	nothing
-*/
-void stopTimer(uint8_t timer_to_choose){
-	LPC_TIMER_T* aux_tmr_pointer;
-		switch(timer_to_choose){
-		case(0):
-			aux_tmr_pointer = LPC_TIMER0;
-			break;
-		case(1):
-			aux_tmr_pointer = LPC_TIMER1;
-			break;
-		case(2):
-			aux_tmr_pointer = LPC_TIMER2;
-			break;
-		case(3):
-			aux_tmr_pointer = LPC_TIMER3;
-			break;
-		default:
-			return ;
-		}
-	aux_tmr_pointer->TCR = 0x0;
+/* @brief set match value. This value is continuosly compared with
+ * TC register value and can trigger some events if they are configured. */
+void Timer_setMatchValue( LPC_TIMER_T* timerStruct, uint8_t matchNumber, uint32_t matchValue )
+{
+	timerStruct->MR[matchNumber] = matchValue;
 }
+
+/* @brief checks if a timer is counting or not. */
+bool Timer_isCounting( LPC_TIMER_T* timerStruct )
+{
+	return ( timerStruct->TCR & 0x1 );
+}
+
+/* @brief set a certain frequency on a timer.
+ * The frequency of the timer gonna be the frequency of the peripheral clock
+ * divided the value of the PR register minus one.
+ * The maths are: PPCLK * (PR-1) = P
+ * Where: PCLK = 1/PCLK_MAX_FREQ , P = 1/frequency, PR = value of PR register */
+void Timer_setFrequency( LPC_TIMER_T* timerStruct, uint32_t frequency )
+{
+	timerStruct->PR = ( (uint32_t) PCLK_MAX_FREQ/frequency + 1 );
+}
+
+/* @brief enable interrupt for match. */
+void Timer_enableMatchInterrupt( LPC_TIMER_T* timerStruct, uint8_t matchNumber )
+{
+	timerStruct->MCR = (0x1 << (matchNumber*3) );
+}
+
+/* @brief config the timer to reset for match. */
+void Timer_setResetOnMatch( LPC_TIMER_T* timerStruct, uint8_t matchNumber )
+{
+	timerStruct->MCR = (0x2 << (matchNumber*3));
+}
+
+/*==================[external functions definition]==========================*/
+
+/* @brief	function to init timer0/1/2/3
+ * @return	pointer to register TC, this registers have the actual count of the timer */
+uint32_t* Timer_init( uint8_t chosenTimer, uint32_t timerFrequency )
+{
+	LPC_TIMER_T* pTimerStruct = Timer_getPtrStruct( chosenTimer );
+
+	Timer_setTimerMode( pTimerStruct );
+
+	Timer_setFrequency( pTimerStruct, timerFrequency );
+
+	Timer_resetOnNextEdge( pTimerStruct );
+
+	Timer_enableTimer( pTimerStruct );
+
+	Timer_dontResetOnNextEdge( pTimerStruct );
+
+	return (uint32_t*) &( pTimerStruct->TC );
+}
+
+/* @brief stop timer. */
+void Timer_deInit( uint8_t chosenTimer )
+{
+	LPC_TIMER_T* timerStruct = Timer_getPtrStruct( chosenTimer );
+	timerStruct->TCR &= ~(0x1);
+}
+
+/* @brief config timer match interrupts. */
+void Timer_configMatchInterrupt( uint8_t chosenTimer, uint8_t matchNumber, uint32_t matchValue )
+{
+	LPC_TIMER_T* timerStruct = Timer_getPtrStruct( chosenTimer );
+	Timer_enableMatchInterrupt( timerStruct, matchNumber );
+	Timer_setResetOnMatch( timerStruct, matchNumber );
+	Timer_setMatchValue( timerStruct, matchNumber, matchValue );
+}
+
+/* @brief clear match interrupt flag of a timer. */
+void Timer_clearMatchIntFlag( LPC_TIMER_T* timerStruct, uint8_t matchNumber )
+{
+	timerStruct->IR = (0x1 << matchNumber);
+}
+
+

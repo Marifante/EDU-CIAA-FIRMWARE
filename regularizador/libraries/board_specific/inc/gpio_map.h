@@ -2,8 +2,8 @@
   GPIO map peripheral library for EDU-CIAA
  */
 
-#ifndef _GPIO_MAP_H_
-#define _GPIO_MAP_H_
+#ifndef _LIBRARIES_BOARD_SPECIFIC_INC_GPIO_MAP_H_
+#define _LIBRARIES_BOARD_SPECIFIC_INC_GPIO_MAP_H_
 
 /*==================[inclusions]=============================================*/
 
@@ -38,4 +38,4 @@ typedef enum{
 }gpioMap_t;
 
 
-#endif /*__GPIO_MAP_H_*/
+#endif /*_LIBRARIES_BOARD_SPECIFIC_INC_GPIO_MAP_H_*/

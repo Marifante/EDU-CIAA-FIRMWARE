@@ -13,8 +13,8 @@
  * email: jnrodriguezz@hotmail.com
  *****************************************************************************/
 
-#ifndef _SCT_PERIPHERAL_H_
-#define _SCT_PERIPHERAL_H_
+#ifndef _LIBRARIES_LPC4337_SPECIFIC_INC_SCT_PERIPHERAL_H_
+#define _LIBRARIES_LPC4337_SPECIFIC_INC_SCT_PERIPHERAL_H_
 
 /*==================[inclusions]=============================================*/
 
@@ -235,4 +235,4 @@ typedef enum{
 // */
 //void Chip_SCT_SetMatchReload(LPC_SCT_T *pSCT, CHIP_SCT_MATCH_REG_T n, uint32_t value);
 
-#endif /*_SCT_PERIPHERAL_H_*/
+#endif /*_LIBRARIES_LPC4337_SPECIFIC_INC_SCT_PERIPHERAL_H_*/

@@ -7,8 +7,8 @@
  * email: jnrodriguezz@hotmail.com
  *****************************************************************************/
 
-#ifndef _GPDMA_PERIPHERAL_H_
-#define _GPDMA_PERIPHERAL_H_
+#ifndef _LIBRARIES_LPC4337_SPECIFIC_INC_GPDMA_PERIPHERAL_H_
+#define _LIBRARIES_LPC4337_SPECIFIC_INC_GPDMA_PERIPHERAL_H_
 
 /*==================[inclusions]=============================================*/
 
@@ -32,16 +32,15 @@
 #define GPDMA_PERIPHERAL_USART0_RX 0x2
 #define GPDMA_PERIPHERAL_AES_OUT 0x2
 /*
- * ... (COMPLETAR)
+ * ... (COMPLETAR) ...
  * */
 #define GPDMA_PERIPHERAL_DAC 0xF
 #define GPDMA_PERIPHERAL_SCT_MATCH3 0xF
 #define GPDMA_PERIPHERAL_SGPIO15 0xF
 #define GPDMA_PERIPHERAL_TIMER3_MATCH0 0xF
 
-
-
-
+/* Hardcodeado, pero no deberia */
+#define GPDMA_CLOCK		204000000
 
 /*==================[internal data declaration]==============================*/
 /* @brief GPDMA Type of DMA controller */
@@ -159,62 +158,12 @@ typedef enum{
 	CHANNEL7
 }DMA_channel_t;
 
-
-/*====================[internal data declaration]==========================*/
-
-/**
- * @brief GPDMA request connections
- * The DMA buses are multiplexed. So must to choose what peripheral is using a certain
- * channel
- */
-typedef enum{
-	GPDMA_CONN_MEMORY = 			((0UL)),	/**< MEMORY             */
-	GPDMA_CONN_MAT0_0 = 			((1UL)),	/**< MAT0.0             */
-	GPDMA_CONN_UART0_Tx = 			((2UL)),	/**< UART0 Tx           */
-	GPDMA_CONN_MAT0_1 = 			((3UL)),	/**< MAT0.1             */
-	GPDMA_CONN_UART0_Rx = 			((4UL)),	/**< UART0 Rx           */
-	GPDMA_CONN_MAT1_0 = 			((5UL)),	/**< MAT1.0             */
-	GPDMA_CONN_UART1_Tx = 			((6UL)),	/**< UART1 Tx           */
-	GPDMA_CONN_MAT1_1 = 			((7UL)),	/**< MAT1.1             */
-	GPDMA_CONN_UART1_Rx = 			((8UL)),	/**< UART1 Rx           */
-	GPDMA_CONN_MAT2_0 = 			((9UL)),	/**< MAT2.0             */
-	GPDMA_CONN_UART2_Tx = 			((10UL)),	/**< UART2 Tx           */
-	GPDMA_CONN_MAT2_1 = 			((11UL)),	/**< MAT2.1             */
-	GPDMA_CONN_UART2_Rx = 			((12UL)),	/**< UART2 Rx           */
-	GPDMA_CONN_MAT3_0 = 			((13UL)),	/**< MAT3.0             */
-	GPDMA_CONN_UART3_Tx = 			((14UL)),	/**< UART3 Tx           */
-	GPDMA_CONN_SCT_0 = 				((15UL)),	/**< SCT timer channel 0*/
-	GPDMA_CONN_MAT3_1 = 			((16UL)),	/**< MAT3.1             */
-	GPDMA_CONN_UART3_Rx = 			((17UL)),	/**< UART3 Rx           */
-	GPDMA_CONN_SCT_1 = 				((18UL)),	/**< SCT timer channel 1*/
-	GPDMA_CONN_SSP0_Rx = 			((19UL)),	/**< SSP0 Rx            */
-	GPDMA_CONN_I2S_Tx_Channel_0 = 	((20UL)),	/**< I2S0 Tx on channel 0 */
-	GPDMA_CONN_SSP0_Tx = 			((21UL)),	/**< SSP0 Tx            */
-	GPDMA_CONN_I2S_Rx_Channel_1 = 	((22UL)),	/**< I2S0 Rx on channel 0 */
-	GPDMA_CONN_SSP1_Rx =			((23UL)),	/**< SSP1 Rx            */
-	GPDMA_CONN_SSP1_Tx =			((24UL)),	/**< SSP1 Tx            */
-	GPDMA_CONN_ADC_0 = 				((25UL)),	/**< ADC 0              */
-	GPDMA_CONN_ADC_1 = 				((26UL)),	/**< ADC 1              */
-	GPDMA_CONN_DAC = 				((27UL)),	/**< DAC                */
-	GPDMA_CONN_I2S1_Tx_Channel_0 = 	((28UL)),	/**< I2S1 Tx on channel 0 */
-	GPDMA_CONN_I2S1_Rx_Channel_1 = 	((29UL))	/**< I2S1 Rx on channel 0 */
-}gpdma_mux_peripheral;
-
-
 /*====================[external functions declaration]=======================*/
 
 /*
- * @brief The peripherals connected to DMA are Multiplexed. They are multiplexed
- * in 16 groups of 4 pheripherals. Only one pheripheral of each group can be connected
- * to the DMA. With this function, we can choose one pheripheral to be connected to the
- * DMA.
- * @return Group to who belongs the desired pheripheral to connect to DMA.
- * */
-uint8_t configDMAmux(gpdma_mux_peripheral peripheral_connection_number);
-/*
  * @brief Creates linked list for data transfer
  * */
-void Chip_GPDMA_CreateLLI( lli_t *lli_struct, uint32_t src, uint32_t dest, uint32_t next_lli, uint32_t control);
+void GPDMA_CreateLLI( lli_t *lli_struct, uint32_t src, uint32_t dest, uint32_t next_lli, uint32_t control);
 /*
  * @brief Creates control word for a channel
  * @param transfer_size: quantity of transfers on this channel
@@ -229,7 +178,7 @@ void Chip_GPDMA_CreateLLI( lli_t *lli_struct, uint32_t src, uint32_t dest, uint3
  *
  * NOTE: just AHB Master 1 can access to peripherals
  * */
-uint32_t Chip_GPDMA_CtrlWrd(uint32_t transfer_size,
+uint32_t GPDMA_CtrlWrd(uint32_t transfer_size,
 							burst_size_t src_burst_size,
 							burst_size_t dest_burst_size,
 							data_transfer_size_t src_width_data,
@@ -244,8 +193,11 @@ uint32_t Chip_GPDMA_CtrlWrd(uint32_t transfer_size,
 							bool terminal_cnt_int
 							);
 /* @brief inits DMA peripheral */
-void Chip_GPDMA_init();
+void GPDMA_init( void );
 /* @brief configure a channel of the DMA */
-void Chip_GPDMA_configChannel(DMA_channel_t channel, uint32_t src_address, uint32_t dest_address, uint32_t first_lli_address, uint32_t ctrl_word, uint32_t cfg_word);
+void GPDMA_configChannel( DMA_channel_t channel, uint32_t src_address, uint32_t dest_address, uint32_t first_lli_address, uint32_t ctrl_word, uint32_t cfg_word );
+/* @brief convert sampling frequency to ticks of the DAC count value */
+uint32_t GPDMA_samplingFreq2Ticks( uint32_t freq );
 
-#endif /* _GPDMA_PERIPHERAL_H_ */
+
+#endif /*_LIBRARIES_LPC4337_SPECIFIC_INC_GPDMA_PERIPHERAL_H_ */

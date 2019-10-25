@@ -7,8 +7,8 @@
  * email: jnrodriguezz@hotmail.com
  *****************************************************************************/
 
-#ifndef _GPIO_BOARD_H_
-#define _GPIO_BOARD_H_
+#ifndef _LIBRARIES_BOARD_SPECIFIC_INC_GPIO_BOARD_H_
+#define _LIBRARIES_BOARD_SPECIFIC_INC_GPIO_BOARD_H_
 
 /*==================[inclusions]=============================================*/
 
@@ -17,9 +17,8 @@
 #include "gpio_map.h"
 
 /*==================[macros and definitions]=================================*/
-/*
- * macros for direction of gpios
- */
+
+/* Macros for direction of gpios */
 #define INPUT_GPIO 0
 #define OUTPUT_GPIO 1
 
@@ -50,29 +49,28 @@ typedef struct {
  */
 void configGpio(gpioMap_t boardGpioPin, gpioPin_t* gpioPinStruct, uint8_t direction);
 
-/**
- * @brief read value GPIO pin (GPION[x])
- * @return 0 if LOW, 1 if HIGH
- */
+/* @brief read value GPIO pin (GPION[x])
+ * @return 0 if LOW, 1 if HIGH */
 uint8_t readGpio(gpioPin_t* gpioToRead);
 
-
-/**
- * @brief write GPIO pin (GPION[x])
- */
+/* @brief write GPIO pin (GPION[x]). */
 void writeGpio(gpioPin_t* gpioToWrite, uint8_t logicState);
 
-/**
- * @brief toggle value in GPIO pin (GPION[x])
- */
+/* @brief toggle value in GPIO pin (GPION[x]). */
 void toggleGpio(gpioPin_t* gpioToToggle);
 
-/*
- * @brief config a certain led of the board
- * */
+/* @brief config a certain led of the board. */
 void configLed(gpioMap_t ledToConfig, gpioPin_t *ledStruct);
 
 /* @brief check the state of a button. */
 uint8_t checkButtonState( gpioMap_t tec );
 
-#endif /*_GPIO_BOARD_H_*/
+/* @brief Configura los leds y los apaga. */
+void InitializateAllLeds( void );
+
+/* @brief Blocking antibounce function for a desired button. */
+bool isABounce( gpioMap_t button );
+
+
+
+#endif /*_LIBRARIES_BOARD_SPECIFIC_INC_GPIO_BOARD_H_*/
