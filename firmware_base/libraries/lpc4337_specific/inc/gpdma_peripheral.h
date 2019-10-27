@@ -194,6 +194,8 @@ uint32_t GPDMA_CtrlWrd(uint32_t transfer_size,
 							);
 /* @brief inits DMA peripheral */
 void GPDMA_init( void );
+/* @brief disable DMA peripheral */
+void GPDMA_deInit( void );
 /* @brief configure a channel of the DMA */
 void GPDMA_configChannel( DMA_channel_t channel, uint32_t src_address, uint32_t dest_address, uint32_t first_lli_address, uint32_t ctrl_word, uint32_t cfg_word );
 /* @brief convert sampling frequency to ticks of the DAC count value */

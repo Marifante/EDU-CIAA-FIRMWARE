@@ -72,7 +72,7 @@ int main( void )
 							(uint32_t) &(LPC_DAC->CR),
 							(uint32_t) &firstDataLLI,
 							ctrl_word,
-							cfg_wrd);
+							cfg_wrd );
 
 	/* Configurar el DAC para que envie la request signal al DMA controller. */
 	LPC_DAC->CTRL = 	(1<<0)		//DMA request, this bit its cleared after every write to the DAC->CR register
@@ -80,16 +80,23 @@ int main( void )
 					|	(1<<2)		//DMA time-out counter enabled
 					|	(1<<3);		//combined DAC and DMA enable
 
+	//GPDMA_deInit();
 
 	DAC_configToSample( MINORFREQ, SAMPLES );
 
 	// Enabling DMA interrupt in the NVIC
 	NVIC_EnaIRQ( DMA_IRQn );
 
-	while(1){
-
-		switch (programState){
+	while( 1 )
+	{
+		switch( programState )
+		{
 		case NEWBUTTON:
+//			if( InitialPress == true )
+//			{
+//				InitialPress = false;
+//				GPDMA_init();
+//			}
 			WriteOutputValues();
 			programState = NOTHING;
 			break;
@@ -103,9 +110,7 @@ int main( void )
 			programState = NOTHING;
 			break;
 		}
-
 	}
-
 }
 
 /*===================[functions definition]==================================*/
@@ -186,7 +191,7 @@ void ConfigLeds( void )
 /* @brief Antirebote no bloqueante para cada una de las teclas. */
 bool nonBlockingDebounce( 	gpioPin_t *buttonStruct,
 							uint8_t chosenTimer,
-							uint8_t matchNumber )
+							uint8_t matchNumber 	)
 {
 	bool isPressed = false;
 	ButtonState_t state = buttonState[ buttonStruct->boardGpioPin - TEC1 ];

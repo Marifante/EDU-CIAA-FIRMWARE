@@ -20,14 +20,14 @@
 #define pi 3.14159265
 
 #define MINORFREQ 			1000	//1000
-#define SAMPLES				512		//256
+#define SAMPLES				512	//256
 
 #define AMPLITUD 			1023
 
 #define FIRSTBUFFER 		0
 #define SECONDBUFFER 		1
 
-#define DEBOUNCETIME		10000	//1ms
+#define DEBOUNCETIME		10000	// 1000 = 1ms
 
 
 /*==================[external data declaration]==============================*/
@@ -74,8 +74,9 @@ bool buttonFlags[4] = {0, 0, 0, 0};
 lli_t firstDataLLI, secondDataLLI;
 
 /* Array con los estados de los botones. */
-ButtonState_t buttonState[ 4 ] = { PRESSED, PRESSED, PRESSED, PRESSED };
+ButtonState_t buttonState[ 4 ] = { NOTPRESSED, NOTPRESSED, NOTPRESSED, NOTPRESSED };
 
+bool InitialPress = false;
 /*==================[external function declaration]==========================*/
 
 /* @brief Calcula el valor de la senal de salida requerida.

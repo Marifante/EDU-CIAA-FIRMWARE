@@ -78,11 +78,18 @@ uint32_t GPDMA_CtrlWrd(uint32_t transfer_size,
 //)
 
 /* @brief inits DMA peripheral */
-void GPDMA_init()
+void GPDMA_init( void )
 {
 	LPC_GPDMA->CONFIG = 1;
 
 }
+
+/* @brief disable DMA peripheral */
+void GPDMA_deInit( void )
+{
+	LPC_GPDMA->CONFIG &= ~(0x1);
+}
+
 /* @brief configure a channel of the DMA */
 void GPDMA_configChannel(DMA_channel_t channel, uint32_t src_address, uint32_t dest_address, uint32_t first_lli_address, uint32_t ctrl_word, uint32_t cfg_word)
 {
