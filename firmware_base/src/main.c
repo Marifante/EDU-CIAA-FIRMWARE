@@ -72,7 +72,7 @@ int main( void )
 							(uint32_t) &(LPC_DAC->CR),
 							(uint32_t) &firstDataLLI,
 							ctrl_word,
-							cfg_wrd);
+							cfg_wrd );
 
 	/* Configurar el DAC para que envie la request signal al DMA controller. */
 	LPC_DAC->CTRL = 	(1<<0)		//DMA request, this bit its cleared after every write to the DAC->CR register
@@ -80,32 +80,39 @@ int main( void )
 					|	(1<<2)		//DMA time-out counter enabled
 					|	(1<<3);		//combined DAC and DMA enable
 
-
 	DAC_configToSample( MINORFREQ, SAMPLES );
 
 	// Enabling DMA interrupt in the NVIC
-	NVIC_EnaIRQ( DMA_IRQn );
+	//NVIC_EnaIRQ( DMA_IRQn );
 
-	while(1){
-
-		switch (programState){
+	while( 1 )
+	{
+		switch( programState )
+		{
 		case NEWBUTTON:
+			if( InitialPress == true )
+			{
+				InitialPress == false;
+				NVIC_EnaIRQ( DMA_IRQn );
+			}
 			WriteOutputValues();
+			for( int i = 0; i < 4 ; i++ )
+				buttonState[ i ] = NOTWASPRESSED;
+			break;
+
+		case WRITETOLLI:
+			updateLinkedList();
 			programState = NOTHING;
 			break;
-		case DMAEND:
-			DMATransferEnds();
-			programState = NOTHING;
-			break;
+
 		case NOTHING:
 			break;
+
 		default:
 			programState = NOTHING;
 			break;
 		}
-
 	}
-
 }
 
 /*===================[functions definition]==================================*/
@@ -115,7 +122,7 @@ int main( void )
 void WriteOutputValues( void )
 {
 	float aux;
-	for (int i=0; i<SAMPLES; i++)
+	for( int i=0; i<SAMPLES; i++ )
 	{
 		aux =	buttonFlags[0]*sin(1*2*pi*i/SAMPLES)+
 				buttonFlags[1]*sin(2*2*pi*i/SAMPLES)+
@@ -132,25 +139,17 @@ void WriteOutputValues( void )
 	}
 }
 
-/* @brief Funcion que se ejecuta cuando se termina una tranferencia del DAC.
+/* @brief Funcion que se ejecuta cuando se termina una tranferencia del DAC y
+ * ademas se actualizo la lista de valores porque se acabo de presionar una tecla.
  * Cuando se termina la transferencia de un buffer, hay que escribir sobre ese
  * mismo buffer los valores de la nueva salida mientras se mandan los datos del
- * otro buffer.
- * NOTA: el programa empieza con el primer buffer, por lo cual, en el primer disparo
- * de la interrupcion del DMA se copian los valores de la lista de salida al
- * primer buffer. */
-void DMATransferEnds( void )
+ * otro buffer. */
+void updateLinkedList( void )
 {
 	// Se escribe sobre el buffer que termino recientemente
 	for( int i = 0; i<SAMPLES; i++ )
 		lliValues[whoBufferGoes][i] = outputValues[i];
 
-	ToggleBuffer();
-}
-
-/* @brief Funcion para marcar cuando termina de transferirse buffer. */
-void ToggleBuffer( void )
-{
 	if( whoBufferGoes == FIRSTBUFFER )
 		whoBufferGoes = SECONDBUFFER;
 	else
@@ -184,29 +183,14 @@ void ConfigLeds( void )
 }
 
 /* @brief Antirebote no bloqueante para cada una de las teclas. */
-bool nonBlockingDebounce( 	gpioPin_t *buttonStruct,
+void nonBlockingDebounce( 	gpioPin_t *buttonStruct,
 							uint8_t chosenTimer,
 							uint8_t matchNumber )
 {
-	bool isPressed = false;
 	ButtonState_t state = buttonState[ buttonStruct->boardGpioPin - TEC1 ];
 
-	switch( state )
-	{
-	case UNDEFINED:
-		/* do nothing, wait for timer interrupt to check for button state. */
-		break;
-	case NOTPRESSED:
+	if( state == NOTWASPRESSED )
 		Delay_initNonBlockingDelay( DEBOUNCETIME, chosenTimer, matchNumber );
-		buttonState[ buttonStruct->boardGpioPin - TEC1 ] = UNDEFINED;
-		isPressed = false;
-		break;
-	case PRESSED:
-		isPressed = true;
-		break;
-	}
-
-	return isPressed;
 }
 
 /*===================[interrupt handlers]====================================*/
@@ -216,11 +200,17 @@ void TIMER0_IRQHandler( void )
 	Timer_clearMatchIntFlag( TIMER0, MATCH0 );
 
 	if( checkButtonState( TEC1 ) == HIGH )
-		buttonState[ TEC1 - TEC1 ] = PRESSED;
+	{	// If the button was really pressed
+		buttonState[ 0 ] = WASPRESSED;
+		programState = NEWBUTTON;
+		buttonFlags[ 0 ] = !buttonFlags[ 0 ];
+		toggleGpio( &led0_r );
+	}
 	else
-		buttonState[ TEC1 - TEC1 ] = NOTPRESSED;
+		buttonState[ 0 ] = NOTWASPRESSED;
 
-	Timer_deInit( TIMER0 );
+	NVIC_EnaIRQ( PIN_INT0_IRQn ); // Enable GPIO interrupt
+	Timer_disableMatchInterrupt( TIMER0, MATCH0 );
 }
 
 void TIMER1_IRQHandler( void )
@@ -228,11 +218,17 @@ void TIMER1_IRQHandler( void )
 	Timer_clearMatchIntFlag( TIMER1, MATCH0 );
 
 	if( checkButtonState( TEC2 ) == HIGH )
-		buttonState[ TEC2 - TEC1 ] = PRESSED;
+	{
+		buttonState[ 1 ] = WASPRESSED;
+		programState = NEWBUTTON;
+		buttonFlags[ 1 ] = !buttonFlags[1];
+		toggleGpio( &led1 );
+	}
 	else
-		buttonState[ TEC2 - TEC1 ] = NOTPRESSED;
+		buttonState[ 1 ] = NOTWASPRESSED;
 
-	Timer_deInit( TIMER1 );
+	NVIC_EnaIRQ( PIN_INT1_IRQn );
+	Timer_disableMatchInterrupt( TIMER1, MATCH0 );
 }
 
 void TIMER2_IRQHandler( void )
@@ -240,11 +236,17 @@ void TIMER2_IRQHandler( void )
 	Timer_clearMatchIntFlag( TIMER2, MATCH0 );
 
 	if( checkButtonState( TEC3 ) == HIGH )
-		buttonState[ TEC3 - TEC1 ] = PRESSED;
+	{
+		buttonState[ 2 ] = WASPRESSED;
+		programState = NEWBUTTON;
+		buttonFlags[ 2 ] = !buttonFlags[2];
+		toggleGpio( &led2 );
+	}
 	else
-		buttonState[ TEC3 - TEC1 ] = NOTPRESSED;
+		buttonState[ 2 ] = NOTWASPRESSED;
 
-	Timer_deInit( TIMER2 );
+	NVIC_EnaIRQ( PIN_INT2_IRQn );
+	Timer_disableMatchInterrupt( TIMER2, MATCH0 );
 }
 
 void TIMER3_IRQHandler( void )
@@ -252,69 +254,51 @@ void TIMER3_IRQHandler( void )
 	Timer_clearMatchIntFlag( TIMER3, MATCH0 );
 
 	if( checkButtonState( TEC4 ) == HIGH )
-		buttonState[ TEC4 - TEC1 ] = PRESSED;
+	{
+		buttonState[ 3 ] = WASPRESSED;
+		programState = NEWBUTTON;
+		buttonFlags[ 3 ] = !buttonFlags[3];
+		toggleGpio( &led3 );
+	}
 	else
-		buttonState[ TEC4 - TEC1 ] = NOTPRESSED;
+		buttonState[ 3 ] = NOTWASPRESSED;
 
-	Timer_deInit( TIMER3 );
+	NVIC_EnaIRQ( PIN_INT3_IRQn );
+	Timer_disableMatchInterrupt( TIMER3, MATCH0 );
 }
 
 void GPIO0_IRQHandler( void )
 {
 	clearGPIOInterruptFlag( 0 );
-	bool buttIsPressed = nonBlockingDebounce( &tec1, TIMER0, MATCH0 );
-
-	if( buttIsPressed == true )
-	{
-		buttonFlags[0] = !buttonFlags[0];
-		programState = NEWBUTTON;
-		toggleGpio(&led0_r);
-	}
+	NVIC_disableIRQ( PIN_INT0_IRQn ); // Disable GPIO0 interrupt
+	nonBlockingDebounce( &tec1, TIMER0, MATCH0 );
 }
 
 void GPIO1_IRQHandler( void )
 {
 	clearGPIOInterruptFlag( 1 );
-	bool buttIsPressed = nonBlockingDebounce( &tec2, TIMER1, MATCH0 );
-
-	if( buttIsPressed == true )
-	{
-		buttonFlags[1] = !buttonFlags[1];
-		programState = NEWBUTTON;
-		toggleGpio(&led1);
-	}
+	NVIC_disableIRQ( PIN_INT1_IRQn );
+	nonBlockingDebounce( &tec2, TIMER1, MATCH0 );
 }
 
 void GPIO2_IRQHandler( void )
 {
 	clearGPIOInterruptFlag( 2 );
-	bool buttIsPressed = nonBlockingDebounce( &tec3, TIMER2, MATCH0 );
-
-	if( buttIsPressed == true )
-	{
-		buttonFlags[2] = !buttonFlags[2];
-		programState = NEWBUTTON;
-		toggleGpio(&led2);
-	}
+	NVIC_disableIRQ( PIN_INT2_IRQn );
+	nonBlockingDebounce( &tec3, TIMER2, MATCH0 );
 }
 
 void GPIO3_IRQHandler( void )
 {
 	clearGPIOInterruptFlag( 3 );
-	bool buttIsPressed = nonBlockingDebounce( &tec3, TIMER2, MATCH0 );
-
-	if( buttIsPressed == true )
-	{
-		buttonFlags[3] = !buttonFlags[3];
-		programState = NEWBUTTON;
-		toggleGpio(&led3);
-	}
+	NVIC_disableIRQ( PIN_INT3_IRQn );
+	nonBlockingDebounce( &tec3, TIMER3, MATCH0 );
  }
 
 void DMA_IRQHandler( void )
 {
-	LPC_GPDMA->INTTCCLEAR |= 0x1; //clear terminal count interrupt
-	programState = DMAEND;
+	GPDMA_clearTerminalCountInterrupt( 0 );
+	programState = WRITETOLLI;
 }
 
 

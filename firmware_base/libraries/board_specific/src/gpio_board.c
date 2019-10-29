@@ -15,11 +15,11 @@
 /*===================[internal functions declaration]========================*/
 
 /* @brief fill gpio struct with gpio port, pin, scu function & scu group. */
-void fillGPIOBasicSettings( gpioMap_t boardGpioPin, gpioPin_t* gpioPinStruct );
+void GPIOBoard_fillGPIOStruct( gpioMap_t boardGpioPin, gpioPin_t* gpioPinStruct );
 
 /*===================[internal functions definition]=========================*/
 /* @brief fill gpio struct with gpio port, pin, scu function & scu group. */
-void fillGPIOBasicSettings( gpioMap_t boardGpioPin, gpioPin_t* gpioPinStruct )
+void GPIOBoard_fillGPIOStruct( gpioMap_t boardGpioPin, gpioPin_t* gpioPinStruct )
 {
 	switch( boardGpioPin )
 	{
@@ -136,7 +136,7 @@ void configGpio( gpioMap_t boardGpioPin, gpioPin_t* gpioPinStruct, uint8_t direc
 {
 	gpioPinStruct->boardGpioPin = boardGpioPin;
 
-	fillGPIOBasicSettings( boardGpioPin, gpioPinStruct );
+	GPIOBoard_fillGPIOStruct( boardGpioPin, gpioPinStruct );
 
 	SCU_SetPinFunc( gpioPinStruct->scu_group, gpioPinStruct->scu_pin, gpioPinStruct->scu_func );
 
@@ -174,47 +174,45 @@ uint8_t readGpio( gpioPin_t* gpioToRead )
 {
 	uint8_t read_value;
 
-	if(gpioToRead->boardGpioPin<6){
+	if( gpioToRead->boardGpioPin < 6 )
+	{
 		read_value = GPIO_GetPinSET(gpioToRead->gpio_port, gpioToRead->gpio_pin);
-	} else {
+	}
+	else
+	{
 		read_value = GPIO_GetPinBYTE(gpioToRead->gpio_port, gpioToRead->gpio_pin);
 		read_value &= (0x1); //limpio los valores de los bits 7:1 leidos del registro byte por si las dudas
 		// Si el pin es una tecla hay que negar la senal leida.
 		// La tecla pone un 1 en el pin del micro cuando NO es apretada y un 0 cuando lo es.
-		if ( gpioToRead->boardGpioPin<10 ){
-			if (read_value == 1) {
+
+		if( gpioToRead->boardGpioPin < 10 )
+		{
+			if( read_value == 1 )
 				read_value = 0;
-			} else {
+			else
 				read_value = 1;
-			}
 		}
 	}
 	return read_value;
 }
 
-/**
- * @brief write GPIO pin (GPION[x])
- * @brief logicState: 1 = HIGH, 0 = LOW
- */
-void writeGpio(gpioPin_t* gpioToWrite, uint8_t logicState){
+/* @brief write GPIO pin (GPION[x])
+ * @brief logicState: 1 = HIGH, 0 = LOW. */
+void writeGpio( gpioPin_t* gpioToWrite, uint8_t logicState )
+{
 	// para setear un estado en un pin hay que modificar los registros set y clear
 	// para poner en 1 el pin hay que poner en 1 el bit x del registro set
 	// para poner en 0 el pin hay que poner en 1 el bit x del gistro clear
-	if (logicState){
-		GPIO_SetPinSET(gpioToWrite->gpio_port, gpioToWrite->gpio_pin);
-	}else{
-		GPIO_SetPinCLR(gpioToWrite->gpio_port, gpioToWrite->gpio_pin);
-	}
-	return;
+	if( logicState == HIGH )
+		GPIO_SetPinSET( gpioToWrite->gpio_port, gpioToWrite->gpio_pin );
+	else
+		GPIO_SetPinCLR( gpioToWrite->gpio_port, gpioToWrite->gpio_pin );
 }
 
-/**
- * @brief toggle value in GPIO pin (GPION[x])
- */
+/* @brief toggle value in GPIO pin (GPION[x]). */
 void toggleGpio( gpioPin_t* gpioToToggle )
 {
-	GPIO_SetPinNOT(gpioToToggle->gpio_port, gpioToToggle->gpio_pin);
-	return;
+	GPIO_SetPinNOT( gpioToToggle->gpio_port, gpioToToggle->gpio_pin );
 }
 
 /*
@@ -222,34 +220,7 @@ void toggleGpio( gpioPin_t* gpioToToggle )
  * */
 void configLed( gpioMap_t ledToConfig, gpioPin_t *ledStruct )
 {
-	switch(ledToConfig){
-	case LED0_R:
-		SCU_SetPinFunc(2, 0, 0);
-		configGpio(LED0_R, ledStruct, OUTPUT_GPIO);
-		break;
-	case LED0_G:
-		SCU_SetPinFunc(2, 1, 0);
-		configGpio(LED0_G, ledStruct, OUTPUT_GPIO);
-		break;
-	case LED0_B:
-		SCU_SetPinFunc(2, 2, 0);
-		configGpio(LED0_B, ledStruct, OUTPUT_GPIO);
-		break;
-	case LED1:
-		SCU_SetPinFunc(2, 10, 0);
-		configGpio(LED1, ledStruct, OUTPUT_GPIO);
-		break;
-	case LED2:
-		SCU_SetPinFunc(2, 11, 0);
-		configGpio(LED2, ledStruct, OUTPUT_GPIO);
-		break;
-	case LED3:
-		SCU_SetPinFunc(2, 12, 0);
-		configGpio(LED3, ledStruct, OUTPUT_GPIO);
-		break;
-	default:
-		return;
-	}
+	configGpio(ledToConfig, ledStruct, OUTPUT_GPIO);
 	writeGpio(ledStruct, LOW);
 	return;
 }

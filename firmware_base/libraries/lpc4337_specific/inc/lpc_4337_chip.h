@@ -20,7 +20,6 @@
 #include "sct_peripheral.h"
 #include "sct_pwm.h"
 #include "dac_peripheral.h"
-#include "interrupts_peripherals.h"
 #include "chip_core.h"
 #include "gpdma_peripheral.h"
 #include "ccu_peripheral.h"

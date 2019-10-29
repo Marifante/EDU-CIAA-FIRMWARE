@@ -15,9 +15,7 @@
 
 /*====================[external functions definition]========================*/
 
-/*
- * @brief creates linked list for data transfer
- * */
+/* @brief creates linked list for data transfer. */
 void GPDMA_CreateLLI( lli_t *lli_struct, uint32_t src, uint32_t dest, uint32_t next_lli, uint32_t control)
 {
 	lli_struct->src_address = src;
@@ -25,8 +23,7 @@ void GPDMA_CreateLLI( lli_t *lli_struct, uint32_t src, uint32_t dest, uint32_t n
 	lli_struct->next_lli_address = next_lli;
 	lli_struct->control  = control;
 }
-/*
- * @brief Creates control word for a channel
+/* @brief Creates control word for a channel
  * @param transfer_size: quantity of transfers on this channel
  * @param src_burst_size: quantity of transfers per request signal
  * @param src_width_data: size of a single transfer (0 = 1 byte, 1 = half-word, 2 = word)
@@ -36,10 +33,8 @@ void GPDMA_CreateLLI( lli_t *lli_struct, uint32_t src, uint32_t dest, uint32_t n
  * @param bufferable: true if bufferable, false if not
  * @param cacheable: true if cacheable, false if not
  * @param terminal_cnt_int: true if terminal count interrupt gonna be used
- *
- * NOTE: just AHB Master 1 can access to peripherals
- * */
-uint32_t GPDMA_CtrlWrd(uint32_t transfer_size,
+ * NOTE: omly AHB Master 1 can access to peripherals. */
+uint32_t GPDMA_CtrlWrd(		uint32_t transfer_size,
 							burst_size_t src_burst_size,
 							burst_size_t dest_burst_size,
 							data_transfer_size_t src_width_data,
@@ -51,38 +46,44 @@ uint32_t GPDMA_CtrlWrd(uint32_t transfer_size,
 							bool user_mode,
 							bool bufferable,
 							bool cacheable,
-							bool terminal_cnt_int
-							)
+							bool terminal_cnt_int )
 {
 
-	uint32_t ctrl_word = ( (transfer_size)
-				| (src_burst_size<<12)
-				| (dest_burst_size<<15)
-				| (src_width_data<<18)
-				| (dest_width_data<<21)
-				| (src_AHB_master<<24)
-				| (dest_AHB_master<<25)
-				| (src_increment<<26)
-				| (dest_increment<<27)
-				| (user_mode<<28)
-				| (bufferable<<29)
-				| (cacheable<<30)
-				| (terminal_cnt_int<<31) );
+	uint32_t ctrl_word = (	transfer_size
+							| ( src_burst_size 	<< 12 )
+							| ( dest_burst_size << 15 )
+							| ( src_width_data 	<< 18 )
+							| ( dest_width_data << 21 )
+							| ( src_AHB_master 	<< 24 )
+							| ( dest_AHB_master << 25 )
+							| ( src_increment 	<< 26 )
+							| ( dest_increment 	<< 27 )
+							| ( user_mode 	<< 28 )
+							| ( bufferable 	<< 29 )
+							| ( cacheable 	<< 30 )
+							| ( terminal_cnt_int << 31 ) );
 
 	return ctrl_word;
 }
-///* @brief creates config word */
-//uint32_t Chip_GPDMA_cfgWrd( uint8_t enable_channel, uint8_t
-//
-//
-//)
+
+/* @brief clear DMA terminal count interrupt flag. */
+void GPDMA_clearTerminalCountInterrupt( uint8_t channel )
+{
+	LPC_GPDMA->INTTCCLEAR |= ( 0x1 << channel ) & 0x7;
+}
 
 /* @brief inits DMA peripheral */
-void GPDMA_init()
+void GPDMA_init( void )
 {
 	LPC_GPDMA->CONFIG = 1;
-
 }
+
+/* @brief disable DMA peripheral */
+void GPDMA_deInit( void )
+{
+	LPC_GPDMA->CONFIG &= ~(0x1);
+}
+
 /* @brief configure a channel of the DMA */
 void GPDMA_configChannel(DMA_channel_t channel, uint32_t src_address, uint32_t dest_address, uint32_t first_lli_address, uint32_t ctrl_word, uint32_t cfg_word)
 {

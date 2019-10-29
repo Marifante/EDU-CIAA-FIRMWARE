@@ -114,10 +114,12 @@ typedef enum {
 
 /*====================[external functions declaration]=======================*/
 
-/*
- * @brief
- * @IRQn
- * */
-void NVIC_EnaIRQ(IRQn_Type IRQn);
+/* @brief enable one interrupt in the NVIC
+ * @IRQn desired interrupt to enable. */
+void NVIC_EnaIRQ( IRQn_Type IRQn );
+
+/* @brief disable one interrupt in the NVIC
+ * @IRQn desired interrupt to disable. */
+void NVIC_disableIRQ( IRQn_Type IRQn );
 
 #endif /*_LIBRARIES_LPC4337_SPECIFIC_INC_NVIC_PERIPHERAL_H_*/
