@@ -160,12 +160,10 @@ typedef enum{
 
 /*====================[external functions declaration]=======================*/
 
-/*
- * @brief Creates linked list for data transfer
- * */
+/* @brief Creates linked list for data transfer. */
 void GPDMA_CreateLLI( lli_t *lli_struct, uint32_t src, uint32_t dest, uint32_t next_lli, uint32_t control);
-/*
- * @brief Creates control word for a channel
+
+/* @brief Creates control word for a channel
  * @param transfer_size: quantity of transfers on this channel
  * @param src_burst_size: quantity of transfers per request signal
  * @param src_width_data: size of a single transfer (0 = 1 byte, 1 = half-word, 2 = word)
@@ -175,10 +173,8 @@ void GPDMA_CreateLLI( lli_t *lli_struct, uint32_t src, uint32_t dest, uint32_t n
  * @param bufferable: true if bufferable, false if not
  * @param cacheable: true if cacheable, false if not
  * @param terminal_cnt_int: true if terminal count interrupt gonna be used
- *
- * NOTE: just AHB Master 1 can access to peripherals
- * */
-uint32_t GPDMA_CtrlWrd(uint32_t transfer_size,
+ * NOTE: only AHB Master 1 can access to peripherals. */
+uint32_t GPDMA_CtrlWrd( 	uint32_t transfer_size,
 							burst_size_t src_burst_size,
 							burst_size_t dest_burst_size,
 							data_transfer_size_t src_width_data,
@@ -192,12 +188,19 @@ uint32_t GPDMA_CtrlWrd(uint32_t transfer_size,
 							bool cacheable,
 							bool terminal_cnt_int
 							);
+
+/* @brief clear DMA terminal count interrupt flag. */
+void GPDMA_clearTerminalCountInterrupt( uint8_t channel );
+
 /* @brief inits DMA peripheral */
 void GPDMA_init( void );
+
 /* @brief disable DMA peripheral */
 void GPDMA_deInit( void );
+
 /* @brief configure a channel of the DMA */
 void GPDMA_configChannel( DMA_channel_t channel, uint32_t src_address, uint32_t dest_address, uint32_t first_lli_address, uint32_t ctrl_word, uint32_t cfg_word );
+
 /* @brief convert sampling frequency to ticks of the DAC count value */
 uint32_t GPDMA_samplingFreq2Ticks( uint32_t freq );
 

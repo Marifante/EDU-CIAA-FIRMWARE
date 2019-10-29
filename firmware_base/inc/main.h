@@ -19,7 +19,7 @@
 
 #define pi 3.14159265
 
-#define MINORFREQ 			1000	//1000
+#define MINORFREQ 			10	//1000
 #define SAMPLES				512	//256
 
 #define AMPLITUD 			1023
@@ -38,19 +38,18 @@ typedef enum
 {
 	NOTHING,			// No debe hacer nada
 	NEWBUTTON,			// Se presiono una tecla, por lo tanto, se debe volver a escribir la lista de los valores de salida
-	DMAEND				// Termino una transferencia el DMA, por lo tanto, se debe ejecutar la funcion DMATransferEnds()
+	WRITETOLLI			// El vector de valores de salida de actualizo y ademas el DMA acabo de terminar una transferencia.
 }State_t;
 
 typedef enum
 {
-	UNDEFINED = -1,
-	NOTPRESSED = 0,
-	PRESSED = 1
+	NOTWASPRESSED = 0,
+	WASPRESSED = 1
 }ButtonState_t;
 
 /*==================[external data definition]===============================*/
 
-/* gpioPin structs for leds & buttons. */
+/* @brief Estructura gpioPin para los leds y las teclas. */
 gpioPin_t led0_r, led0_g, led0_b, led1, led2, led3;
 gpioPin_t tec1, tec2, tec3, tec4;
 
@@ -62,28 +61,31 @@ int sinList[SAMPLES];
  * transferencia de datos del DMA. */
 int lliValues[2][SAMPLES];
 
-/* Flag para saber que lista se acabo de transmitir por el dma */
+/* @brief Flag para saber que lista se acabo de transmitir por el dma */
 uint8_t whoBufferGoes = FIRSTBUFFER;
 
+/* @brief Flag para indicar el estado del programa. */
 State_t programState = NOTHING;
 
 /* @brief flags que indican que boton está presionado. */
 bool buttonFlags[4] = {0, 0, 0, 0};
 
-/* Listas enlazadas a usar	*/
+/* @brief Listas enlazadas para usar con el DMA. */
 lli_t firstDataLLI, secondDataLLI;
 
-/* Array con los estados de los botones. */
-ButtonState_t buttonState[ 4 ] = { NOTPRESSED, NOTPRESSED, NOTPRESSED, NOTPRESSED };
+/* @brief Array con los estados de los botones. */
+ButtonState_t buttonState[ 4 ] = { NOTWASPRESSED, NOTWASPRESSED, NOTWASPRESSED, NOTWASPRESSED };
 
-bool InitialPress = false;
+/* @brief Flag para indicar la primer presionada de boton del programa. */
+bool InitialPress = true;
 /*==================[external function declaration]==========================*/
 
 /* @brief Calcula el valor de la senal de salida requerida.
  * Los valores son guardados a un vector => outputValues. */
 void WriteOutputValues( void );
 
-/* @brief Funcion que se ejecuta cuando se termina una tranferencia del DAC.
+/* @brief Funcion que se ejecuta cuando se termina una tranferencia del DAC y
+ * ademas se actualizo la lista de valores porque se acabo de presionar una tecla.
  * Cuando se termina la transferencia de un buffer, hay que escribir sobre ese
  * mismo buffer los valores de la nueva salida mientras se mandan los datos del
  * otro buffer.
@@ -91,10 +93,7 @@ void WriteOutputValues( void );
  * de la interrupcion del DMA se copian los valores de la lista de salida al
  * primer buffer.
  * */
-void DMATransferEnds( void );
-
-/* @brief Funcion para marcar cuando termina de transferirse buffer. */
-void ToggleBuffer( void );
+void updateLinkedList( void );
 
 /* @brief Configuro las 4 teclas.*/
 void ConfigAllButtons( void );
@@ -103,7 +102,7 @@ void ConfigAllButtons( void );
 void ConfigLeds( void );
 
 /* @brief Antirebote no bloqueante para cada una de las teclas. */
-bool nonBlockingDebounce( gpioPin_t *buttonStruct,
+void nonBlockingDebounce( gpioPin_t *buttonStruct,
 							uint8_t chosenTimer,
 							uint8_t matchNumber );
 #endif /*_INC_MAIN_H_*/

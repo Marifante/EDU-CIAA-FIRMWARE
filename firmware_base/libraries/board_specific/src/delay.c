@@ -86,7 +86,7 @@ void Delay_initNonBlockingDelay( uint32_t us, uint8_t chosenTimer, uint8_t match
 
 	uint32_t matchValue = Delay_timeToMatchValue( us, FREQ1MHZ );
 
-	Timer_configMatchInterrupt( chosenTimer, matchNumber, matchValue );
+	Timer_configMatchInterrupt( chosenTimer, matchNumber, matchValue, false );
 
 	Timer_init( chosenTimer, FREQ1MHZ );
 
