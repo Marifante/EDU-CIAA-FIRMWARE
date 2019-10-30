@@ -50,7 +50,13 @@ IRQn_Type Delay_getIRQn( uint8_t chosenTimer )
 /* @brief convert time of the delay & timer frequency to match value. */
 uint32_t Delay_timeToMatchValue( uint32_t us, uint32_t timerFreq )
 {
-	return ( (us * timerFreq)/1000000 );
+	uint32_t matchValue = 0;
+	if( us > 1000000 )
+		matchValue = ( (us / 1000000 ) * timerFreq );
+	else
+		matchValue = ( (us * timerFreq) / 1000000 );
+
+	return matchValue;
 }
 
 /*==================[external functions definition]==========================*/
@@ -80,7 +86,7 @@ void Delay_initNonBlockingDelay( uint32_t us, uint8_t chosenTimer, uint8_t match
 
 	uint32_t matchValue = Delay_timeToMatchValue( us, FREQ1MHZ );
 
-	Timer_configMatchInterrupt( chosenTimer, matchNumber, matchValue );
+	Timer_configMatchInterrupt( chosenTimer, matchNumber, matchValue, false );
 
 	Timer_init( chosenTimer, FREQ1MHZ );
 

@@ -240,7 +240,10 @@ void TIMER3_IRQHandler( void )
 void GPIO0_IRQHandler( void )
 {
 	clearGPIOInterruptFlag( 0 );
-	NVIC_disableIRQ( PIN_INT0_IRQn ); // Disable GPIO0 interrupt
+	// Cada vez que se presiona una tecla, se deshabilita la interrupcion
+	// del GPIO correspondiente hasta que pase un cierto tiempo.
+	// Esto previene los rebotes de las teclas.
+	NVIC_disableIRQ( PIN_INT0_IRQn );
 	Delay_initNonBlockingDelay( DEBOUNCETIME, TIMER0, MATCH0 );
 }
 

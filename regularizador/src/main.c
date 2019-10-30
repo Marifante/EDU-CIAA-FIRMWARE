@@ -72,7 +72,7 @@ int main( void )
 							(uint32_t) &(LPC_DAC->CR),
 							(uint32_t) &firstDataLLI,
 							ctrl_word,
-							cfg_wrd);
+							cfg_wrd );
 
 	/* Configurar el DAC para que envie la request signal al DMA controller. */
 	LPC_DAC->CTRL = 	(1<<0)		//DMA request, this bit its cleared after every write to the DAC->CR register
@@ -80,32 +80,40 @@ int main( void )
 					|	(1<<2)		//DMA time-out counter enabled
 					|	(1<<3);		//combined DAC and DMA enable
 
-
 	DAC_configToSample( MINORFREQ, SAMPLES );
 
-	// Enabling DMA interrupt in the NVIC
-	NVIC_EnaIRQ( DMA_IRQn );
-
-	while(1){
-
-		switch (programState){
+	while( 1 )
+	{
+		switch( programState )
+		{
 		case NEWBUTTON:
+			if( InitialPress == true )
+			{
+				InitialPress == false;
+				NVIC_EnaIRQ( DMA_IRQn );
+			}
 			WriteOutputValues();
+			listsToWrite = LISTSQUANTITY;
 			programState = NOTHING;
 			break;
-		case DMAEND:
-			DMATransferEnds();
-			programState = NOTHING;
+
+		case WRITETOLLI:
+			if( listsToWrite > 0 )
+			{
+				updateLinkedList();
+				listsToWrite--;
+			}
+			 programState = NOTHING;
 			break;
+
 		case NOTHING:
 			break;
+
 		default:
 			programState = NOTHING;
 			break;
 		}
-
 	}
-
 }
 
 /*===================[functions definition]==================================*/
@@ -115,7 +123,7 @@ int main( void )
 void WriteOutputValues( void )
 {
 	float aux;
-	for (int i=0; i<SAMPLES; i++)
+	for( int i=0; i<SAMPLES; i++ )
 	{
 		aux =	buttonFlags[0]*sin(1*2*pi*i/SAMPLES)+
 				buttonFlags[1]*sin(2*2*pi*i/SAMPLES)+
@@ -132,25 +140,17 @@ void WriteOutputValues( void )
 	}
 }
 
-/* @brief Funcion que se ejecuta cuando se termina una tranferencia del DAC.
+/* @brief Funcion que se ejecuta cuando se termina una tranferencia del DAC y
+ * ademas se actualizo la lista de valores porque se acabo de presionar una tecla.
  * Cuando se termina la transferencia de un buffer, hay que escribir sobre ese
  * mismo buffer los valores de la nueva salida mientras se mandan los datos del
- * otro buffer.
- * NOTA: el programa empieza con el primer buffer, por lo cual, en el primer disparo
- * de la interrupcion del DMA se copian los valores de la lista de salida al
- * primer buffer. */
-void DMATransferEnds( void )
+ * otro buffer. */
+void updateLinkedList( void )
 {
 	// Se escribe sobre el buffer que termino recientemente
 	for( int i = 0; i<SAMPLES; i++ )
 		lliValues[whoBufferGoes][i] = outputValues[i];
 
-	ToggleBuffer();
-}
-
-/* @brief Funcion para marcar cuando termina de transferirse buffer. */
-void ToggleBuffer( void )
-{
 	if( whoBufferGoes == FIRSTBUFFER )
 		whoBufferGoes = SECONDBUFFER;
 	else
@@ -162,16 +162,16 @@ void ConfigAllButtons( void )
 {
 	/* Tecla 1 */
 	configGpio( TEC1, &tec1, INPUT_GPIO );
-	configTecInterrupts( &tec1, 0, ASCENDENT );
+	configTecInterrupts( &tec1, 0, DESCENDENT );
 	/* Tecla 2 */
 	configGpio(TEC2, &tec2, INPUT_GPIO);
-	configTecInterrupts( &tec2, 1, ASCENDENT );
+	configTecInterrupts( &tec2, 1, DESCENDENT );
 	/* Tecla 3 */
 	configGpio( TEC3, &tec3, INPUT_GPIO );
-	configTecInterrupts( &tec3, 2, ASCENDENT );
+	configTecInterrupts( &tec3, 2, DESCENDENT );
 	/* Tecla 4 */
 	configGpio( TEC4, &tec4, INPUT_GPIO );
-	configTecInterrupts( &tec4, 3, ASCENDENT );
+	configTecInterrupts( &tec4, 3, DESCENDENT );
 }
 
 /* @brief configuro los leds que se van a usar. */
@@ -185,49 +185,94 @@ void ConfigLeds( void )
 
 /*===================[interrupt handlers]====================================*/
 
+void TIMER0_IRQHandler( void )
+{
+	Timer_clearMatchIntFlag( TIMER0, MATCH0 );
+	Timer_disableMatchInterrupt( TIMER0, MATCH0 );
+
+	programState = NEWBUTTON;
+	buttonFlags[ 0 ] = !buttonFlags[ 0 ];
+	toggleGpio( &led0_r );
+
+	NVIC_EnaIRQ( PIN_INT0_IRQn ); // Enable GPIO interrupt
+
+}
+
+void TIMER1_IRQHandler( void )
+{
+	Timer_clearMatchIntFlag( TIMER1, MATCH0 );
+	Timer_disableMatchInterrupt( TIMER1, MATCH0 );
+
+	programState = NEWBUTTON;
+	buttonFlags[ 1 ] = !buttonFlags[1];
+	toggleGpio( &led1 );
+
+	NVIC_EnaIRQ( PIN_INT1_IRQn );
+
+}
+
+void TIMER2_IRQHandler( void )
+{
+	Timer_clearMatchIntFlag( TIMER2, MATCH0 );
+	Timer_disableMatchInterrupt( TIMER2, MATCH0 );
+
+	programState = NEWBUTTON;
+	buttonFlags[ 2 ] = !buttonFlags[2];
+	toggleGpio( &led2 );
+
+	NVIC_EnaIRQ( PIN_INT2_IRQn );
+
+}
+
+void TIMER3_IRQHandler( void )
+{
+	Timer_clearMatchIntFlag( TIMER3, MATCH0 );
+	Timer_disableMatchInterrupt( TIMER3, MATCH0 );
+
+	programState = NEWBUTTON;
+	buttonFlags[ 3 ] = !buttonFlags[3];
+	toggleGpio( &led3 );
+
+	NVIC_EnaIRQ( PIN_INT3_IRQn );
+
+}
+
 void GPIO0_IRQHandler( void )
 {
 	clearGPIOInterruptFlag( 0 );
-
-	buttonFlags[0] = !buttonFlags[0];
-	programState = NEWBUTTON;
-	toggleGpio(&led0_r);
+	// Cada vez que se presiona una tecla, se deshabilita la interrupcion
+	// del GPIO correspondiente hasta que pase un cierto tiempo.
+	// Esto previene los rebotes de las teclas.
+	NVIC_disableIRQ( PIN_INT0_IRQn );
+	Delay_initNonBlockingDelay( DEBOUNCETIME, TIMER0, MATCH0 );
 }
 
 void GPIO1_IRQHandler( void )
 {
 	clearGPIOInterruptFlag( 1 );
-
-	buttonFlags[1] = !buttonFlags[1];
-	programState = NEWBUTTON;
-	toggleGpio(&led1);
-
+	NVIC_disableIRQ( PIN_INT1_IRQn );
+	Delay_initNonBlockingDelay( DEBOUNCETIME, TIMER1, MATCH0 );
 }
 
 void GPIO2_IRQHandler( void )
 {
 	clearGPIOInterruptFlag( 2 );
-
-	buttonFlags[2] = !buttonFlags[2];
-	programState = NEWBUTTON;
-	toggleGpio(&led2);
-
+	NVIC_disableIRQ( PIN_INT2_IRQn );
+	Delay_initNonBlockingDelay( DEBOUNCETIME, TIMER2, MATCH0 );
 }
 
 void GPIO3_IRQHandler( void )
 {
 	clearGPIOInterruptFlag( 3 );
-
-	buttonFlags[3] = !buttonFlags[3];
-	programState = NEWBUTTON;
-	toggleGpio(&led3);
-
+	NVIC_disableIRQ( PIN_INT3_IRQn );
+	Delay_initNonBlockingDelay( DEBOUNCETIME, TIMER3, MATCH0 );
  }
 
 void DMA_IRQHandler( void )
 {
-	LPC_GPDMA->INTTCCLEAR |= 0x1; //clear terminal count interrupt
-	programState = DMAEND;
+	GPDMA_clearTerminalCountInterrupt( 0 );
+	programState = WRITETOLLI;
 }
+
 
 
