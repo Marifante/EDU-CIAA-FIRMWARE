@@ -82,9 +82,6 @@ int main( void )
 
 	DAC_configToSample( MINORFREQ, SAMPLES );
 
-	// Enabling DMA interrupt in the NVIC
-	//NVIC_EnaIRQ( DMA_IRQn );
-
 	while( 1 )
 	{
 		switch( programState )
@@ -96,13 +93,17 @@ int main( void )
 				NVIC_EnaIRQ( DMA_IRQn );
 			}
 			WriteOutputValues();
-			for( int i = 0; i < 4 ; i++ )
-				buttonState[ i ] = NOTWASPRESSED;
+			listsToWrite = LISTSQUANTITY;
+			programState = NOTHING;
 			break;
 
 		case WRITETOLLI:
-			updateLinkedList();
-			programState = NOTHING;
+			if( listsToWrite > 0 )
+			{
+				updateLinkedList();
+				listsToWrite--;
+			}
+			 programState = NOTHING;
 			break;
 
 		case NOTHING:
@@ -182,117 +183,86 @@ void ConfigLeds( void )
 	configLed( LED3,	&led3 );
 }
 
-/* @brief Antirebote no bloqueante para cada una de las teclas. */
-void nonBlockingDebounce( 	gpioPin_t *buttonStruct,
-							uint8_t chosenTimer,
-							uint8_t matchNumber )
-{
-	ButtonState_t state = buttonState[ buttonStruct->boardGpioPin - TEC1 ];
-
-	if( state == NOTWASPRESSED )
-		Delay_initNonBlockingDelay( DEBOUNCETIME, chosenTimer, matchNumber );
-}
-
 /*===================[interrupt handlers]====================================*/
 
 void TIMER0_IRQHandler( void )
 {
 	Timer_clearMatchIntFlag( TIMER0, MATCH0 );
+	Timer_disableMatchInterrupt( TIMER0, MATCH0 );
 
-	if( checkButtonState( TEC1 ) == HIGH )
-	{	// If the button was really pressed
-		buttonState[ 0 ] = WASPRESSED;
-		programState = NEWBUTTON;
-		buttonFlags[ 0 ] = !buttonFlags[ 0 ];
-		toggleGpio( &led0_r );
-	}
-	else
-		buttonState[ 0 ] = NOTWASPRESSED;
+	programState = NEWBUTTON;
+	buttonFlags[ 0 ] = !buttonFlags[ 0 ];
+	toggleGpio( &led0_r );
 
 	NVIC_EnaIRQ( PIN_INT0_IRQn ); // Enable GPIO interrupt
-	Timer_disableMatchInterrupt( TIMER0, MATCH0 );
+
 }
 
 void TIMER1_IRQHandler( void )
 {
 	Timer_clearMatchIntFlag( TIMER1, MATCH0 );
+	Timer_disableMatchInterrupt( TIMER1, MATCH0 );
 
-	if( checkButtonState( TEC2 ) == HIGH )
-	{
-		buttonState[ 1 ] = WASPRESSED;
-		programState = NEWBUTTON;
-		buttonFlags[ 1 ] = !buttonFlags[1];
-		toggleGpio( &led1 );
-	}
-	else
-		buttonState[ 1 ] = NOTWASPRESSED;
+	programState = NEWBUTTON;
+	buttonFlags[ 1 ] = !buttonFlags[1];
+	toggleGpio( &led1 );
 
 	NVIC_EnaIRQ( PIN_INT1_IRQn );
-	Timer_disableMatchInterrupt( TIMER1, MATCH0 );
+
 }
 
 void TIMER2_IRQHandler( void )
 {
 	Timer_clearMatchIntFlag( TIMER2, MATCH0 );
+	Timer_disableMatchInterrupt( TIMER2, MATCH0 );
 
-	if( checkButtonState( TEC3 ) == HIGH )
-	{
-		buttonState[ 2 ] = WASPRESSED;
-		programState = NEWBUTTON;
-		buttonFlags[ 2 ] = !buttonFlags[2];
-		toggleGpio( &led2 );
-	}
-	else
-		buttonState[ 2 ] = NOTWASPRESSED;
+	programState = NEWBUTTON;
+	buttonFlags[ 2 ] = !buttonFlags[2];
+	toggleGpio( &led2 );
 
 	NVIC_EnaIRQ( PIN_INT2_IRQn );
-	Timer_disableMatchInterrupt( TIMER2, MATCH0 );
+
 }
 
 void TIMER3_IRQHandler( void )
 {
 	Timer_clearMatchIntFlag( TIMER3, MATCH0 );
+	Timer_disableMatchInterrupt( TIMER3, MATCH0 );
 
-	if( checkButtonState( TEC4 ) == HIGH )
-	{
-		buttonState[ 3 ] = WASPRESSED;
-		programState = NEWBUTTON;
-		buttonFlags[ 3 ] = !buttonFlags[3];
-		toggleGpio( &led3 );
-	}
-	else
-		buttonState[ 3 ] = NOTWASPRESSED;
+	programState = NEWBUTTON;
+	buttonFlags[ 3 ] = !buttonFlags[3];
+	toggleGpio( &led3 );
 
 	NVIC_EnaIRQ( PIN_INT3_IRQn );
-	Timer_disableMatchInterrupt( TIMER3, MATCH0 );
+
 }
 
 void GPIO0_IRQHandler( void )
 {
 	clearGPIOInterruptFlag( 0 );
 	NVIC_disableIRQ( PIN_INT0_IRQn ); // Disable GPIO0 interrupt
-	nonBlockingDebounce( &tec1, TIMER0, MATCH0 );
+	Delay_initNonBlockingDelay( DEBOUNCETIME, TIMER0, MATCH0 );
 }
 
 void GPIO1_IRQHandler( void )
 {
 	clearGPIOInterruptFlag( 1 );
 	NVIC_disableIRQ( PIN_INT1_IRQn );
-	nonBlockingDebounce( &tec2, TIMER1, MATCH0 );
+	Delay_initNonBlockingDelay( DEBOUNCETIME, TIMER1, MATCH0 );
 }
 
 void GPIO2_IRQHandler( void )
 {
 	clearGPIOInterruptFlag( 2 );
 	NVIC_disableIRQ( PIN_INT2_IRQn );
-	nonBlockingDebounce( &tec3, TIMER2, MATCH0 );
+	Delay_initNonBlockingDelay( DEBOUNCETIME, TIMER2, MATCH0 );
 }
 
 void GPIO3_IRQHandler( void )
 {
 	clearGPIOInterruptFlag( 3 );
 	NVIC_disableIRQ( PIN_INT3_IRQn );
-	nonBlockingDebounce( &tec3, TIMER3, MATCH0 );
+	Delay_initNonBlockingDelay( DEBOUNCETIME, TIMER3, MATCH0 );
  }
 
 void DMA_IRQHandler( void )
