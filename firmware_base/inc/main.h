@@ -19,8 +19,8 @@
 
 #define pi 3.14159265
 
-#define MINORFREQ 			10	//1000
-#define SAMPLES				512	//256
+#define MINORFREQ 			1000	//1000
+#define SAMPLES				512		//256
 
 #define AMPLITUD 			1023
 
@@ -28,7 +28,7 @@
 #define SECONDBUFFER 		1
 
 #define DEBOUNCETIME		10000	// 1000 = 1ms
-
+#define LISTSQUANTITY		2		// cantidad de listas del DMA
 
 /*==================[external data declaration]==============================*/
 
@@ -78,6 +78,8 @@ ButtonState_t buttonState[ 4 ] = { NOTWASPRESSED, NOTWASPRESSED, NOTWASPRESSED, 
 
 /* @brief Flag para indicar la primer presionada de boton del programa. */
 bool InitialPress = true;
+
+uint32_t listsToWrite = LISTSQUANTITY;
 /*==================[external function declaration]==========================*/
 
 /* @brief Calcula el valor de la senal de salida requerida.
@@ -101,9 +103,5 @@ void ConfigAllButtons( void );
 /* @brief Configuro los leds que se van a usar. */
 void ConfigLeds( void );
 
-/* @brief Antirebote no bloqueante para cada una de las teclas. */
-void nonBlockingDebounce( gpioPin_t *buttonStruct,
-							uint8_t chosenTimer,
-							uint8_t matchNumber );
 #endif /*_INC_MAIN_H_*/
 
