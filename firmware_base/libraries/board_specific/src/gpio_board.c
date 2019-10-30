@@ -230,7 +230,6 @@ void configLed( gpioMap_t ledToConfig, gpioPin_t *ledStruct )
 void InitializateAllLeds( void )
 {
 	gpioPin_t tempLed0_r, tempLed0_g, tempLed0_b, tempLed1, tempLed2, tempLed3;
-	gpioPin_t tempTec1, tempTec2, tempTec3, tempTec4;
 
 	//	configuro leds
 	configLed( LED0_R,	&tempLed0_r );
