@@ -10,8 +10,6 @@
 
 /*==================[inclusions]=============================================*/
 
-#include <ccu_peripheral.h>
-
 #include "../../utils.h"
 #include "gpio_peripheral.h"
 #include "scu_peripheral.h"
