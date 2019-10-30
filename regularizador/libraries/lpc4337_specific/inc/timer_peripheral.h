@@ -13,6 +13,7 @@
 /*==================[inclusions]=============================================*/
 
 #include "../../utils.h"
+#include "ccu_peripheral.h"
 
 /*==================[macros and definitions]=================================*/
 
@@ -94,13 +95,16 @@ uint32_t* Timer_init( uint8_t chosenTimer, uint32_t timerFrequency );
 /* @brief stop timer. */
 void Timer_deInit( uint8_t chosenTimer );
 
-/* @brief config timer match interrupts */
-void Timer_configMatchInterrupt( uint8_t chosenTimer, uint8_t matchNumber, uint32_t matchValue);
-
 /* @brief clear match interrupt flag of a timer. */
-void Timer_clearMatchIntFlag( LPC_TIMER_T* timerStruct, uint8_t matchNumber );
+void Timer_clearMatchIntFlag( uint8_t chosenTimer, uint8_t matchNumber );
+
+/* @brief disable interrupt for match. */
+void Timer_disableMatchInterrupt( uint8_t chosenTimer, uint8_t matchNumber );
+
+/* @brief enable interrupt for match. */
+void Timer_enableMatchInterrupt( uint8_t chosenTimer, uint8_t matchNumber );
 
 /* @brief config timer match interrupts. */
-void Timer_configMatchInterrupt( uint8_t chosenTimer, uint8_t matchNumber, uint32_t matchValue );
+void Timer_configMatchInterrupt( uint8_t chosenTimer, uint8_t matchNumber, uint32_t matchValue, bool resetOnMatch );
 
 #endif /*_TIMER_PERIPHERAL_H_*/

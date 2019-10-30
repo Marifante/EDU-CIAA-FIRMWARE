@@ -19,8 +19,8 @@
 
 #define pi 3.14159265
 
-#define MINORFREQ 			1000	//1000
-#define SAMPLES				512		//256
+#define MINORFREQ 			1000
+#define SAMPLES				512
 
 #define AMPLITUD 			1023
 
@@ -28,7 +28,7 @@
 #define SECONDBUFFER 		1
 
 #define DEBOUNCETIME		10000	// 1000 = 1ms
-#define LISTSQUANTITY		2		// cantidad de listas del DMA
+#define LISTSQUANTITY		2		// Cantidad de listas del DMA
 
 /*==================[external data declaration]==============================*/
 
@@ -40,12 +40,6 @@ typedef enum
 	NEWBUTTON,			// Se presiono una tecla, por lo tanto, se debe volver a escribir la lista de los valores de salida
 	WRITETOLLI			// El vector de valores de salida de actualizo y ademas el DMA acabo de terminar una transferencia.
 }State_t;
-
-typedef enum
-{
-	NOTWASPRESSED = 0,
-	WASPRESSED = 1
-}ButtonState_t;
 
 /*==================[external data definition]===============================*/
 
@@ -67,19 +61,19 @@ uint8_t whoBufferGoes = FIRSTBUFFER;
 /* @brief Flag para indicar el estado del programa. */
 State_t programState = NOTHING;
 
-/* @brief flags que indican que boton está presionado. */
+/* @brief Flags que indican que boton está presionado. */
 bool buttonFlags[4] = {0, 0, 0, 0};
 
 /* @brief Listas enlazadas para usar con el DMA. */
 lli_t firstDataLLI, secondDataLLI;
 
-/* @brief Array con los estados de los botones. */
-ButtonState_t buttonState[ 4 ] = { NOTWASPRESSED, NOTWASPRESSED, NOTWASPRESSED, NOTWASPRESSED };
-
 /* @brief Flag para indicar la primer presionada de boton del programa. */
 bool InitialPress = true;
 
+/* @brief Variable para saber que lista escribir cuando termina
+ * cada transferencia del DMA. */
 uint32_t listsToWrite = LISTSQUANTITY;
+
 /*==================[external function declaration]==========================*/
 
 /* @brief Calcula el valor de la senal de salida requerida.

@@ -19,27 +19,31 @@
 
 #define pi 3.14159265
 
-#define MINORFREQ 			10		//1000
-#define SAMPLES				512 	//256
+#define MINORFREQ 			10	//1000
+#define SAMPLES				512		//256
 
 #define AMPLITUD 			1023
 
 #define FIRSTBUFFER 		0
 #define SECONDBUFFER 		1
 
+#define DEBOUNCETIME		10000	// 1000 = 1ms
+#define LISTSQUANTITY		2		// cantidad de listas del DMA
+
 /*==================[external data declaration]==============================*/
 
 /* @brief El flujo del programa puede tener 3 estados.
  * Cada estado determina que es lo que debe hacer el super loop. */
-typedef enum{
+typedef enum
+{
 	NOTHING,			// No debe hacer nada
 	NEWBUTTON,			// Se presiono una tecla, por lo tanto, se debe volver a escribir la lista de los valores de salida
-	DMAEND				// Termino una transferencia el DMA, por lo tanto, se debe ejecutar la funcion DMATransferEnds()
+	WRITETOLLI			// El vector de valores de salida de actualizo y ademas el DMA acabo de terminar una transferencia.
 }State_t;
 
 /*==================[external data definition]===============================*/
 
-/* gpioPin structs for leds & buttons. */
+/* @brief Estructura gpioPin para los leds y las teclas. */
 gpioPin_t led0_r, led0_g, led0_b, led1, led2, led3;
 gpioPin_t tec1, tec2, tec3, tec4;
 
@@ -51,16 +55,24 @@ int sinList[SAMPLES];
  * transferencia de datos del DMA. */
 int lliValues[2][SAMPLES];
 
-/* Flag para saber que lista se acabo de transmitir por el dma */
+/* @brief Flag para saber que lista se acabo de transmitir por el dma */
 uint8_t whoBufferGoes = FIRSTBUFFER;
 
+/* @brief Flag para indicar el estado del programa. */
 State_t programState = NOTHING;
 
-/* @brief flags que indican que boton está presionado. */
+/* @brief Flags que indican que boton está presionado. */
 bool buttonFlags[4] = {0, 0, 0, 0};
 
-/*	Listas enlazadas a usar	*/
+/* @brief Listas enlazadas para usar con el DMA. */
 lli_t firstDataLLI, secondDataLLI;
+
+/* @brief Flag para indicar la primer presionada de boton del programa. */
+bool InitialPress = true;
+
+/* @brief Variable para saber que lista escribir cuando termina
+ * cada transferencia del DMA. */
+uint32_t listsToWrite = LISTSQUANTITY;
 
 /*==================[external function declaration]==========================*/
 
@@ -68,7 +80,8 @@ lli_t firstDataLLI, secondDataLLI;
  * Los valores son guardados a un vector => outputValues. */
 void WriteOutputValues( void );
 
-/* @brief Funcion que se ejecuta cuando se termina una tranferencia del DAC.
+/* @brief Funcion que se ejecuta cuando se termina una tranferencia del DAC y
+ * ademas se actualizo la lista de valores porque se acabo de presionar una tecla.
  * Cuando se termina la transferencia de un buffer, hay que escribir sobre ese
  * mismo buffer los valores de la nueva salida mientras se mandan los datos del
  * otro buffer.
@@ -76,10 +89,7 @@ void WriteOutputValues( void );
  * de la interrupcion del DMA se copian los valores de la lista de salida al
  * primer buffer.
  * */
-void DMATransferEnds( void );
-
-/* @brief Funcion para marcar cuando termina de transferirse buffer. */
-void ToggleBuffer( void );
+void updateLinkedList( void );
 
 /* @brief Configuro las 4 teclas.*/
 void ConfigAllButtons( void );
