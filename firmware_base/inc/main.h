@@ -19,7 +19,7 @@
 
 #define pi 3.14159265
 
-#define MINORFREQ 			1000
+#define MINORFREQ 			10
 #define SAMPLES				512
 
 #define AMPLITUD 			1023
@@ -49,7 +49,7 @@ gpioPin_t tec1, tec2, tec3, tec4;
 
 /* @brief Lista que contiene todos los valores de la salida. */
 int outputValues[SAMPLES];
-int sinList[SAMPLES];
+int sinList[SAMPLES]; // Lista auxiliar para debuggear la funcion que genera el seno.
 
 /* @brief Este arreglo contiene los datos para cada una de las listas enlazadas para la
  * transferencia de datos del DMA. */
@@ -96,6 +96,14 @@ void ConfigAllButtons( void );
 
 /* @brief Configuro los leds que se van a usar. */
 void ConfigLeds( void );
+
+/* @brief Configuro el DMA para usar una lista enlazada con dos
+ * nodos como doble buffer. */
+void ConfigDMA( void );
+
+/* @brief Configurar el DAC para que envie la request signal al DMA controller. */
+void ConfigDAC( void );
+
 
 #endif /*_INC_MAIN_H_*/
 

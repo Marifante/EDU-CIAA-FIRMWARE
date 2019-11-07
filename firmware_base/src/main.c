@@ -24,61 +24,9 @@ int main( void )
 
 	ConfigAllButtons();
 
-	/* Config DMA mux in the CREG */
-	CREG_configDMAmux( GPDMA_CONN_DAC );
+	ConfigDMA();
 
-	/* Creates the control word for the channel	*/
-	uint32_t ctrl_word = GPDMA_CtrlWrd(	SAMPLES,
-										ONE_DBURST,
-										ONE_DBURST,
-										WORD_DATUM,
-										WORD_DATUM,
-										AHB_MASTER_0,
-										AHB_MASTER_1,
-										true,
-										false,
-										false,
-										false,
-										false,
-										true );
-
-
-	/*	Creates the lli for the transference. */
-	GPDMA_CreateLLI(	&firstDataLLI,
-						(uint32_t) &lliValues[0],
-						(uint32_t) &(LPC_DAC->CR),
-						(uint32_t) &secondDataLLI,
-						ctrl_word );
-
-	/*	Create the second lli for the transference. */
-	GPDMA_CreateLLI(	&secondDataLLI,
-						(uint32_t) &lliValues[1],
-						(uint32_t) &(LPC_DAC->CR),
-						(uint32_t) &firstDataLLI,
-						ctrl_word );
-
-	/* Creates the config word for the channel. */
-	uint32_t cfg_wrd = 		1				//enables channel of DMA
-						| 	(0<<1) 			//don't care, i gonna use the memory as the source of the transfer
-						| 	(0x0F<<6) 		//select DAC as dest peripheral
-						| 	(1<<11) 		//memory to peripheral (DMA control)
-						| 	(0<<14) 		//don't care about interrupt error mask
-						| 	(1<<15) 		//don't care about terminal count interrupt mask
-						| 	(0<<16)			//when this bit is 1, enables locked transfers
-						| 	(0<<18); 		//Halt, enable DMA requests
-
-	GPDMA_configChannel( 	CHANNEL0,
-							(uint32_t) &outputValues[0],
-							(uint32_t) &(LPC_DAC->CR),
-							(uint32_t) &firstDataLLI,
-							ctrl_word,
-							cfg_wrd );
-
-	/* Configurar el DAC para que envie la request signal al DMA controller. */
-	LPC_DAC->CTRL = 	(1<<0)		//DMA request, this bit its cleared after every write to the DAC->CR register
-					|	(1<<1)		//enable double buffering
-					|	(1<<2)		//DMA time-out counter enabled
-					|	(1<<3);		//combined DAC and DMA enable
+	ConfigDAC();
 
 	DAC_configToSample( MINORFREQ, SAMPLES );
 
@@ -174,7 +122,7 @@ void ConfigAllButtons( void )
 	configTecInterrupts( &tec4, 3, DESCENDENT );
 }
 
-/* @brief configuro los leds que se van a usar. */
+/* @brief Configuro los leds que se van a usar. */
 void ConfigLeds( void )
 {
 	configLed( LED0_R,	&led0_r );
@@ -182,6 +130,70 @@ void ConfigLeds( void )
 	configLed( LED2,	&led2 );
 	configLed( LED3,	&led3 );
 }
+
+/* @brief Configuro el DMA para usar una lista enlazada con dos
+ * nodos como doble buffer. */
+void ConfigDMA( void )
+{
+	/* Config DMA mux in the CREG */
+	CREG_configDMAmux( GPDMA_CONN_DAC );
+
+	/* Creates the control word for the channel	*/
+	uint32_t ctrl_word = GPDMA_CtrlWrd(	SAMPLES,
+										ONE_DBURST,
+										ONE_DBURST,
+										WORD_DATUM,
+										WORD_DATUM,
+										AHB_MASTER_0,
+										AHB_MASTER_1,
+										true,
+										false,
+										false,
+										false,
+										false,
+										true );
+
+	/*	Creates the lli for the transference. */
+	GPDMA_CreateLLI(	&firstDataLLI,
+						(uint32_t) &lliValues[0],
+						(uint32_t) &(LPC_DAC->CR),
+						(uint32_t) &secondDataLLI,
+						ctrl_word );
+
+	/*	Create the second lli for the transference. */
+	GPDMA_CreateLLI(	&secondDataLLI,
+						(uint32_t) &lliValues[1],
+						(uint32_t) &(LPC_DAC->CR),
+						(uint32_t) &firstDataLLI,
+						ctrl_word );
+
+	/* Creates the config word for the channel. */
+	uint32_t cfg_wrd = 		1				//enables channel of DMA
+						| 	(0<<1) 			//don't care, i gonna use the memory as the source of the transfer
+						| 	(0x0F<<6) 		//select DAC as dest peripheral
+						| 	(1<<11) 		//memory to peripheral (DMA control)
+						| 	(0<<14) 		//don't care about interrupt error mask
+						| 	(1<<15) 		//don't care about terminal count interrupt mask
+						| 	(0<<16)			//when this bit is 1, enables locked transfers
+						| 	(0<<18); 		//Halt, enable DMA requests
+
+	GPDMA_configChannel( 	CHANNEL0,
+							(uint32_t) &outputValues[0],
+							(uint32_t) &(LPC_DAC->CR),
+							(uint32_t) &firstDataLLI,
+							ctrl_word,
+							cfg_wrd );
+}
+
+/* @brief Configurar el DAC para que envie la request signal al DMA controller. */
+void ConfigDAC( void )
+{
+	LPC_DAC->CTRL = 	(1<<0)		//DMA request, this bit its cleared after every write to the DAC->CR register
+					|	(1<<1)		//enable double buffering
+					|	(1<<2)		//DMA time-out counter enabled
+					|	(1<<3);		//combined DAC and DMA enable
+}
+
 
 /*===================[interrupt handlers]====================================*/
 

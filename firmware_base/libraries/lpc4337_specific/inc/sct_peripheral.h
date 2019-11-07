@@ -174,65 +174,61 @@ typedef enum{
 	SCT_MATCH_4 = 4		/*!< SCT Match register 4 */
 } CHIP_SCT_MATCH_REG_T;
 
+/* @brief pin map for output of SCT. */
+typedef enum{
+	CTOUT_0 = 0,
+	CTOUT_1,
+	CTOUT_2,
+	CTOUT_3,
+	CTOUT_4,
+	CTOUT_5,
+	CTOUT_6,
+	CTOUT_7,
+	CTOUT_8,
+	CTOUT_9,
+	CTOUT_10,
+	CTOUT_11,
+	CTOUT_12,
+	CTOUT_13,
+	CTOUT_14,
+	CTOUT_15
+}SCT_outputPin;
+
 /*==================[external functions declaration]=========================*/
-//
-///**
-// * @brief Initialize the clock of the SCT peripheral
-// *  */
-//void Chip_SCT_Init();
-//
-///**
-// *  @brief Shutdown the SCT
-// *  */
-//void Chip_SCT_DeInit(LPC_SCT_T *pSCT);
-//
-///**
-// * @brief	Configures the State Configurable Timer
-// * @param	pSCT	: The base of SCT peripheral on the chip
-// * @param	value	: The 32-bit CONFIG register value
-// * @return	Nothing
-// * Note : this just assign the value specified to the config register of sct
-// */
-//void Chip_SCT_Config(LPC_SCT_T *pSCT, uint32_t value);
-//
-///**
-// * @brief	Set control register in State Configurable Timer
-// * @param	pSCT	: The base of SCT peripheral on the chip
-// * @param	value	: Value (ORed value of SCT_CTRL_* bits)
-// * @return	Nothing
-// * Note : puts in 1 the bits on 1 of "value" in the register CONTROL of the SCT struct
-// * if value = 0x2, then the 2 lsb of this registers are put to 1.
-// */
-//void Chip_SCT_SetControl(LPC_SCT_T *pSCT, uint32_t value);
-//
-//
-///**
-// * @brief	Clear control register in State Configurable Timer.
-// * @param	pSCT	: The base of SCT peripheral on the chip
-// * @param	value	: Value (ORed value of SCT_CTRL_* bits)
-// * @return	Nothing
-// * Note : clear the bits on 1 of "value" in the register CONTROL of the SCT struct
-// * if value = 0x2, then the 2 lsb of this registers are put to 0.
-// */
-//void Chip_SCT_ClearControl(LPC_SCT_T *pSCT, uint32_t value);
-//
-//
-///**
-// * @brief	Set unified match count value in State Configurable Timer
-// * @param	pSCT	: The base of SCT peripheral on the chip
-// * @param	n		: Match register value
-// * @param	value	: The 32-bit match count value
-// * @return	Nothing
-// */
-//void Chip_SCT_SetMatchCount(LPC_SCT_T *pSCT, CHIP_SCT_MATCH_REG_T n, uint32_t value);
-//
-///**
-// * @brief	Set unified match reload count value in State Configurable Timer
-// * @param	pSCT	: The base of SCT peripheral on the chip
-// * @param	n		: Match register value
-// * @param	value	: The 32-bit match count reload value
-// * @return	Nothing
-// */
-//void Chip_SCT_SetMatchReload(LPC_SCT_T *pSCT, CHIP_SCT_MATCH_REG_T n, uint32_t value);
+/* @brief set two 16-bit timer mode with autolimit. */
+void SCT_setTwoTimersMode( void );
+
+/* @brief set low timer prescaler. */
+void SCT_setLowTimerPrescaler( uint8_t divFactor );
+
+/* @brief sets the event who restarts the timer.
+ * Setting HIGH the bit n of this registers makes the n event restarts the timer.*/
+void SCT_setLimitLowTimer( uint8_t eventNumber );
+
+/* @brief set the match reload value of the low timer.
+ * When BIDIR is 0, this value is copied to MATCH value of the MATCH register.
+ * The MATCH registers of the SCT cannot be writed directly. */
+void SCT_setLowTimerMatchReload( uint8_t matchNumber, uint32_t matchValue );
+
+/* @brief associate a match with a determinated event. */
+void SCT_associateMatchWithEvent( uint8_t event, uint8_t match );
+
+/* @brief set how the event occurs.
+ * If combmode = 1, the event occurs only when the match associated occurs. */
+void SCT_setEventCombMode( uint8_t event, uint8_t combMode );
+
+/* @brief set in what state happens a desired event.
+ * Each bit of statesMask corresponds to a single state.
+ * If 0xFFFFFFFF happens in all states. */
+void SCT_setEventState( uint8_t event, uint32_t statesMask );
+
+/* @brief set if a event gonna set a determinated output. */
+void SCT_setOutputSETReg( SCT_outputPin sctOutput, uint8_t event );
+
+/* @brief set if a event gonna clear a determinated output. */
+void SCT_setOutputCLEARReg( SCT_outputPin sctOutput, uint8_t event );
+
+/* @brief unhalt sct peripheral. */
+void SCT_unhalt( void );
 
 #endif /*_LIBRARIES_LPC4337_SPECIFIC_INC_SCT_PERIPHERAL_H_*/
