@@ -19,7 +19,7 @@
 
 #define pi 3.14159265
 
-#define MINORFREQ 			10
+#define MINORFREQ 			1000
 #define SAMPLES				512
 
 #define AMPLITUD 			1023
