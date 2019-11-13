@@ -51,7 +51,6 @@ uint32_t DAC_ticksNeededForSampling( uint32_t freq_to_sample, uint32_t num_of_sa
 /* @brief enables DAC on the pin P4_4. */
 void DAC_init( void )
 {
-	/* Enables analog func for P4_4. Analog function have priority over any other digital function. */
 	SCU->ENAIO[2] |= (0x01); //enables DAC for pin P4_4
 
 	DAC_enable();
