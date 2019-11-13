@@ -27,7 +27,7 @@ uint32_t DAC_ticksNeededForSampling( uint32_t freq_to_sample, uint32_t num_of_sa
 /*===================[internal functions definition]=========================*/
 
 /* @brief Enables DMA_ENA bit in the DAC control register. This enables the DAC. */
-void DAC_enable()
+void DAC_enable( void )
 {
 	LPC_DAC->CTRL |= (0x01)<<3;
 }
@@ -49,13 +49,10 @@ uint32_t DAC_ticksNeededForSampling( uint32_t freq_to_sample, uint32_t num_of_sa
 /*===================[external functions definition]=========================*/
 
 /* @brief enables DAC on the pin P4_4. */
-void DAC_init(){
-
-	/* The pin of the DAC is the P4_4 with ANALOG SEL, select func 0 per default. */
-	SCU_SetPinFunc(4, 4, 0);
-
+void DAC_init( void )
+{
 	/* Enables analog func for P4_4. Analog function have priority over any other digital function. */
-	SCU->ENAIO[0] |= (0x01); //enables DAC for pin P4_4
+	SCU->ENAIO[2] |= (0x01); //enables DAC for pin P4_4
 
 	DAC_enable();
 
@@ -65,7 +62,7 @@ void DAC_init(){
 /* @brief	Update the values of the DAC buffer
  * @param	pDAC		: pointer to struct of the DAC LPC_DAC_T
  * @param	dac_value	: value 10 bit to be converted to output */
-void DAC_UpdateValue(LPC_DAC_T *pDAC, uint32_t dac_value)
+void DAC_UpdateValue( LPC_DAC_T *pDAC, uint32_t dac_value )
 {
 	uint32_t aux_var;
 	aux_var = (pDAC->CR) & DAC_BIAS_EN; //keeps the bias bit if was enabled before
