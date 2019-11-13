@@ -28,7 +28,8 @@
  * @func 0-7 (FUNC0-FUNC7)
  * @return nothing
  */
-void SCU_SetPinFunc(uint8_t group, uint8_t pin, uint8_t func){
+void SCU_SetPinFunc( uint8_t group, uint8_t pin, uint8_t func )
+{
 	SCU->SFSP[group][pin] &= ~(0x7); //limpio 3 lsb, donde se modifica la funcion
 	SCU->SFSP[group][pin] |= func;
 	return;
@@ -40,7 +41,8 @@ void SCU_SetPinFunc(uint8_t group, uint8_t pin, uint8_t func){
  * @pin pin in question
  * @return nothing
  * */
-void SCU_activateInputBuffer(uint8_t group, uint8_t pin){
+void SCU_activateInputBuffer( uint8_t group, uint8_t pin )
+{
 	SCU->SFSP[group][pin] = (1 << 6);
 	return;
 }
