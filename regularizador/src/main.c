@@ -37,7 +37,7 @@ int main( void )
 		case NEWBUTTON:
 			if( InitialPress == true )
 			{
-				InitialPress == false;
+				InitialPress = false;
 				NVIC_EnaIRQ( DMA_IRQn );
 			}
 			WriteOutputValues();
