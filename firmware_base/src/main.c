@@ -112,7 +112,7 @@ void ConfigAllButtons( void )
 	configGpio( TEC1, &tec1, INPUT_GPIO );
 	configTecInterrupts( &tec1, 0, DESCENDENT );
 	/* Tecla 2 */
-	configGpio(TEC2, &tec2, INPUT_GPIO);
+	configGpio( TEC2, &tec2, INPUT_GPIO );
 	configTecInterrupts( &tec2, 1, DESCENDENT );
 	/* Tecla 3 */
 	configGpio( TEC3, &tec3, INPUT_GPIO );
