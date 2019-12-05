@@ -1,0 +1,10 @@
+sct_peripheral.c:23:6:SCT_setTwoTimersMode	4	static
+sct_peripheral.c:29:6:SCT_setLowTimerPrescaler	16	static
+sct_peripheral.c:37:6:SCT_setLimitLowTimer	16	static
+sct_peripheral.c:45:6:SCT_setLowTimerMatchReload	16	static
+sct_peripheral.c:51:6:SCT_associateMatchWithEvent	16	static
+sct_peripheral.c:58:6:SCT_setEventCombMode	16	static
+sct_peripheral.c:66:6:SCT_setEventState	16	static
+sct_peripheral.c:72:6:SCT_setOutputSETReg	16	static
+sct_peripheral.c:78:6:SCT_setOutputCLEARReg	16	static
+sct_peripheral.c:84:6:SCT_unhalt	4	static

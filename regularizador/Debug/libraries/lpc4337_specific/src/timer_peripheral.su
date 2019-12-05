@@ -1,0 +1,16 @@
+timer_peripheral.c:63:6:Timer_resetOnNextEdge	16	static
+timer_peripheral.c:69:6:Timer_dontResetOnNextEdge	16	static
+timer_peripheral.c:75:6:Timer_enableTimer	16	static
+timer_peripheral.c:81:14:Timer_getAvailableTimer	40	static
+timer_peripheral.c:92:14:Timer_getPtrStruct	16	static
+timer_peripheral.c:118:6:Timer_setTimerMode	16	static
+timer_peripheral.c:126:6:Timer_setMatchValue	24	static
+timer_peripheral.c:132:6:Timer_isCounting	16	static
+timer_peripheral.c:142:6:Timer_setFrequency	16	static
+timer_peripheral.c:148:6:Timer_setResetOnMatch	16	static
+timer_peripheral.c:158:11:Timer_init	24	static
+timer_peripheral.c:178:6:Timer_deInit	24	static
+timer_peripheral.c:185:6:Timer_clearMatchIntFlag	24	static
+timer_peripheral.c:192:6:Timer_disableMatchInterrupt	24	static
+timer_peripheral.c:199:6:Timer_enableMatchInterrupt	24	static
+timer_peripheral.c:206:6:Timer_configMatchInterrupt	24	static

@@ -1,0 +1,2 @@
+nvic_peripheral.c:18:6:NVIC_EnaIRQ	16	static
+nvic_peripheral.c:25:6:NVIC_disableIRQ	16	static

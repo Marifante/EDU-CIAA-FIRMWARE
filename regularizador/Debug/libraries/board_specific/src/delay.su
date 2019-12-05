@@ -1,0 +1,4 @@
+delay.c:31:11:Delay_getIRQn	16	static
+delay.c:51:10:Delay_timeToMatchValue	24	static
+delay.c:65:6:Delay_us	24	static
+delay.c:83:6:Delay_initNonBlockingDelay	24	static

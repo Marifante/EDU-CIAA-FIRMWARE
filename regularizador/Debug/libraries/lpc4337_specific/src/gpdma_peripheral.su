@@ -1,0 +1,6 @@
+gpdma_peripheral.c:19:6:GPDMA_CreateLLI	24	static
+gpdma_peripheral.c:37:10:GPDMA_CtrlWrd	24	static
+gpdma_peripheral.c:70:6:GPDMA_clearTerminalCountInterrupt	16	static
+gpdma_peripheral.c:76:6:GPDMA_init	4	static
+gpdma_peripheral.c:82:6:GPDMA_deInit	4	static
+gpdma_peripheral.c:88:6:GPDMA_configChannel	24	static
