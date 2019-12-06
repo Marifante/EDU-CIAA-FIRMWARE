@@ -21,10 +21,10 @@ void CCU_clockEnable( CHIP_CCU_CLK_T clk )
 {
 	/* Start peripheral clock running */
 	if (clk >= CLK_CCU2_START) {
-		LPC_CCU2->CLKCCU[clk - CLK_CCU2_START].CFG |= 1;
+		CCU2->CLKCCU[clk - CLK_CCU2_START].CFG |= 1;
 	}
 	else {
-		LPC_CCU1->CLKCCU[clk].CFG |= 1;
+		CCU1->CLKCCU[clk].CFG |= 1;
 	}
 }
 
@@ -51,6 +51,14 @@ void CCU_enableTimerClock( uint8_t chosenTimer )
 
 	CCU_clockEnable( timerClock );
 
+}
+
+/* @brief enables UART2 branch clock. */
+void CCU_initUART2Clk( void )
+{
+	CCU1->CLKCCU[CLK_APB2_UART2 - CLK_CCU2_START].CFG =	(1 << 0) |	// Enable clock.
+														(1 << 1) |	// Auto (AHB disable mechanism) enabled.
+														(1 << 2);	// Wake-up mechanism enabled.
 }
 
 #include "../inc/ccu_peripheral.h"

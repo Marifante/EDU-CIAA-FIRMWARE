@@ -9,8 +9,9 @@
 
 /*==================[inclusions]=============================================*/
 
+#include "../inc/ccu_peripheral.h"
+#include "../inc/cgu_peripheral.h"
 #include "../inc/usart_peripheral.h"
-#include "../inc/cgu_ccu_peripheral.h"
 #include "../inc/nvic_peripheral.h"
 #include "../inc/scu_peripheral.h"
 
@@ -88,7 +89,7 @@ void USART_setup8N1NoParity( void )
 void UART_init(void)
 {
 
-	CCU_enableUARTClk();
+	CCU_initUART2Clk();
 
 	USART_initFIFOS();
 
@@ -104,8 +105,7 @@ void UART_init(void)
 	USART2->FDR = 0x10;
 
 	// Set Baud rate
-	//uint32_t clkin = Chip_Clock_GetRate(CLK_APB2_UART2);
-	uint32_t clkin = CRYSTAL_32K_FREQ_IN;
+	uint32_t clkin = CGU_setUART2BaseClk();
 	int div = clkin / (SYSTEM_BAUD_RATE * 16);
 
 	// /* High and low halves of the divider */
@@ -151,7 +151,7 @@ void UART_init(void)
 
 	// Enable Interrupt for UART channel
 	// NVIC_EnableIRQ(USART2_IRQn);
-	// NVIC_EnaIRQ(USART2_IRQn);
+	NVIC_EnaIRQ(USART2_IRQn);
 }
 
 

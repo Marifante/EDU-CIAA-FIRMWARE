@@ -8,9 +8,9 @@
  *****************************************************************************/
 
 /*==================[inclusions]=============================================*/
-
-
 #include "../inc/main.h"
+
+/*==================[functions definition]===================================*/
 static void printchar(char **str, int c)
 {
 	// extern int putchar(int c);
@@ -188,12 +188,13 @@ int main( void )
 	UART_init();
 
 	sprintf_mio(aux,"\r\n--- Hola, mundo! ---\r\n");
-	//DEBUG(aux);
-	print(&aux);
-
-
+	//DEBUGSTR(aux);
+	//print(&aux);
+	unsigned char data = 'a';
 	while(1)
 	{
+		UART_SendByte(USART2, data);
+		Delay_us(1000000, TIMER0 );
 	}
 
 }

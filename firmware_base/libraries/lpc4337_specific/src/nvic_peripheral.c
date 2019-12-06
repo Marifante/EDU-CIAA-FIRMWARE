@@ -30,7 +30,7 @@ void NVIC_EnaIRQ(IRQn_Type IRQn){
     \param [in]      IRQn  Interrupt number.
     \param [in]  priority  Priority to set.
  */
-static inline void NVIC_SetPriority(IRQn_Type IRQn, uint32_t priority)
+void NVIC_SetPriority(IRQn_Type IRQn, uint32_t priority)
 {
   if(IRQn < 0) {
     SCB->SHP[((uint32_t)(IRQn) & 0xF)-4] = ((priority << (8 - __NVIC_PRIO_BITS)) & 0xff); } /* set Priority for Cortex-M  System Interrupts */

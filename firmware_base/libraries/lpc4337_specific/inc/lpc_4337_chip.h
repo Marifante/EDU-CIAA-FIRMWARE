@@ -10,10 +10,11 @@
 
 /*==================[inclusions]=============================================*/
 
+#include <cgu_peripheral.h>
+
 #include "../../utils.h"
 #include "adc_peripheral.h"
 #include "ccu_peripheral.h"
-#include "cgu_ccu_peripheral.h"
 #include "chip_core.h"
 #include "creg_peripheral.h"
 #include "dac_peripheral.h"

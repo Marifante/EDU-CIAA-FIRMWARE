@@ -21,7 +21,7 @@
 /*==================[external functions declaration]==========================*/
 
 /* @brief	Blocking delay function */
-void delay_us( uint32_t us );
+void Delay_us( uint32_t us, uint8_t chosenTimer );
 
 /* @brief non-blocking delay function
  * When use this function, must to config the corresponding interrupt handler

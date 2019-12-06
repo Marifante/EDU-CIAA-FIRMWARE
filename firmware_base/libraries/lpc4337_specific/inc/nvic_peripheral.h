@@ -159,6 +159,6 @@ void NVIC_EnaIRQ(IRQn_Type IRQn);
     \param [in]      IRQn  Interrupt number.
     \param [in]  priority  Priority to set.
  */
-static inline void NVIC_SetPriority(IRQn_Type IRQn, uint32_t priority);
+void NVIC_SetPriority(IRQn_Type IRQn, uint32_t priority);
 
 #endif /*_NVIC_PERIPHERAL_H_*/

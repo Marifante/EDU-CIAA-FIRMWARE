@@ -12,7 +12,7 @@
 
 #include "../libraries/lpc4337_specific/inc/lpc_4337_chip.h"
 #include "../libraries/board_specific/inc/edu_ciaa_hl.h"
-#include "../libraries/lpc4337_specific/inc/usart_peripheral.h"
+
 /*==================[macros and definitions]=================================*/
 
 /*==================[external data declaration]==============================*/
