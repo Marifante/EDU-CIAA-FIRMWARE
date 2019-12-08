@@ -28,6 +28,7 @@ int main( void )
 	{
 		toggleGpio(&Led0_r);
 
+
 		Delay_us(1000000, TIMER0);
 
 		sprintf(msg, "count: %d\r\n", i);
@@ -38,6 +39,5 @@ int main( void )
 		if( i == 10 )
 			i = 0;
 	}
-
 }
 

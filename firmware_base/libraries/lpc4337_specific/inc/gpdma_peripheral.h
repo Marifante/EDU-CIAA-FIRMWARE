@@ -82,17 +82,19 @@ typedef struct {
 #define GPDMA_NUMBER_CHANNELS 8
 
 /* @brief GPDMA Channel register block structure */
-typedef struct {
+typedef struct
+{
 	__IO uint32_t  SRCADDR;				/*!< DMA Channel Source Address Register */
 	__IO uint32_t  DESTADDR;			/*!< DMA Channel Destination Address Register */
 	__IO uint32_t  LLI;					/*!< DMA Channel Linked List Item Register */
 	__IO uint32_t  CONTROL;				/*!< DMA Channel Control Register */
 	__IO uint32_t  CONFIG;				/*!< DMA Channel Configuration Register */
 	__I  uint32_t  RESERVED1[3];
-} GPDMA_CH_T;
+}GPDMA_CH_T;
 
 /* @brief GPDMA register block */
-typedef struct {						/*!< GPDMA Structure */
+typedef struct
+{						/*!< GPDMA Structure */
 	__I  uint32_t  INTSTAT;				/*!< DMA Interrupt Status Register */
 	__I  uint32_t  INTTCSTAT;			/*!< DMA Interrupt Terminal Count Request Status Register */
 	__O  uint32_t  INTTCCLEAR;			/*!< DMA Interrupt Terminal Count Request Clear Register */
@@ -109,10 +111,11 @@ typedef struct {						/*!< GPDMA Structure */
 	__IO uint32_t  SYNC;				/*!< DMA Synchronization Register */
 	__I  uint32_t  RESERVED0[50];
 	GPDMA_CH_T     CH[GPDMA_NUMBER_CHANNELS];
-} LPC_GPDMA_T;
+}LPC_GPDMA_T;
 
 /* @brief Linked list node struct */
-typedef struct{
+typedef struct
+{
 	uint32_t src_address;
 	uint32_t dest_address;
 	uint32_t next_lli_address;
@@ -120,7 +123,8 @@ typedef struct{
 }lli_t;
 
 /* @brief enum for burst size */
-typedef enum{
+typedef enum
+{
 	ONE_DBURST = 			(0x0U), //1
 	FOUR_DBURST = 			(0x1U), //4
 	EIGTH_DBURST = 			(0x2U),	//8
@@ -132,7 +136,8 @@ typedef enum{
 }burst_size_t;
 
 /* @brief enum for the size of each single datum of a transfer */
-typedef enum{
+typedef enum
+{
 	BYTE_DATUM = 			(0x0U),
 	HALFWORD_DATUM = 		(0x1U),
 	WORD_DATUM = 			(0x2U)
@@ -142,12 +147,14 @@ typedef enum{
  * @brief enum to selec the AHB master for dest and src
  * Solo el master 1 puede acceder a perifericos
  * */
-typedef enum{
+typedef enum
+{
 	AHB_MASTER_0 = 			(0x0U),
 	AHB_MASTER_1 = 			(0x1U)
 }AHB_MASTER_SEL_t;
 
-typedef enum{
+typedef enum
+{
 	CHANNEL0,
 	CHANNEL1,
 	CHANNEL2,
@@ -161,7 +168,9 @@ typedef enum{
 /*====================[external functions declaration]=======================*/
 
 /* @brief Creates linked list for data transfer. */
-void GPDMA_CreateLLI( lli_t *lli_struct, uint32_t src, uint32_t dest, uint32_t next_lli, uint32_t control);
+void GPDMA_CreateLLI( 	lli_t *lli_struct,
+						uint32_t src, uint32_t dest,
+						uint32_t next_lli, uint32_t control );
 
 /* @brief Creates control word for a channel
  * @param transfer_size: quantity of transfers on this channel
@@ -199,7 +208,10 @@ void GPDMA_init( void );
 void GPDMA_deInit( void );
 
 /* @brief configure a channel of the DMA */
-void GPDMA_configChannel( DMA_channel_t channel, uint32_t src_address, uint32_t dest_address, uint32_t first_lli_address, uint32_t ctrl_word, uint32_t cfg_word );
+void GPDMA_configChannel( 	DMA_channel_t channel,
+							uint32_t src_address, uint32_t dest_address,
+							uint32_t first_lli_address,
+							uint32_t ctrl_word, uint32_t cfg_word );
 
 /* @brief convert sampling frequency to ticks of the DAC count value */
 uint32_t GPDMA_samplingFreq2Ticks( uint32_t freq );
