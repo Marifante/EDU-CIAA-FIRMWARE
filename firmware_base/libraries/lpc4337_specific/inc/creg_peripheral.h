@@ -8,7 +8,7 @@
  *****************************************************************************/
 
 #ifndef _LIBRARIES_LPC4337_SPECIFIC_INC_CREG_PERIPHERAL_H_
-#define _CREG_PERIPHERAL_H_
+#define _LIBRARIES_LPC4337_SPECIFIC_INC_CREG_PERIPHERAL_H_
 
 /*==================[inclusions]=============================================*/
 

@@ -21,11 +21,11 @@
 
 /*==================[macros and definitions]=================================*/
 
-#define LPC_CCU1_BASE             0x40051000
-#define LPC_CCU2_BASE             0x40052000
+#define CCU1_BASE				0x40051000
+#define CCU2_BASE				0x40052000
 
-#define LPC_CCU1                  ((LPC_CCU1_T*) LPC_CCU1_BASE)
-#define LPC_CCU2                  ((LPC_CCU2_T*) LPC_CCU2_BASE)
+#define CCU1					((CCU1_T*) CCU1_BASE)
+#define CCU2					((CCU2_T*) CCU2_BASE)
 
 /*==================[external data declaration]==============================*/
 
@@ -113,27 +113,28 @@ typedef enum CHIP_CCU_CLK
 	CLK_CCU2_LAST
 } CHIP_CCU_CLK_T;
 
-/* @brief CCU clock config/status register pair. */
+
+// CCU clock config/status register pair
 typedef struct {
-	__IO uint32_t  CFG;						/*!< CCU clock configuration register */
-	__I  uint32_t  STAT;					/*!< CCU clock status register */
-} CCU_CFGSTAT_T;
+	unsigned int	CFG;					// CCU clock configuration register
+	unsigned		STAT;					// CCU clock status register
+} _CCU_CFGSTAT_T;
 
-/* @brief CCU1 register block structure. */
-typedef struct {							/*!< (@ 0x40051000) CCU1 Structure         */
-	__IO uint32_t  PM;						/*!< (@ 0x40051000) CCU1 power mode register */
-	__I  uint32_t  BASE_STAT;				/*!< (@ 0x40051004) CCU1 base clocks status register */
-	__I  uint32_t  RESERVED0[62];
-	CCU_CFGSTAT_T  CLKCCU[CLK_CCU1_LAST];	/*!< (@ 0x40051100) Start of CCU1 clock registers */
-} LPC_CCU1_T;
+// @brief CCU1 register block structure
+typedef struct {
+	unsigned int	PM;						// CCU1 power mode register
+	unsigned int	BASE_STAT;				// CCU1 base clocks status register
+	unsigned int	RESERVED0[62];
+	_CCU_CFGSTAT_T	CLKCCU[CLK_CCU1_LAST];	// Start of CCU1 clock registers
+} CCU1_T;
 
-/* @brief CCU2 register block structure. */
+// @brief CCU2 register block structure
 typedef struct {							/*!< (@ 0x40052000) CCU2 Structure         */
 	__IO uint32_t  PM;						/*!< (@ 0x40052000) Power mode register    */
 	__I  uint32_t  BASE_STAT;				/*!< (@ 0x40052004) CCU base clocks status register */
 	__I  uint32_t  RESERVED0[62];
-	CCU_CFGSTAT_T  CLKCCU[CLK_CCU2_LAST - CLK_CCU1_LAST];	/*!< (@ 0x40052100) Start of CCU2 clock registers */
-} LPC_CCU2_T;
+	_CCU_CFGSTAT_T  CLKCCU[CLK_CCU2_LAST - CLK_CCU1_LAST];	/*!< (@ 0x40052100) Start of CCU2 clock registers */
+} CCU2_T;
 
 
 /*==================[external functions declaration]=========================*/
@@ -143,5 +144,8 @@ void CCU_clockEnable( CHIP_CCU_CLK_T clk );
 
 /* @brief enable timer clock. */
 void CCU_enableTimerClock( uint8_t chosenTimer );
+
+/* @brief enables UART2 branch clock. */
+void CCU_initUART2PeripheralClk( void );
 
 #endif /*_LIBRARIES_LPC4337_SPECIFIC_INC_CCU_PERIPHERAL_H_*/

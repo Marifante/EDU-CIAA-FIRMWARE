@@ -16,5 +16,6 @@
 #include "gpio_board.h"
 #include "delay.h"
 #include "interrupts_board.h"
+#include "SerialLog.h"
 
 #endif /*LIBRARIES_BOARD_SPECIFIC_INC_EDU_CIAA_HL_H_*/

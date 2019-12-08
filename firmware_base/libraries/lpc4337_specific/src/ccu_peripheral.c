@@ -21,10 +21,10 @@ void CCU_clockEnable( CHIP_CCU_CLK_T clk )
 {
 	/* Start peripheral clock running */
 	if (clk >= CLK_CCU2_START) {
-		LPC_CCU2->CLKCCU[clk - CLK_CCU2_START].CFG |= 1;
+		CCU2->CLKCCU[clk - CLK_CCU2_START].CFG |= 1;
 	}
 	else {
-		LPC_CCU1->CLKCCU[clk].CFG |= 1;
+		CCU1->CLKCCU[clk].CFG |= 1;
 	}
 }
 
@@ -51,6 +51,22 @@ void CCU_enableTimerClock( uint8_t chosenTimer )
 
 	CCU_clockEnable( timerClock );
 
+}
+
+
+/* @brief enables UART2 Peripheral clock. */
+void CCU_initUART2PeripheralClk( void )
+{
+
+	// The branch clock of UART2 is : CLK_APB2_UART2
+	// The peripheral clock of UART2 is : CLK_M4_UART2
+	// Address of peripheral clock of UART2 registers: 0x40051608
+	// Address of start of CCU1 clocks registers : 0x40051100
+	// 0x40051608 - 0x40051100 = 0x508 = (8 * 161)d =
+	// So, CLK_MX_UART2 = 161d is the offset of the vector CLKCCU of CCU1 struct for CLK_MX_UART2
+	CCU1->CLKCCU[ CLK_MX_UART2 ].CFG =	(1 << 0) |	// Enable clock.
+										(1 << 1) |	// Auto (AHB disable mechanism) enabled.
+										(1 << 2);	// Wake-up mechanism enabled.
 }
 
 #include "../inc/ccu_peripheral.h"

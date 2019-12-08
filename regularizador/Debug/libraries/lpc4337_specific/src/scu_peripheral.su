@@ -1,0 +1,2 @@
+scu_peripheral.c:31:6:SCU_SetPinFunc	16	static
+scu_peripheral.c:44:6:SCU_activateInputBuffer	16	static

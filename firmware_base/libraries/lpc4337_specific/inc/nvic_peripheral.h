@@ -7,8 +7,8 @@
  * email: jnrodriguezz@hotmail.com
  *****************************************************************************/
 
-#ifndef _LIBRARIES_LPC4337_SPECIFIC_INC_NVIC_PERIPHERAL_H_
-#define _LIBRARIES_LPC4337_SPECIFIC_INC_NVIC_PERIPHERAL_H_
+#ifndef _NVIC_PERIPHERAL_H_
+#define _NVIC_PERIPHERAL_H_
 
 /*==================[inclusions]=============================================*/
 
@@ -20,10 +20,40 @@
  * Nester Vector Interrupt Controller (NVIC)
  * */
 #define _NVIC_BASE			0xE000E100		// NVIC Base Address (Tabla 81, pag. 115)
-#define _NVIC				((_NVIC_Type    *)  _NVIC_BASE)
+#define _NVIC				((_NVIC_Type *)  _NVIC_BASE)
 
+#define SCS_BASE            (0xE000E000UL)                          	//< System Control Space Base Address
+#define SCB_BASE            (SCS_BASE +  0x0D00UL)                   	//!< System Control Block Base Address
 
+#define SCB                 ((SCB_Type *) SCB_BASE) 	//SCB configuration struct
+
+#define __NVIC_PRIO_BITS          3			/*!< Number of Bits used for Priority Levels */
 /*==================[external data declaration]==============================*/
+
+typedef struct
+{
+  __I  uint32_t CPUID;                   /*!< Offset: 0x000 (R/ )  CPUID Base Register                                   */
+  __IO uint32_t ICSR;                    /*!< Offset: 0x004 (R/W)  Interrupt Control and State Register                  */
+  __IO uint32_t VTOR;                    /*!< Offset: 0x008 (R/W)  Vector Table Offset Register                          */
+  __IO uint32_t AIRCR;                   /*!< Offset: 0x00C (R/W)  Application Interrupt and Reset Control Register      */
+  __IO uint32_t SCR;                     /*!< Offset: 0x010 (R/W)  System Control Register                               */
+  __IO uint32_t CCR;                     /*!< Offset: 0x014 (R/W)  Configuration Control Register                        */
+  __IO uint8_t  SHP[12];                 /*!< Offset: 0x018 (R/W)  System Handlers Priority Registers (4-7, 8-11, 12-15) */
+  __IO uint32_t SHCSR;                   /*!< Offset: 0x024 (R/W)  System Handler Control and State Register             */
+  __IO uint32_t CFSR;                    /*!< Offset: 0x028 (R/W)  Configurable Fault Status Register                    */
+  __IO uint32_t HFSR;                    /*!< Offset: 0x02C (R/W)  HardFault Status Register                             */
+  __IO uint32_t DFSR;                    /*!< Offset: 0x030 (R/W)  Debug Fault Status Register                           */
+  __IO uint32_t MMFAR;                   /*!< Offset: 0x034 (R/W)  MemManage Fault Address Register                      */
+  __IO uint32_t BFAR;                    /*!< Offset: 0x038 (R/W)  BusFault Address Register                             */
+  __IO uint32_t AFSR;                    /*!< Offset: 0x03C (R/W)  Auxiliary Fault Status Register                       */
+  __I  uint32_t PFR[2];                  /*!< Offset: 0x040 (R/ )  Processor Feature Register                            */
+  __I  uint32_t DFR;                     /*!< Offset: 0x048 (R/ )  Debug Feature Register                                */
+  __I  uint32_t ADR;                     /*!< Offset: 0x04C (R/ )  Auxiliary Feature Register                            */
+  __I  uint32_t MMFR[4];                 /*!< Offset: 0x050 (R/ )  Memory Model Feature Register                         */
+  __I  uint32_t ISAR[5];                 /*!< Offset: 0x060 (R/ )  Instruction Set Attributes Register                   */
+       uint32_t RESERVED0[5];
+  __IO uint32_t CPACR;                   /*!< Offset: 0x088 (R/W)  Coprocessor Access Control Register                   */
+} SCB_Type;
 
 // Nested Vector Interrupt Controller (NVIC)
 typedef struct {
@@ -114,12 +144,21 @@ typedef enum {
 
 /*====================[external functions declaration]=======================*/
 
-/* @brief enable one interrupt in the NVIC
- * @IRQn desired interrupt to enable. */
-void NVIC_EnaIRQ( IRQn_Type IRQn );
+/*
+ * @brief
+ * @IRQn
+ * */
+void NVIC_EnaIRQ(IRQn_Type IRQn);
 
-/* @brief disable one interrupt in the NVIC
- * @IRQn desired interrupt to disable. */
-void NVIC_disableIRQ( IRQn_Type IRQn );
+/** \brief  Set Interrupt Priority
 
-#endif /*_LIBRARIES_LPC4337_SPECIFIC_INC_NVIC_PERIPHERAL_H_*/
+    The function sets the priority of an interrupt.
+
+    \note The priority cannot be set for every core interrupt.
+
+    \param [in]      IRQn  Interrupt number.
+    \param [in]  priority  Priority to set.
+ */
+void NVIC_SetPriority(IRQn_Type IRQn, uint32_t priority);
+
+#endif /*_NVIC_PERIPHERAL_H_*/

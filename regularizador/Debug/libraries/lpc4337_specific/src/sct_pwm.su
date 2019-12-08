@@ -1,0 +1,3 @@
+sct_pwm.c:26:10:SCTPWM_frequencyToPrescaler	16	static
+sct_pwm.c:36:10:SCTPWM_configPWM	32	static
+sct_pwm.c:70:6:SCTPWM_setDutyCycle	24	static

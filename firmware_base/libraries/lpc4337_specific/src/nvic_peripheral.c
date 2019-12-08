@@ -13,16 +13,27 @@
 
 /*====================[external functions definition]========================*/
 
-/* @brief enable one interrupt in the NVIC
- * @IRQn desired interrupt to enable. */
-void NVIC_EnaIRQ( IRQn_Type IRQn )
-{
-	_NVIC->ISER[ ( uint32_t ) ( ( int ) IRQn ) >> 5 ] = ( uint32_t ) ( 1 << ( ( ( uint32_t ) IRQn ) & 0x1F) );
+/*
+ * @brief
+ * @IRQn
+ * */
+void NVIC_EnaIRQ(IRQn_Type IRQn){
+	_NVIC->ISER[(unsigned int)((int)IRQn) >> 5] = (unsigned int)(1 << ((unsigned int)((uint32_t)IRQn) & (unsigned int)0x1F));
 }
 
-/* @brief disable one interrupt in the NVIC
- * @IRQn desired interrupt to disable. */
-void NVIC_disableIRQ( IRQn_Type IRQn )
+/** \brief  Set Interrupt Priority
+
+    The function sets the priority of an interrupt.
+
+    \note The priority cannot be set for every core interrupt.
+
+    \param [in]      IRQn  Interrupt number.
+    \param [in]  priority  Priority to set.
+ */
+void NVIC_SetPriority(IRQn_Type IRQn, uint32_t priority)
 {
-	_NVIC->ICER[ ( uint32_t ) ( ( int ) IRQn ) >> 5 ] = ( uint32_t ) ( 1 << ( ( ( uint32_t ) IRQn ) & 0x1F) );
+  if(IRQn < 0) {
+    SCB->SHP[((uint32_t)(IRQn) & 0xF)-4] = ((priority << (8 - __NVIC_PRIO_BITS)) & 0xff); } /* set Priority for Cortex-M  System Interrupts */
+  else {
+    _NVIC->IP[(uint32_t)(IRQn)] = ((priority << (8 - __NVIC_PRIO_BITS)) & 0xff);    }        /* set Priority for device specific Interrupts  */
 }

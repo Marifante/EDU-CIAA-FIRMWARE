@@ -1,0 +1,2 @@
+ccu_peripheral.c:20:6:CCU_clockEnable	16	static
+ccu_peripheral.c:32:6:CCU_enableTimerClock	24	static

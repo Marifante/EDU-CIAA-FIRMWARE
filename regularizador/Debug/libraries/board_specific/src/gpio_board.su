@@ -1,0 +1,9 @@
+gpio_board.c:22:6:GPIOBoard_fillGPIOStruct	16	static
+gpio_board.c:135:6:configGpio	16	static
+gpio_board.c:173:9:readGpio	24	static
+gpio_board.c:201:6:writeGpio	16	static
+gpio_board.c:213:6:toggleGpio	16	static
+gpio_board.c:221:6:configLed	16	static
+gpio_board.c:230:6:InitializateAllLeds	56	static
+gpio_board.c:253:9:checkButtonState	24	static
+gpio_board.c:284:6:isABounce	24	static

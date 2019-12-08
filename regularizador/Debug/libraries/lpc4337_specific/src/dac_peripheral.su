@@ -1,0 +1,6 @@
+dac_peripheral.c:30:6:DAC_enable	4	static
+dac_peripheral.c:36:6:DAC_setCNTVAL	16	static
+dac_peripheral.c:44:10:DAC_ticksNeededForSampling	16	static
+dac_peripheral.c:52:6:DAC_init	8	static
+dac_peripheral.c:65:6:DAC_UpdateValue	24	static
+dac_peripheral.c:75:6:DAC_configToSample	24	static
