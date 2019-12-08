@@ -146,6 +146,6 @@ void CCU_clockEnable( CHIP_CCU_CLK_T clk );
 void CCU_enableTimerClock( uint8_t chosenTimer );
 
 /* @brief enables UART2 branch clock. */
-void CCU_initUART2Clk( void );
+void CCU_initUART2PeripheralClk( void );
 
 #endif /*_LIBRARIES_LPC4337_SPECIFIC_INC_CCU_PERIPHERAL_H_*/

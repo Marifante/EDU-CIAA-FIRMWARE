@@ -74,9 +74,12 @@ typedef struct {
 /*==================[internal functions declaration]=========================*/
 
 /*==================[external functions declaration]=========================*/
-
-void UART_init(void);
-
-void UART_SendByte(USART_T *pUART, unsigned char data);
+void UART2_enableTx( void );
+void UART2_setupFIFOS( void );
+void UART2_init( void );
+void UART2_setBaudrate( uint32_t baudrate );
+void UART2_sendByte( unsigned char data );
+bool UART2_readByte( uint8_t *receivedByte );
+void UART2_writeString( char *str );
 
 #endif /* LIBRARIES_LPC4337_SPECIFIC_INC_USART_PERIPHERAL_H_ */
