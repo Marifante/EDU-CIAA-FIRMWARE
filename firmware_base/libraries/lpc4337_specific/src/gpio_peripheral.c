@@ -176,7 +176,9 @@ void SCU_GPIOIntPinSel( uint8_t PortSel, uint8_t PortNum, uint8_t PinNum )
 {
 	int despl = (PortSel & 3) << 3;
 	uint32_t val = (((PortNum & 0x7) << 5) | (PinNum & 0x1F)) << despl;
-	SCU->PINTSEL[PortSel >> 2] = (SCU->PINTSEL[PortSel >> 2] & ~(0xFF << despl)) | val;
+	//Correr 2 bits hacia la derecha a PortSel hace que si PortSel<4 entonces
+	//se elige el registro PINTSEL0, sino, se elige el registro PINTSEL1.
+	SCU->PINTSEL[PortSel >> 2] = ( SCU->PINTSEL[PortSel >> 2] & ~(0xFF << despl) ) | val;
 }
 
 /* @brief sets GPIO interrupt N as edge detection

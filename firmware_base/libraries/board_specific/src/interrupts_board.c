@@ -26,7 +26,8 @@
  * cada una con un Handler diferente.
  * @asc_desc	Interrupcion por flanco ascendente/descendente
  */
-void configTecInterrupts(gpioPin_t *gpioStruct, uint8_t gpioPinInterruptNum, edgeTypeInt_t asc_desc){
+void configTecInterrupts(gpioPin_t *gpioStruct, uint8_t gpioPinInterruptNum, edgeTypeInt_t asc_desc)
+{
 	/* Registros del periferico SCU a configurar para configurar la interrupcion */
 	SCU_GPIOIntPinSel(gpioPinInterruptNum, gpioStruct->gpio_port, gpioStruct->gpio_pin);
 

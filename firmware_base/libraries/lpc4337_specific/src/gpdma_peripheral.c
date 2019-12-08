@@ -16,13 +16,16 @@
 /*====================[external functions definition]========================*/
 
 /* @brief creates linked list for data transfer. */
-void GPDMA_CreateLLI( lli_t *lli_struct, uint32_t src, uint32_t dest, uint32_t next_lli, uint32_t control)
+void GPDMA_CreateLLI( 	lli_t *lli_struct,
+						uint32_t src, uint32_t dest,
+						uint32_t next_lli, uint32_t control )
 {
 	lli_struct->src_address = src;
 	lli_struct->dest_address = dest;
 	lli_struct->next_lli_address = next_lli;
 	lli_struct->control  = control;
 }
+
 /* @brief Creates control word for a channel
  * @param transfer_size: quantity of transfers on this channel
  * @param src_burst_size: quantity of transfers per request signal
@@ -49,7 +52,7 @@ uint32_t GPDMA_CtrlWrd(		uint32_t transfer_size,
 							bool terminal_cnt_int )
 {
 
-	uint32_t ctrl_word = (	transfer_size
+	uint32_t ctrl_word = (		transfer_size
 							| ( src_burst_size 	<< 12 )
 							| ( dest_burst_size << 15 )
 							| ( src_width_data 	<< 18 )
@@ -85,7 +88,10 @@ void GPDMA_deInit( void )
 }
 
 /* @brief configure a channel of the DMA */
-void GPDMA_configChannel(DMA_channel_t channel, uint32_t src_address, uint32_t dest_address, uint32_t first_lli_address, uint32_t ctrl_word, uint32_t cfg_word)
+void GPDMA_configChannel( 	DMA_channel_t channel,
+							uint32_t src_address, uint32_t dest_address,
+							uint32_t first_lli_address,
+							uint32_t ctrl_word, uint32_t cfg_word )
 {
 	//1) Initializate DMA peripheral:
 	GPDMA_init();
