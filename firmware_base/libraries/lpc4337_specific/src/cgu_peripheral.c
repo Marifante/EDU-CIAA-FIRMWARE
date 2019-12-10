@@ -146,6 +146,7 @@ uint32_t CGU_getUART2InputClk( void )
 
 
 
+
 /* @brief set UART2 clock base input to 12MHz IRC. Returns freq of this clock.*/
 /*uint32_t CGU_setUART2BaseClk( void )
 {

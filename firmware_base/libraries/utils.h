@@ -11,7 +11,6 @@
 #define _LIBRARIES_UTILS_H_
 
 /*==================[inclusions]=============================================*/
-
 #include <stdlib.h>
 #include <stdint.h>
 #include <stdbool.h>
@@ -19,7 +18,6 @@
 #include <math.h>
 
 /*==================[Definitions]============================================*/
-
 /* Define some macros for read and write permissions
  * --Volatile => tells the compiler the variables will change in some point of the
  * program (good for Input and Output).

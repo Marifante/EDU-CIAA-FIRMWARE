@@ -53,7 +53,6 @@ void CCU_enableTimerClock( uint8_t chosenTimer )
 
 }
 
-
 /* @brief enables UART2 Peripheral clock. */
 void CCU_initUART2PeripheralClk( void )
 {
@@ -69,4 +68,11 @@ void CCU_initUART2PeripheralClk( void )
 										(1 << 2);	// Wake-up mechanism enabled.
 }
 
-#include "../inc/ccu_peripheral.h"
+/* @brief enables ADC0 clock. */
+void CCU_initADC0Clock( void )
+{
+	CCU1->CLKCCU[ CLK_APB3_ADC0 ].CFG =	(1 << 0) |	// Enable clock.
+										(1 << 1) |	// Auto (AHB disable mechanism) enabled.
+										(1 << 2);	// Wake-up mechanism enabled.
+}
+
