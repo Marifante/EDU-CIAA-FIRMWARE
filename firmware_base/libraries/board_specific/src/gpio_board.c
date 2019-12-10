@@ -281,10 +281,10 @@ uint8_t checkButtonState( gpioMap_t tec )
 }
 
 /* @brief Blocking antibounce function for a desired button. */
-bool isABounce( gpioMap_t button )
+bool isABounce( gpioMap_t button, uint8_t chosenTimer )
 {
 	uint8_t initialState = checkButtonState( button );
-	delay_us( 10000 ); // wait for 10ms
+	Delay_us( 10000, chosenTimer ); // wait for 10ms
 	uint8_t finalState = checkButtonState( button );
 	if ( finalState == initialState )
 		return false;

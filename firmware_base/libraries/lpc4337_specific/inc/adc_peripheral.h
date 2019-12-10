@@ -45,5 +45,7 @@ void ADC0_init( void );
 void ADC_enableChannel( ADC_T *pADC, uint8_t channel );
 /* @brief enable interrupt of channel N of the given ADC. Each ADC have 8 channel (0 to 7). */
 void ADC_enableChannelInterrupt( ADC_T *pADC, uint8_t channel );
+/* @brief reads a value from a channel of the ADC0. */
+uint16_t ADC0_read( uint8_t channel );
 
 #endif /*_LIBRARIES_LPC4337_SPECIFIC_INC_ADC_PERIPHERAL_H_ */
