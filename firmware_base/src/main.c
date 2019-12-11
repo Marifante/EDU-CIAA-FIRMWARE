@@ -9,35 +9,39 @@
 
 /*==================[inclusions]=============================================*/
 #include "../inc/main.h"
+/*==================[macros & constants]=====================================*/
+#define PWM_FREQ			1000
+#define CTOUT_2_GROUP		2
+#define CTOUT_2_PIN			10
+#define CTOUT_2_FUNC		1
+#define	MAIN_EVENT			0
+#define DUTY_CYCLE_EVENT	1
 
 /*==================[main program]===========================================*/
 int main( void )
 {
 	InitializateAllLeds();
-	gpioPin_t Led0_r;
-	configLed(LED0_R, &Led0_r);
 
-	toggleGpio(&Led0_r);
-	SerialLog_config();
+	gpioPin_t led1;
+	configLed( LED1, &led1 );
 
-	SerialLog_print( "Test de la UART por USB\r\n" );
-	char msg[64];
-	int i = 0;
+	SCU_SetPinFunc( 2, 10, 1 );
+	uint32_t totalDutyCycle = SCTPWM_configPWM( 1000, 0, 1 , CTOUT_2 );
 
-	while(1)
+
+	while( 1 )
 	{
-		toggleGpio(&Led0_r);
 
-
-		Delay_us(1000000, TIMER0);
-
-		sprintf(msg, "count: %d\r\n", i);
-
-		SerialLog_print( msg );
-
-		i++;
-		if( i == 10 )
-			i = 0;
+		for( int i = 0; i < 99; i++ )
+		{
+			SCTPWM_setDutyCycle( 0, i, totalDutyCycle );
+			Delay_us( 20000, TIMER0 );
+		}
+		for( int i = 99; i > 0; i-- )
+		{
+			SCTPWM_setDutyCycle( 0, i, totalDutyCycle );
+			Delay_us( 20000, TIMER0 );
+		}
 	}
 }
 

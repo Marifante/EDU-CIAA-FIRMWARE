@@ -66,7 +66,7 @@ uint8_t checkButtonState( gpioMap_t tec );
 void InitializateAllLeds( void );
 
 /* @brief Blocking antibounce function for a desired button. */
-bool isABounce( gpioMap_t button );
+bool isABounce( gpioMap_t button, uint8_t chosenTimer );
 
 
 

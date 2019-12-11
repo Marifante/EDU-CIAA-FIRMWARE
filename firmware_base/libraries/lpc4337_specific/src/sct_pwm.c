@@ -33,7 +33,10 @@ uint32_t SCTPWM_frequencyToPrescaler( uint32_t frequency )
 /* @brief config PWM generation with two events.
  * @param mainEvent sets the freq of the pwm signal.
  * @param dutyCycleEvent sets the duty cycle of the signal. */
-uint32_t SCTPWM_configPWM( uint32_t frequency, uint8_t mainEvent, uint8_t dutyCycleEvent, SCT_outputPin outputPin )
+uint32_t SCTPWM_configPWM(	uint32_t frequency,
+							uint8_t mainEvent,
+							uint8_t dutyCycleEvent,
+							SCT_outputPin outputPin )
 {
 	SCT_setTwoTimersMode();
 
@@ -67,7 +70,8 @@ uint32_t SCTPWM_configPWM( uint32_t frequency, uint8_t mainEvent, uint8_t dutyCy
 
 /* @brief sets duty cycle to a pwm.
  * @param dutyCyclePercent value between 0 and 99.*/
-void SCTPWM_setDutyCycle( uint8_t dutyCycleMatch, uint8_t dutyCyclePercent, uint32_t mainMatchValue )
+void SCTPWM_setDutyCycle(	uint8_t dutyCycleMatch, uint8_t dutyCyclePercent,
+							uint32_t mainMatchValue )
 {
 	uint8_t dutyCycleEvent = dutyCycleMatch;
 	uint32_t dutyCycle = (dutyCyclePercent/100) * mainMatchValue;

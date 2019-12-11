@@ -18,10 +18,9 @@
 
 /*==================[external functions definition]==========================*/
 
-/*
- *
- * */
-void singlePWM(void){
+/* @brief config State Configurable Timer (SCT) to do a PWM signal. */
+void singlePWM(void)
+{
 	LPC_SCT->CONFIG |= (1 << 17); // Configura el SCT como dos timer de 16 bits, con auto limit
 	LPC_SCT->CTRL_L |= (12-1) << 5; // Configura el prescaler, SCTimer/PWM clock = 1 MHz
 	LPC_SCT->MATCHREL[0].L = 10-1; // match 0 @ 10/1MHz = 10 usec (100 kHz PWM freq)

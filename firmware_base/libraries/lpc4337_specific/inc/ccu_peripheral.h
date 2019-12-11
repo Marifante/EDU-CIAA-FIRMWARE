@@ -15,12 +15,10 @@
 #define _LIBRARIES_LPC4337_SPECIFIC_INC_CCU_PERIPHERAL_H_
 
 /*==================[inclusions]=============================================*/
-
 #include "../../utils.h"
 #include "timer_peripheral.h"
 
 /*==================[macros and definitions]=================================*/
-
 #define CCU1_BASE				0x40051000
 #define CCU2_BASE				0x40052000
 
@@ -147,5 +145,8 @@ void CCU_enableTimerClock( uint8_t chosenTimer );
 
 /* @brief enables UART2 branch clock. */
 void CCU_initUART2PeripheralClk( void );
+
+/* @brief enables ADC0 branch clock. */
+void CCU_initADC0Clock( void );
 
 #endif /*_LIBRARIES_LPC4337_SPECIFIC_INC_CCU_PERIPHERAL_H_*/
