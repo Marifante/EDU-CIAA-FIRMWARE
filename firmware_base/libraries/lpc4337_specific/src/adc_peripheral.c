@@ -44,7 +44,7 @@ typedef enum
 /* @brief default setup for ADC0. */
 ADC_CLOCK_SETUP_T ADC0_clockSetup =
 {
-		.adcRate 		= MAX_SAMPLE_RATE/4,
+		.adcRate 		= MAX_SAMPLE_RATE,
 		.bitsAccuracy 	= 10,
 		.burstMode		= false
 };
@@ -121,7 +121,7 @@ uint16_t ADC0_read( uint8_t channel )
 {
 	ADC_enableChannel( ADC0, channel );
 	ADC_setStartMode( ADC0, ADC_START_NOW, ADC_TRIGGERMODE_RISING );
-	while( ((ADC0->STAT) & (1 << channel)) == 1 ){} // Wait until the adc reading finish
+	while( ((ADC0->STAT) & (1 << channel)) == 0 ){} // Wait until the adc reading finish
 	uint16_t data = (ADC0->DR[channel] >> 6) & 0x3FF;
 	return data;
 }

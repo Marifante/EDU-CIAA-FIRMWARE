@@ -9,32 +9,39 @@
 
 /*==================[inclusions]=============================================*/
 #include "../inc/main.h"
+/*==================[macros & constants]=====================================*/
+#define PWM_FREQ			1000
+#define CTOUT_2_GROUP		2
+#define CTOUT_2_PIN			10
+#define CTOUT_2_FUNC		1
+#define	MAIN_EVENT			0
+#define DUTY_CYCLE_EVENT	1
 
 /*==================[main program]===========================================*/
 int main( void )
 {
 	InitializateAllLeds();
-	gpioPin_t Led0_r;
-	configLed(LED0_R, &Led0_r);
-	toggleGpio(&Led0_r);
 
-	SerialLog_config();
+	gpioPin_t led1;
+	configLed( LED1, &led1 );
 
-	uint16_t analogVal;
-	ADC0_init();
+	SCU_SetPinFunc( 2, 10, 1 );
+	uint32_t totalDutyCycle = SCTPWM_configPWM( 1000, 0, 1 , CTOUT_2 );
 
-	SerialLog_print( "Test del ADC0\r\n" );
-	char msg[64];
-	uint32_t distance;
-	while(1)
+
+	while( 1 )
 	{
-		toggleGpio(&Led0_r);
-		analogVal = ADC0_read(1);
-		distance = 12343.85 * pow( (float) analogVal, -1.15 );
-		Delay_us(1000000, TIMER0);
 
-		sprintf(msg, "analogVal: %d, distance: %d \r\n", analogVal, distance);
-		SerialLog_print( msg );
+		for( int i = 0; i < 99; i++ )
+		{
+			SCTPWM_setDutyCycle( 0, i, totalDutyCycle );
+			Delay_us( 20000, TIMER0 );
+		}
+		for( int i = 99; i > 0; i-- )
+		{
+			SCTPWM_setDutyCycle( 0, i, totalDutyCycle );
+			Delay_us( 20000, TIMER0 );
+		}
 	}
 }
 
