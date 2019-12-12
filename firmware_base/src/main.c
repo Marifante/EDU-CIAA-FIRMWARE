@@ -1,21 +1,15 @@
 
 /*****************************************************************************
- * Trabajo practico regularizador Electronica Digital 2
- * Generador de senales senoidales de 1kHz, 2kHz, 4kHz, 8kHz y sus sumatorias.
  *
- * Autor: Julian Rodriguez / Ezequiel Canay
+ * Single PWM example of AN11538 SCTimer PWM Cookbook
+ * Autor: Julian Rodriguez
  * email: jnrodriguezz@hotmail.com /
  *****************************************************************************/
 
 /*==================[inclusions]=============================================*/
 #include "../inc/main.h"
 /*==================[macros & constants]=====================================*/
-#define PWM_FREQ			1000
-#define CTOUT_2_GROUP		2
-#define CTOUT_2_PIN			10
-#define CTOUT_2_FUNC		1
-#define	MAIN_EVENT			0
-#define DUTY_CYCLE_EVENT	1
+#define PWM_FREQUENCY	1000
 
 /*==================[main program]===========================================*/
 int main( void )
@@ -25,22 +19,19 @@ int main( void )
 	gpioPin_t led1;
 	configLed( LED1, &led1 );
 
-	SCU_SetPinFunc( 2, 10, 1 );
-	uint32_t totalDutyCycle = SCTPWM_configPWM( 1000, 0, 1 , CTOUT_2 );
 
+	/*	Match 1 is used to define the duty cycle of the signal. When match event 1
+		 *	occurs it will clear SCT_OUT0.	 */
+
+	SCU_SetPinFunc(2, 10, 1);
+	SCTPWM_singlePWM( 2 );
 
 	while( 1 )
 	{
-
-		for( int i = 0; i < 99; i++ )
+		for(int i = 0; i<10 ; i++)
 		{
-			SCTPWM_setDutyCycle( 0, i, totalDutyCycle );
-			Delay_us( 20000, TIMER0 );
-		}
-		for( int i = 99; i > 0; i-- )
-		{
-			SCTPWM_setDutyCycle( 0, i, totalDutyCycle );
-			Delay_us( 20000, TIMER0 );
+			LPC_SCT->MATCHREL[1].L = i; // match 1 used for duty cycle (in 10 steps)
+			Delay_us(1000000, TIMER0);
 		}
 	}
 }

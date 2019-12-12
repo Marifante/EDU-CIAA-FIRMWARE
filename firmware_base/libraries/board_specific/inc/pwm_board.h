@@ -19,9 +19,5 @@
 
 /*==================[external functions declaration]=========================*/
 
-/**
- * @brief
- * */
-void singlePWM( void );
 
 #endif /*_LIBRARIES_BOARD_SPECIFIC_INC_PWM_BOARD_H_*/
