@@ -14,16 +14,21 @@
  *****************************************************************************/
 
 /*==================[inclusions]=============================================*/
-
 #include "../inc/sct_peripheral.h"
+#include "../inc/cgu_peripheral.h"
 
 /*==================[external functions definition]==========================*/
 
-/* @brief set two 16-bit timer mode with autolimit. */
-void SCT_setTwoTimersMode( void )
+/* @brief set two 16-bit timer mode ¿with autolimit? */
+void SCT_enableTwoTimersMode( void )
 {
-	LPC_SCT->CONFIG |= (1 << 17);
+	//LPC_SCT->CONFIG |= (1 << 17);
+	// Setting in cero the UNIFY bit in CONFIG register does this
+	LPC_SCT->CONFIG &= ~(1 << 0);
 }
+
+/* @brief chose SCT clock mode. */
+void SCT_chooseClkMode( );
 
 /* @brief set low timer prescaler. */
 void SCT_setLowTimerPrescaler( uint8_t divFactor )

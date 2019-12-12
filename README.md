@@ -1,6 +1,8 @@
 # EDU-CIAA-FIRMWARE
 Firmware for the EDU-CIAA 
-
+# Eclipse Setup
+Clone repository -> File -> Import -> General -> Projects from folder or archive
+ 
 ## Debug/Run configuration:
 Debug As -> Debugger -> GDB OpenOCD Debugging
 
