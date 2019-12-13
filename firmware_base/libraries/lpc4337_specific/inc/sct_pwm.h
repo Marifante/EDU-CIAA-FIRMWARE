@@ -20,7 +20,7 @@
 /*==================[macros and definitions]=================================*/
 
 /*==================[external functions declaration]=========================*/
-void SCTPWM_singlePWM( SCT_outputPin output );
+void SCTPWM_singlePWM( SCT_outputPin output, int signalFrequency);
 
 /* @brief config PWM generation with two events.
  * @param mainEvent sets the freq of the pwm signal.

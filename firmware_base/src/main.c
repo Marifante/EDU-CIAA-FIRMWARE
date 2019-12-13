@@ -23,8 +23,8 @@ int main( void )
 	/*	Match 1 is used to define the duty cycle of the signal. When match event 1
 		 *	occurs it will clear SCT_OUT0.	 */
 
-	SCU_SetPinFunc(2, 10, 1);
-	SCTPWM_singlePWM( 2 );
+	SCU_SetPinFunc(4, 2, 1);
+	SCTPWM_singlePWM( 2, PWM_FREQUENCY );
 
 	while( 1 )
 	{

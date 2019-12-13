@@ -143,13 +143,12 @@ typedef enum CHIP_CGU_CLKIN {
 	CLKINPUT_PD		/*!< External 32KHz input */
 } CHIP_CGU_CLKIN_T;
 
-
-
-/*==================[external functions declaration]==========================/
-/* @brief set UART2 clock base input to 12MHz IRC. Returns freq of this clock.*/
-//uint32_t CGU_setUART2BaseClk( void );
-/* Gets a CGU Base Clock clock source */
-//CHIP_CGU_CLKIN_T Chip_Clock_GetBaseClock(CHIP_CGU_BASE_CLK_T BaseClock);
+/*==================[external functions declaration]==========================*/
+/* @brief get UART2 input clock frequency. */
 uint32_t CGU_getUART2InputClk( void );
+/* @brief get SCT input clock frequency. */
+uint32_t CGU_getSCTInputClkFreq( void );
+
 uint32_t CGU_getClockInputHz( CHIP_CGU_CLKIN_T input );
+
 #endif /*_LIBRARIES_LPC4337_SPECIFIC_INC_CGU_PERIPHERAL_H_*/

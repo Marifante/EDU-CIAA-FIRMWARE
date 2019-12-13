@@ -138,13 +138,18 @@ uint32_t CGU_getClockInputHz(CHIP_CGU_CLKIN_T input)
 	return rate;
 }
 
+/* @brief get UART2 input clock frequency. */
 uint32_t CGU_getUART2InputClk( void )
 {
 	return ((CGU->BASE_CLK[CLK_BASE_UART2] >> 24) & 0x1F);
 
 }
 
-
+/* @brief get SCT input clock frequency. */
+uint32_t CGU_getSCTInputClkFreq( void )
+{
+	return ((CGU->BASE_CLK[CLK_BASE_MX] >> 24) & 0x1F);
+}
 
 
 /* @brief set UART2 clock base input to 12MHz IRC. Returns freq of this clock.*/
