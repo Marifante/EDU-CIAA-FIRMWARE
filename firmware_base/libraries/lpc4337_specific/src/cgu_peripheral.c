@@ -148,7 +148,8 @@ uint32_t CGU_getUART2InputClk( void )
 /* @brief get SCT input clock frequency. */
 uint32_t CGU_getSCTInputClkFreq( void )
 {
-	return ((CGU->BASE_CLK[CLK_BASE_MX] >> 24) & 0x1F);
+	uint32_t freq = CGU_getClockInputHz((CGU->BASE_CLK[CLK_BASE_MX] >> 24) & 0x1F);
+	return freq;
 }
 
 

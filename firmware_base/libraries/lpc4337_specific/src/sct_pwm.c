@@ -15,10 +15,6 @@
 #include "../inc/cgu_peripheral.h"
 
 /*==================[macros and definitions]=================================*/
-#ifndef SCT_DEFAULT_CLOCK
-	#define SCT_DEFAULT_CLOCK 		204000000
-#endif
-
 #define ALL_STATES					0xFFFFFFFF //for setEventState
 #define ONLY_MATCH_CONDITION		0x1
 
@@ -26,6 +22,8 @@
 #define SCT_CTRL_HALT_L                 (1 << 2)		// Halt low counter
 #define SCT_CTRL_CLRCTR_L               (1 << 3)		// Clear low or unified counter
 #define SCT_CONFIG_AUTOLIMIT_L			(1 << 17)		// Set autolimit, the count resets to 0 when the timer reachs the MATCH value
+
+int SCTPWM_SinglePWMMatch0Reload	= 0;
 
 /*==================[internal functions definition]==========================*/
 uint32_t SCTPWM_frequencyToPrescaler( uint32_t baseClkFreq, uint32_t frequency )
@@ -49,20 +47,26 @@ void SCTPWM_singlePWM( SCT_outputPin output, int signalFrequency )
 {
 	CCU_initSCTClock();
 	uint32_t inputClkFreq = CGU_getSCTInputClkFreq();
-	int prescaler = inputClkFreq / signalFrequency;
-	SCT_setTimerMode( SCT_TWO_16BIT_TIMERS, true ); // Configura el SCT como dos timer de 16 bits, con auto limit
+	int prescaler = inputClkFreq/1000000; // The frequency of the counter will be 1MHz
 	SCT_setLowTimerPrescaler( prescaler ); // Configura el prescaler, SCTimer/PWM clock = 1 MHz
-	SCT_setLowTimerMatchReload( SCT_MATCH_0, 10-1 ); // match 0 @ 10/1MHz = 10 usec (100 kHz PWM freq)
-	SCT_setLowTimerMatchReload( SCT_MATCH_1, 5 ); // match 1 used for duty cycle (in 10 steps)
+	SCT_setTimerMode( SCT_TWO_16BIT_TIMERS, true ); // Configura el SCT como dos timer de 16 bits, con auto limit
+	SCTPWM_SinglePWMMatch0Reload = 10000000/signalFrequency;
+	SCT_setLowTimerMatchReload( SCT_MATCH_0, SCTPWM_SinglePWMMatch0Reload ); // 10 / 1MHz = 0.001 sec = 1 ms = 1kHz
+	SCT_setLowTimerMatchReload( SCT_MATCH_1, SCTPWM_SinglePWMMatch0Reload/2 ); // By default, set pwm with 50% duty cycle
 	LPC_SCT->EVENT[0].STATE = 0xFFFFFFFF; // event 0 happens in all states
 	SCT_associateMatchOnlyWithEvent( SCT_EVENT_0 , SCT_MATCH_0 );
 	LPC_SCT->EVENT[1].STATE = 0xFFFFFFFF; // event 1 happens in all states
 	SCT_associateMatchOnlyWithEvent( SCT_EVENT_1 , SCT_MATCH_1 );
-	LPC_SCT->OUT[2].SET = (1 << 0); // event 0 will set SCTx_OUT0
-	LPC_SCT->OUT[2].CLR = (1 << 1); // event 1 will clear SCTx_OUT0
+	LPC_SCT->OUT[output].SET = (1 << 0); // event 0 will set SCTx_OUT0
+	LPC_SCT->OUT[output].CLR = (1 << 1); // event 1 will clear SCTx_OUT0
 	LPC_SCT->CTRL_L &= ~(1 << 2); // unhalt it by clearing bit 2 of CTRL reg
 }
 
+void SCTPWM_singlePWMSetDutyCycle( int dutyCycle )
+{
+	uint32_t dutyValue = (uint32_t) ((SCTPWM_SinglePWMMatch0Reload*dutyCycle)/100);
+	SCT_setLowTimerMatchReload( SCT_MATCH_1, dutyValue );
+}
 //
 ///* @brief config PWM generation with two events.
 // * @param mainEvent sets the freq of the pwm signal.

@@ -23,6 +23,7 @@
 #define CGU_BASE				0x40050000
 #define CGU						((CGU_T*) CGU_BASE)
 
+#define CHIP_LPC43XX
 /*==================[external data declaration]==============================*/
 /**
  * @brief CGU base clocks

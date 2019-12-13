@@ -26,7 +26,7 @@ void SCT_setTimerMode( SCT_TimerMode timerMode, bool autolimitEnabled )
 }
 
 /* @brief set low timer prescaler. */
-void SCT_setLowTimerPrescaler( uint8_t divFactor )
+void SCT_setLowTimerPrescaler( uint32_t divFactor )
 {
 	// The and is for segurity, to not write more than bits 12:5
 	LPC_SCT->CTRL_L |= ( ( divFactor-1 ) & 0x1F ) << 5 ;
@@ -42,7 +42,7 @@ void SCT_setLimitLowTimer( uint8_t eventNumber )
 /* @brief set the match reload value of the low timer.
  * When BIDIR is 0, this value is copied to MATCH value of the MATCH register.
  * The MATCH registers of the SCT cannot be writed directly. */
-void SCT_setLowTimerMatchReload( uint8_t matchNumber, uint32_t matchValue )
+void SCT_setLowTimerMatchReload( uint32_t matchNumber, uint32_t matchValue )
 {
 	LPC_SCT->MATCHREL[matchNumber].L = matchValue;
 }

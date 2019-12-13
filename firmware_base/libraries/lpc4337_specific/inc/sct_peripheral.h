@@ -215,7 +215,7 @@ typedef enum
 void SCT_setTimerMode( SCT_TimerMode timerMode, bool autolimitEnabled );
 
 /* @brief set low timer prescaler. */
-void SCT_setLowTimerPrescaler( uint8_t divFactor );
+void SCT_setLowTimerPrescaler( uint32_t divFactor );
 
 /* @brief sets the event who restarts the timer.
  * Setting HIGH the bit n of this registers makes the n event restarts the timer.*/
@@ -224,7 +224,7 @@ void SCT_setLimitLowTimer( uint8_t eventNumber );
 /* @brief set the match reload value of the low timer.
  * When BIDIR is 0, this value is copied to MATCH value of the MATCH register.
  * The MATCH registers of the SCT cannot be writed directly. */
-void SCT_setLowTimerMatchReload( uint8_t matchNumber, uint32_t matchValue );
+void SCT_setLowTimerMatchReload( uint32_t matchNumber, uint32_t matchValue );
 
 /* @brief associate a match with a determinated event. */
 void SCT_associateMatchOnlyWithEvent( uint8_t event, uint8_t match );
