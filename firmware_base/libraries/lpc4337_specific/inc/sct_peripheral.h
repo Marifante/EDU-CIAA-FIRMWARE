@@ -33,10 +33,7 @@
 #define CONFIG_SCT_nOU   (16)			/*!< Number of outputs */
 
 /*==================[external data declaration]==============================*/
-
-/**
- * @brief State Configurable Timer register block structure
- */
+/* @brief State Configurable Timer register block structure. */
 typedef struct {
 	__IO  uint32_t CONFIG;				/*!< Configuration Register */
 	union {
@@ -163,9 +160,7 @@ typedef struct {
 } LPC_SCT_T;
 
 
-/**
- * SCT Match register values enum
- */
+/* @brief SCT Match register values enum.*/
 typedef enum{
 	SCT_MATCH_0 = 0,	/*!< SCT Match register 0 */
 	SCT_MATCH_1 = 1,	/*!< SCT Match register 1 */
@@ -173,6 +168,19 @@ typedef enum{
 	SCT_MATCH_3 = 3,	/*!< SCT Match register 3 */
 	SCT_MATCH_4 = 4		/*!< SCT Match register 4 */
 } CHIP_SCT_MATCH_REG_T;
+
+/* @brief SCT Event register values enum. */
+typedef enum
+{
+	SCT_EVENT_0 = 0,
+	SCT_EVENT_1 = 1,
+	SCT_EVENT_2 = 2,
+	SCT_EVENT_3 = 3,
+	SCT_EVENT_4 = 4,
+	SCT_EVENT_5 = 5,
+	SCT_EVENT_6 = 6,
+	SCT_EVENT_7 = 7
+} CHIP_SCT_EVENT_REG_T;
 
 /* @brief pin map for output of SCT. */
 typedef enum{
@@ -194,12 +202,20 @@ typedef enum{
 	CTOUT_15
 }SCT_outputPin;
 
+/* @brief enum for timer mode of SCT. */
+typedef enum
+{
+	SCT_TWO_16BIT_TIMERS= 0,
+	SCT_ONE_32BIT_TIMER = 1
+}SCT_TimerMode;
+
+
 /*==================[external functions declaration]=========================*/
-/* @brief set two 16-bit timer mode with autolimit. */
-void SCT_setTwoTimersMode( void );
+/* @brief choose timer mode & choose if autolimit is enabled . */
+void SCT_setTimerMode( SCT_TimerMode timerMode, bool autolimitEnabled );
 
 /* @brief set low timer prescaler. */
-void SCT_setLowTimerPrescaler( uint8_t divFactor );
+void SCT_setLowTimerPrescaler( uint32_t divFactor );
 
 /* @brief sets the event who restarts the timer.
  * Setting HIGH the bit n of this registers makes the n event restarts the timer.*/
@@ -208,10 +224,10 @@ void SCT_setLimitLowTimer( uint8_t eventNumber );
 /* @brief set the match reload value of the low timer.
  * When BIDIR is 0, this value is copied to MATCH value of the MATCH register.
  * The MATCH registers of the SCT cannot be writed directly. */
-void SCT_setLowTimerMatchReload( uint8_t matchNumber, uint32_t matchValue );
+void SCT_setLowTimerMatchReload( uint32_t matchNumber, uint32_t matchValue );
 
 /* @brief associate a match with a determinated event. */
-void SCT_associateMatchWithEvent( uint8_t event, uint8_t match );
+void SCT_associateMatchOnlyWithEvent( uint8_t event, uint8_t match );
 
 /* @brief set how the event occurs.
  * If combmode = 1, the event occurs only when the match associated occurs. */

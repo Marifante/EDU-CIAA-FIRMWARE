@@ -18,20 +18,15 @@
 #include "../inc/cgu_peripheral.h"
 
 /*==================[external functions definition]==========================*/
-
-/* @brief set two 16-bit timer mode ¿with autolimit? */
-void SCT_enableTwoTimersMode( void )
+/* @brief choose timer mode & choose if autolimit is enabled . */
+void SCT_setTimerMode( SCT_TimerMode timerMode, bool autolimitEnabled )
 {
-	//LPC_SCT->CONFIG |= (1 << 17);
-	// Setting in cero the UNIFY bit in CONFIG register does this
-	LPC_SCT->CONFIG &= ~(1 << 0);
+	uint32_t tempConfigReg = LPC_SCT->CONFIG & ~(1 << 0) & ~(1 << 17);
+	LPC_SCT->CONFIG = tempConfigReg | (timerMode << 0) | (autolimitEnabled << 17);
 }
 
-/* @brief chose SCT clock mode. */
-void SCT_chooseClkMode( );
-
 /* @brief set low timer prescaler. */
-void SCT_setLowTimerPrescaler( uint8_t divFactor )
+void SCT_setLowTimerPrescaler( uint32_t divFactor )
 {
 	// The and is for segurity, to not write more than bits 12:5
 	LPC_SCT->CTRL_L |= ( ( divFactor-1 ) & 0x1F ) << 5 ;
@@ -47,15 +42,17 @@ void SCT_setLimitLowTimer( uint8_t eventNumber )
 /* @brief set the match reload value of the low timer.
  * When BIDIR is 0, this value is copied to MATCH value of the MATCH register.
  * The MATCH registers of the SCT cannot be writed directly. */
-void SCT_setLowTimerMatchReload( uint8_t matchNumber, uint32_t matchValue )
+void SCT_setLowTimerMatchReload( uint32_t matchNumber, uint32_t matchValue )
 {
 	LPC_SCT->MATCHREL[matchNumber].L = matchValue;
 }
 
-/* @brief associate a match with a determinated event. */
-void SCT_associateMatchWithEvent( uint8_t event, uint8_t match )
+/* @brief associate a match with a determinated event.
+ * This will overwrite any old configuration for the event selected.
+ * Is just for associate one match with one event. */
+void SCT_associateMatchOnlyWithEvent( uint8_t event, uint8_t match )
 {
-	LPC_SCT->EVENT[event].CTRL |= ( 1 << match );
+	LPC_SCT->EVENT[event].CTRL = match | ( 1 << 12 );
 }
 
 /* @brief set how the event occurs.
