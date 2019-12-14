@@ -19,25 +19,32 @@ int main( void )
 	gpioPin_t led1;
 	configLed( LED1, &led1 );
 
-	/*	Match 1 is used to define the duty cycle of the signal. When match event 1
-		 *	occurs it will clear SCT_OUT0.	 */
+	gpioPin_t RightMotorForward, RightMotorBackward;
+	configGpio( GPIO0, &RightMotorForward, OUTPUT_GPIO );
+	configGpio( GPIO2, &RightMotorBackward, OUTPUT_GPIO );
+
+	writeGpio( &RightMotorForward, HIGH );
+	writeGpio( &RightMotorBackward, LOW );
+
 
 	SCU_SetPinFunc( 4, 3, 1 );
-//	SCU->SFSP[4][3] |= (1<<4);
-//	SCU->SFSP[4][3] &= ~(1<<3);
-//	SCU->SFSP[4][3] &= ~(1<<6);
-
 	SCTPWM_singlePWM( 3, PWM_FREQUENCY );
-//	SCU_SetPinFunc( 2, 10, 1 );
-//	SCTPWM_singlePWM( 2, PWM_FREQUENCY );
-	SCTPWM_singlePWMSetDutyCycle( 95 );
+
+	bool change = false;
 	while( 1 )
 	{
-//		for(int i = 0; i<100 ; i+10 )
-//		{
-//			SCTPWM_singlePWMSetDutyCycle(i);
-//			Delay_us(10000000, TIMER0);
-//		}
+		change = !change;
+		for(int i = 30; i<99; i++)
+		{
+			SCTPWM_singlePWMSetDutyCycle( i );
+			Delay_us( 1000000/10, TIMER0 );
+		}
+//		writeGpio( &RightMotorForward, HIGH );
+//		writeGpio( &RightMotorBackward, LOW );
+//		Delay_us( 1000000, TIMER0 );
+		writeGpio( &RightMotorForward, change );
+		writeGpio( &RightMotorBackward, !change );
+
 	}
 }
 
