@@ -23,18 +23,24 @@
 
 /*==================[inclusions]=============================================*/
 
+/*==================[macros and constants]===================================*/
+/* @brief enum for motor direction. */
+typedef enum
+{
+	MM_BACKWARD = 0,
+	MM_FORWARD = 1
+} MOTOR_DIRECTION_T;
+
 /*==================[external functions declaration]=========================*/
 /* @brief Configurate the GPIOs & the PWM signal who manipulate the motors. */
 void MovementManager_configMotors( void );
 
-void MovementManager_stopMotors( void );
-
-void MovementManager_leftMotorForward( int velocityPercentage );
-void MovementManager_leftMotorBackward( int velocityPercentage );
+void MovementManager_moveLeftMotor( MOTOR_DIRECTION_T direction, int velocityPercentage );
 void MovementManager_stopLeftMotor( void );
 
-void MovementManager_rightMotorForward( int velocityPercentage );
-void MovementManager_rightMotorBackward( int velocityPercentage );
+void MovementManager_moveRightMotor( MOTOR_DIRECTION_T direction, int velocityPercentage );
 void MovementManager_stopRightMotor( void );
+
+void MovementManager_stopMotors( void );
 
 #endif /* PROJECTS_PERIMETRALFOLLOWERCAR_INC_MOVEMENTMANAGER_H_ */

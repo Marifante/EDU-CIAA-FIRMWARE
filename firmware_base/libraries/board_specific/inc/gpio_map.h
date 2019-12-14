@@ -34,7 +34,12 @@ typedef enum{
 	GPIO1,		//GPIO3[3] (FUNC0)
 	GPIO2,		//GPIO3[4] (FUNC0)
 	GPIO3,		//GPIO5[15] (FUNC4)
-	//10 a 13
+	GPIO4,		//GPIO5[16] (FUNC4)
+	GPIO5,		//GPIO3[5] (FUNC0)
+	GPIO6,		//GPIO3[7] (FUNC0)
+	GPIO7,		//GPIO3[7] (FUNC0)
+	GPIO8,		//GPIO2[8] (FUNC0)
+		//10 a 13
 }gpioMap_t;
 
 
