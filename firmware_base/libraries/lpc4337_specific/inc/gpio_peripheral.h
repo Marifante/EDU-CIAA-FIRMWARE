@@ -15,12 +15,10 @@
 #define _LIBRARIES_LPC4337_SPECIFIC_INC_GPIO_PERIPHERAL_H_
 
 /*==================[inclusions]=============================================*/
-
 #include "../../utils.h"
 #include "scu_peripheral.h"
 
 /*==================[macros and definitions]=================================*/
-
 /*
  * Definicion de las estructuras que van a alojar los valores de los registros de
  * cada puerto gpio. La direccion de memoria de estas estructuras es la misma que
@@ -35,12 +33,8 @@
 #define PIN_INT_BASE	0x40087000		// Tabla 242, pag. 453
 #define GPIO_PIN_INT	((PIN_INT_T *) PIN_INT_BASE)
 
-
 /*==================[external data declaration]==============================*/
-
-/**
- * @brief  GPIO port register block structure
- */
+/* @brief  GPIO port register block structure. */
 typedef struct {				/*!< GPIO_PORT Structure */
 	__IO uint8_t B[128][32];	/*!< Offset 0x0000: Byte pin registers ports 0 to n; pins PIOn_0 to PIOn_31 */
 	__IO uint32_t W[32][32];	/*!< Offset 0x1000: Word pin registers port 0 to n */
@@ -81,6 +75,26 @@ typedef struct {
 	int FALL;				// Pin Interrupt Falling Edge register
 	int IST;				// Pin Interrupt Status register
 } PIN_INT_T;
+
+/* @brief enum for interrupt trigger for gpios. */
+typedef enum
+{
+	ASCENDENT, DESCENDENT, BOTH_EDGES
+}edgeTypeInt_t;
+
+/* @brief enum for interrupts of GPIO peripheral.
+	The LP4337 supports up to 8 gpio interrupts simultaneously. */
+typedef enum
+{
+	GPIO_INTERRUPT0 = 	0,
+	GPIO_INTERRUPT1 = 	1,
+	GPIO_INTERRUPT2 = 	2,
+	GPIO_INTERRUPT3 = 	3,
+	GPIO_INTERRUPT4 = 	4,
+	GPIO_INTERRUPT5 = 	5,
+	GPIO_INTERRUPT6 = 	6,
+	GPIO_INTERRUPT7 = 	7
+} gpioInterruptNumber_t;
 
 /*==================[external functions declaration]==========================*/
 
@@ -208,7 +222,7 @@ void setRiseEdgeGPIOInterrupt( uint8_t gpioPinInterruptNum );
 void setFallEdgeGPIOInterrupt( uint8_t gpioPinInterruptNum );
 
 /* @brief clear GPIO interrupt N flag */
-void clearGPIOInterruptFlag( uint8_t gpioPinInterruptNum );
+void GPIO_clearGPIOInterruptFlag( uint8_t gpioPinInterruptNum );
 
 
 #endif /*_LIBRARIES_LPC4337_SPECIFIC_INC_GPIO_PERIPHERAL_H_*/

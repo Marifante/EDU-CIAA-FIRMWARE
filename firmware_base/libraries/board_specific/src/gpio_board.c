@@ -8,12 +8,13 @@
  *****************************************************************************/
 
 /*==================[inclusions]=============================================*/
-
 #include "../inc/gpio_board.h"
 #include "../inc/delay.h"
 
+/*==================[macros & constants]=====================================*/
+gpioPin_t Tec1, Tec2, Tec3, Tec4;
+gpioPin_t Led0_R, Led0_G, Led0_B, Led1, Led2, Led3;
 /*===================[internal functions declaration]========================*/
-
 /* @brief fill gpio struct with gpio port, pin, scu function & scu group. */
 void GPIOBoard_fillGPIOStruct( gpioMap_t boardGpioPin, gpioPin_t* gpioPinStruct );
 
@@ -121,6 +122,13 @@ void GPIOBoard_fillGPIOStruct( gpioMap_t boardGpioPin, gpioPin_t* gpioPinStruct 
 			gpioPinStruct->scu_group = 6;
 			gpioPinStruct->scu_pin = 7;
 			break;
+		case GPIO4:	//GPIO5[16] (FUNC4) (P6_8)
+			gpioPinStruct->gpio_port = 5;
+			gpioPinStruct->gpio_pin = 16;
+			gpioPinStruct->scu_func = 4;
+			gpioPinStruct->scu_group = 6;
+			gpioPinStruct->scu_pin = 8;
+			break;
 		case GPIO5:	//GPIO3[5] (FUNC0) (P6_9)
 			gpioPinStruct->gpio_port = 3;
 			gpioPinStruct->gpio_pin = 5;
@@ -128,12 +136,26 @@ void GPIOBoard_fillGPIOStruct( gpioMap_t boardGpioPin, gpioPin_t* gpioPinStruct 
 			gpioPinStruct->scu_group = 6;
 			gpioPinStruct->scu_pin = 9;
 			break;
+		case GPIO6:	//GPIO3[6] (FUNC0) (P6_10)
+			gpioPinStruct->gpio_port = 3;
+			gpioPinStruct->gpio_pin = 6;
+			gpioPinStruct->scu_func = 0;
+			gpioPinStruct->scu_group = 6;
+			gpioPinStruct->scu_pin = 10;
+			break;
 		case GPIO7:	//GPIO3[7] (FUNC0) (P6_11)
 			gpioPinStruct->gpio_port = 3;
 			gpioPinStruct->gpio_pin = 7;
 			gpioPinStruct->scu_func = 0;
 			gpioPinStruct->scu_group = 6;
 			gpioPinStruct->scu_pin = 11;
+			break;
+		case GPIO8:	//GPIO2[8] (FUNC0) (P6_12)
+			gpioPinStruct->gpio_port = 2;
+			gpioPinStruct->gpio_pin = 8;
+			gpioPinStruct->scu_func = 0;
+			gpioPinStruct->scu_group = 6;
+			gpioPinStruct->scu_pin = 12;
 			break;
 		default:
 			return;
@@ -239,29 +261,186 @@ void configLed( gpioMap_t ledToConfig, gpioPin_t *ledStruct )
 	return;
 }
 
-
 /* @brief Configura los leds y los apaga. */
-void InitializateAllLeds( void )
+void GPIOBoard_initializateAllLeds( void )
 {
-	gpioPin_t tempLed0_r, tempLed0_g, tempLed0_b, tempLed1, tempLed2, tempLed3;
-
 	//	configuro leds
-	configLed( LED0_R,	&tempLed0_r );
-	configLed( LED0_G,	&tempLed0_g );
-	configLed( LED0_B,	&tempLed0_b );
-	configLed( LED1,	&tempLed1 );
-	configLed( LED2,	&tempLed2 );
-	configLed( LED3,	&tempLed3 );
+	configLed( LED0_R,	&Led0_B );
+	configLed( LED0_G,	&Led0_G );
+	configLed( LED0_B,	&Led0_B );
+	configLed( LED1,	&Led1 );
+	configLed( LED2,	&Led2 );
+	configLed( LED3,	&Led3 );
 
 	//	pongo todo en 0
-	writeGpio( &tempLed0_r, LOW );
-	writeGpio( &tempLed0_g, LOW );
-	writeGpio( &tempLed0_b, LOW );
-	writeGpio( &tempLed1,	LOW );
-	writeGpio( &tempLed2,	LOW );
-	writeGpio( &tempLed3,	LOW );
+	writeGpio( &Led0_R, LOW );
+	writeGpio( &Led0_G, LOW );
+	writeGpio( &Led0_B, LOW );
+	writeGpio( &Led1,	LOW );
+	writeGpio( &Led2,	LOW );
+	writeGpio( &Led3,	LOW );
 }
 
+/* @brief Functions to set LEDS */
+void GPIOBoard_setLED1( uint8_t logicState )
+{
+	writeGpio( &Led1, logicState );
+}
+
+void GPIOBoard_setLED2( uint8_t logicState )
+{
+	writeGpio( &Led2, logicState );
+}
+
+void GPIOBoard_setLED3( uint8_t logicState )
+{
+	writeGpio( &Led3, logicState );
+}
+
+void GPIOBoard_setLEDRGBRed( uint8_t logicState )
+{
+	writeGpio( &Led0_R, logicState );
+}
+
+void GPIOBoard_setLEDRGBGreen( uint8_t logicState )
+{
+	writeGpio( &Led0_G, logicState );
+}
+
+void GPIOBoard_setLEDRGBBlue( uint8_t logicState )
+{
+	writeGpio( &Led0_B, logicState );
+}
+
+/* @brief Functions to toggle LEDS. */
+void GPIOBoard_toggleLED1( void )
+{
+	toggleGpio( &Led1 );
+}
+
+void GPIOBoard_toggleLED2( void )
+{
+	toggleGpio( &Led2 );
+}
+
+void GPIOBoard_toggleLED3( void )
+{
+	toggleGpio( &Led3 );
+}
+
+void GPIOBoard_toggleLEDRGBRed( void )
+{
+	toggleGpio( &Led0_R );
+}
+
+void GPIOBoard_toggleLEDRGBGreen( void )
+{
+	toggleGpio( &Led0_G );
+}
+
+void GPIOBoard_toggleLEDRGBBlue( void )
+{
+	toggleGpio( &Led0_B );
+}
+
+/* @brief Set all leds. */
+void GPIOBoard_setAllLEDS( uint8_t logicState )
+{
+	GPIOBoard_setLED1( logicState );
+	GPIOBoard_setLED2( logicState );
+	GPIOBoard_setLED3( logicState );
+	GPIOBoard_setLED3( logicState );
+}
+
+/* @brief Configuracion de interrupcion para las teclas
+ * @gpioStruct puntero a la estructura del gpio asociada a la tecla
+ * @gpioPinInterruptNum	 El lpc4337 soporta hasta 8 interrupciones para los GPIO,
+ * cada una con un Handler diferente.
+ * @asc_desc	Interrupcion por flanco ascendente/descendente
+ */
+void configTecInterrupts(gpioPin_t *gpioStruct, uint8_t gpioPinInterruptNum, edgeTypeInt_t asc_desc)
+{
+	/* Registros del periferico SCU a configurar para configurar la interrupcion */
+	SCU_GPIOIntPinSel(gpioPinInterruptNum, gpioStruct->gpio_port, gpioStruct->gpio_pin);
+
+	/* Registros del periferico GPIO para configurar la interrupcion */
+	setEdgeDetectionGPIOInterrupt(gpioPinInterruptNum);
+
+	switch (asc_desc) {
+		case ASCENDENT:
+			setRiseEdgeGPIOInterrupt(gpioPinInterruptNum);	// Hab. de las interrupcion por flanco asc
+			break;
+		case DESCENDENT:
+			setFallEdgeGPIOInterrupt(gpioPinInterruptNum);	// Hab. de las interrupcion por flanco desc
+			break;
+		case BOTH_EDGES:
+			setRiseEdgeGPIOInterrupt(gpioPinInterruptNum);	// Hab. de las interrupcion por flanco asc
+			setFallEdgeGPIOInterrupt(gpioPinInterruptNum);	// Hab. de las interrupcion por flanco desc
+			break;
+		default:
+			return;
+	}
+
+	/* Registros del NVIC a configurar para configurar la interrupcion */
+	// Habilitacion de las interrupciones en el NVIC
+	// _NVIC->ISER[1] = (unsigned int)(1 << boton);
+	switch (gpioPinInterruptNum) {
+	case 0:
+		NVIC_EnaIRQ(PIN_INT0_IRQn);// _NVIC->ISER[1] = (unsigned int)(15 << 0);
+		break;
+	case 1:
+		NVIC_EnaIRQ(PIN_INT1_IRQn);// _NVIC->ISER[1] = (unsigned int)(15 << 0);
+		break;
+	case 2:
+		NVIC_EnaIRQ(PIN_INT2_IRQn);// _NVIC->ISER[1] = (unsigned int)(15 << 0);
+		break;
+	case 3:
+		NVIC_EnaIRQ(PIN_INT3_IRQn);// _NVIC->ISER[1] = (unsigned int)(15 << 0);
+		break;
+
+	}
+}
+
+/* @brief config TEC1.
+ * Handler of this interrupt is: void GPIO1_IRQHandler( void ).*/
+void GPIOBoard_configTec1( void )
+{
+	configGpio( TEC1, &Tec1, INPUT_GPIO );
+	configTecInterrupts( &Tec1, GPIO_INTERRUPT0, DESCENDENT );
+}
+
+/* @brief config TEC2.
+ * Handler of this interrupt is: void GPIO2_IRQHandler( void ) */
+void GPIOBoard_configTec2( void )
+{
+	configGpio( TEC2, &Tec2, INPUT_GPIO );
+	configTecInterrupts( &Tec2, GPIO_INTERRUPT1, DESCENDENT );
+}
+
+/* @brief config TEC3.
+ * Handler of this interrupt is: void GPIO3_IRQHandler( void ) */
+void GPIOBoard_configTec3( void )
+{
+	configGpio( TEC3, &Tec3, INPUT_GPIO );
+	configTecInterrupts( &Tec3, GPIO_INTERRUPT2, DESCENDENT );
+}
+
+/* @brief config TEC4.
+ * Handler of this interrupt is:  void GPIO4_IRQHandler( void ) */
+void GPIOBoard_configTec4( void )
+{
+	configGpio( TEC4, &Tec4, INPUT_GPIO );
+	configTecInterrupts( &Tec4, GPIO_INTERRUPT3, DESCENDENT );
+}
+
+/* @brief config all tecs. */
+void GPIOBoard_configAllTecs( void )
+{
+	GPIOBoard_configTec1();
+	GPIOBoard_configTec2();
+	GPIOBoard_configTec3();
+	GPIOBoard_configTec4();
+}
 
 /* @brief check the state of a button. */
 uint8_t checkButtonState( gpioMap_t tec )

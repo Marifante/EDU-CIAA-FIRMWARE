@@ -10,13 +10,19 @@
 /*==================[macros & constants]=====================================*/
 #define PWM_FREQUENCY	1000
 
+typedef enum
+{
+	NO_ACCION =	0,
+	TEST_MODE = 4
+} CarState_t;
+
+CarState_t ProgramState = 0;
+
 /*==================[main program]===========================================*/
 int main( void )
 {
-	InitializateAllLeds();
-
-	gpioPin_t led1;
-	configLed( LED1, &led1 );
+	GPIOBoard_initializateAllLeds();
+	GPIOBoard_configAllTecs();
 
 	MovementManager_configMotors();
 	MovementManager_moveLeftMotor( MM_FORWARD, 60 );
@@ -24,29 +30,46 @@ int main( void )
 
 	while( 1 )
 	{
-		MovementManager_moveLeftMotor( MM_FORWARD, 70 );
-		MovementManager_moveRightMotor( MM_FORWARD, 70 );
-		Delay_us( 1000000, TIMER0 );
-
-		for(int i = 50; i<99; i++)
+		switch( ProgramState )
 		{
-			MovementManager_moveLeftMotor( MM_FORWARD, i );
-			MovementManager_moveRightMotor( MM_FORWARD, i );
-			Delay_us( 1000000/10, TIMER0 );
+		case NO_ACCION:
+			MovementManager_stopMotors();
+			GPIOBoard_setAllLEDS( LOW );
+			break;
+		case TEST_MODE:
+			GPIOBoard_setLED2( HIGH );
+			MovementManager_moveLeftMotor( MM_FORWARD, 60 );
+			MovementManager_moveRightMotor( MM_FORWARD, 60 );
+			break;
+		default:
+			ProgramState = NO_ACCION;
+			GPIOBoard_setAllLEDS( LOW );
+			break;
 		}
-
-		MovementManager_moveLeftMotor( MM_BACKWARD, 70 );
-		MovementManager_moveRightMotor( MM_BACKWARD, 70 );
-		Delay_us( 1000000, TIMER0 );
-
-		for(int i = 50; i<99; i++)
-		{
-			MovementManager_moveLeftMotor( MM_BACKWARD, i );
-			MovementManager_moveRightMotor( MM_BACKWARD, i );
-			Delay_us( 1000000/10, TIMER0 );
-		}
-
-
 	}
+}
+
+/*==================[tec interrupt handlers]===================================*/
+
+void GPIO0_IRQHandler( void )
+{
+	GPIO_clearGPIOInterruptFlag( GPIO_INTERRUPT0 );
+}
+
+void GPIO1_IRQHandler( void )
+{
+	GPIO_clearGPIOInterruptFlag( GPIO_INTERRUPT1 );
+}
+
+void GPIO2_IRQHandler( void )
+{
+	GPIO_clearGPIOInterruptFlag( GPIO_INTERRUPT2 );
+	ProgramState = TEST_MODE;
+}
+
+void GPIO3_IRQHandler( void )
+{
+	GPIO_clearGPIOInterruptFlag( GPIO_INTERRUPT3 );
+	ProgramState = NO_ACCION;
 }
 
