@@ -32,3 +32,6 @@ Debug As -> Debugger -> GDB OpenOCD Debugging
   
   C/C++ Application: .axf of the project to debug/run
      
+### Build order:
+
+	Build first lpc_chip_43xx, then edu_ciaa_nxp and then firmware_base.
