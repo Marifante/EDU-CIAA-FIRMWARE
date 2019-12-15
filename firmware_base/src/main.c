@@ -1,7 +1,6 @@
-
 /*****************************************************************************
  *
- * Single PWM example of AN11538 SCTimer PWM Cookbook
+
  * Autor: Julian Rodriguez
  * email: jnrodriguezz@hotmail.com /
  *****************************************************************************/
@@ -19,25 +18,35 @@ int main( void )
 	gpioPin_t led1;
 	configLed( LED1, &led1 );
 
-	/*	Match 1 is used to define the duty cycle of the signal. When match event 1
-		 *	occurs it will clear SCT_OUT0.	 */
+	MovementManager_configMotors();
+	MovementManager_moveLeftMotor( MM_FORWARD, 60 );
+	MovementManager_moveRightMotor( MM_FORWARD, 60 );
 
-	SCU_SetPinFunc( 4, 3, 1 );
-//	SCU->SFSP[4][3] |= (1<<4);
-//	SCU->SFSP[4][3] &= ~(1<<3);
-//	SCU->SFSP[4][3] &= ~(1<<6);
-
-	SCTPWM_singlePWM( 3, PWM_FREQUENCY );
-//	SCU_SetPinFunc( 2, 10, 1 );
-//	SCTPWM_singlePWM( 2, PWM_FREQUENCY );
-	SCTPWM_singlePWMSetDutyCycle( 95 );
 	while( 1 )
 	{
-//		for(int i = 0; i<100 ; i+10 )
-//		{
-//			SCTPWM_singlePWMSetDutyCycle(i);
-//			Delay_us(10000000, TIMER0);
-//		}
+		MovementManager_moveLeftMotor( MM_FORWARD, 70 );
+		MovementManager_moveRightMotor( MM_FORWARD, 70 );
+		Delay_us( 1000000, TIMER0 );
+
+		for(int i = 50; i<99; i++)
+		{
+			MovementManager_moveLeftMotor( MM_FORWARD, i );
+			MovementManager_moveRightMotor( MM_FORWARD, i );
+			Delay_us( 1000000/10, TIMER0 );
+		}
+
+		MovementManager_moveLeftMotor( MM_BACKWARD, 70 );
+		MovementManager_moveRightMotor( MM_BACKWARD, 70 );
+		Delay_us( 1000000, TIMER0 );
+
+		for(int i = 50; i<99; i++)
+		{
+			MovementManager_moveLeftMotor( MM_BACKWARD, i );
+			MovementManager_moveRightMotor( MM_BACKWARD, i );
+			Delay_us( 1000000/10, TIMER0 );
+		}
+
+
 	}
 }
 

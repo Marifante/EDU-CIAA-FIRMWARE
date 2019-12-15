@@ -121,6 +121,20 @@ void GPIOBoard_fillGPIOStruct( gpioMap_t boardGpioPin, gpioPin_t* gpioPinStruct 
 			gpioPinStruct->scu_group = 6;
 			gpioPinStruct->scu_pin = 7;
 			break;
+		case GPIO5:	//GPIO3[5] (FUNC0) (P6_9)
+			gpioPinStruct->gpio_port = 3;
+			gpioPinStruct->gpio_pin = 5;
+			gpioPinStruct->scu_func = 0;
+			gpioPinStruct->scu_group = 6;
+			gpioPinStruct->scu_pin = 9;
+			break;
+		case GPIO7:	//GPIO3[7] (FUNC0) (P6_11)
+			gpioPinStruct->gpio_port = 3;
+			gpioPinStruct->gpio_pin = 7;
+			gpioPinStruct->scu_func = 0;
+			gpioPinStruct->scu_group = 6;
+			gpioPinStruct->scu_pin = 11;
+			break;
 		default:
 			return;
 		}
