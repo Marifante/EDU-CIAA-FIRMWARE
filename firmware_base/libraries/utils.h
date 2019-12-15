@@ -28,7 +28,7 @@
 #define	__O     volatile             /*!< Defines 'write only' permissions */
 #define __IO    volatile             /*!< Defines 'read / write' permissions */
 
-#define HIGH 1
-#define LOW 0
+#define HIGH	1
+#define LOW		0
 
 #endif /*_LIBRARIES_UTILS_H_*/

@@ -13,11 +13,9 @@
 
 
 /*==================[inclusions]=============================================*/
-
 #include "../inc/gpio_peripheral.h"
 
 /*==================[external functions declaration]=========================*/
-
 /* GET PORT functions. Get the values associated to all the pins in one port.*/
 
 /* @brief get the DIR register of the gpio port */
@@ -202,7 +200,7 @@ void setFallEdgeGPIOInterrupt( uint8_t gpioPinInterruptNum )
 }
 
 /* @brief clear GPIO interrupt N flag */
-void clearGPIOInterruptFlag( uint8_t gpioPinInterruptNum )
+void GPIO_clearGPIOInterruptFlag( uint8_t gpioPinInterruptNum )
 {
 	GPIO_PIN_INT->IST = (1 << gpioPinInterruptNum);
 }
