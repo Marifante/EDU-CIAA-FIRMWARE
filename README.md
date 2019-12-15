@@ -35,3 +35,4 @@ Debug As -> Debugger -> GDB OpenOCD Debugging
 ### Build order:
 
 	Build first lpc_chip_43xx, then edu_ciaa_nxp and then firmware_base.
+
