@@ -95,6 +95,13 @@ void ADC_enableChannel( ADC_T *pADC, uint8_t channel )
 		pADC->CR |= (1 << channel);
 }
 
+/* @brief disable channel N of the given ADC. */
+void ADC_disableChannel( ADC_T *pADC, uint8_t channel )
+{
+	if( channel < 8 )
+			pADC->CR &= ~(1 << channel);
+}
+
 /* @brief enable interrupt of channel N of the given ADC. Each ADC have 8 channel (0 to 7). */
 void ADC_enableChannelInterrupt( ADC_T *pADC, uint8_t channel )
 {
@@ -123,5 +130,6 @@ uint16_t ADC0_read( uint8_t channel )
 	ADC_setStartMode( ADC0, ADC_START_NOW, ADC_TRIGGERMODE_RISING );
 	while( ((ADC0->STAT) & (1 << channel)) == 0 ){} // Wait until the adc reading finish
 	uint16_t data = (ADC0->DR[channel] >> 6) & 0x3FF;
+
 	return data;
 }

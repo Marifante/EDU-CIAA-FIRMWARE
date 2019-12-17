@@ -43,6 +43,8 @@ typedef struct {
 void ADC0_init( void );
 /* @brief enable channel N of the given ADC. Each ADC have 8 channel (0 to 7). */
 void ADC_enableChannel( ADC_T *pADC, uint8_t channel );
+/* @brief disable channel N of the given ADC. */
+void ADC_disableChannel( ADC_T *pADC, uint8_t channel );
 /* @brief enable interrupt of channel N of the given ADC. Each ADC have 8 channel (0 to 7). */
 void ADC_enableChannelInterrupt( ADC_T *pADC, uint8_t channel );
 /* @brief reads a value from a channel of the ADC0. */

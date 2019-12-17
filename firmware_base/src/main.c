@@ -18,7 +18,7 @@ typedef enum
 
 CarState_t ProgramState = 0;
 
-void ADC_takeData( void )
+void ADC0_takeData( uint8_t channel )
 {
 	int analogVal[10];
 	char msg[64];
@@ -26,17 +26,15 @@ void ADC_takeData( void )
 	uint32_t distance;
 	for( int i = 0; i<10; i++)
 	{
-		analogVal[i] = ADC0_read(1);
+		analogVal[i] = ADC0_read(channel);
 		adcMeasureMedian += (float) analogVal[i];
 		Delay_us(10000, TIMER0);
 	}
 	adcMeasureMedian = adcMeasureMedian / 10;
-
 	distance =  pow( (3027.4 /(float) adcMeasureMedian), 1.2134 );
-	//Delay_us(1000000/2, TIMER0);
-
-	sprintf(msg, "analogVal: %f, distance: %d cm\r\n", adcMeasureMedian, distance);
+	sprintf(msg, "CH %d: analogVal: %f, distance: %d cm\r\n", channel, adcMeasureMedian, distance);
 	SerialLog_print( msg );
+	ADC_disableChannel( ADC0, channel);
 }
 /*==================[main program]===========================================*/
 int main( void )
@@ -48,7 +46,10 @@ int main( void )
 	MovementManager_configMotors();
 	MovementManager_moveLeftMotor( MM_FORWARD, 60 );
 	MovementManager_moveRightMotor( MM_FORWARD, 60 );
-//	SerialLog_print( "Test ADC\r\n" );
+	SerialLog_print( "Test ADC\r\n" );
+	DAC_init();
+	DAC_UpdateValue(LPC_DAC, 512);
+
 	while( 1 )
 	{
 		switch( ProgramState )
@@ -62,7 +63,9 @@ int main( void )
 		case TEST_MODE:
 			GPIOBoard_setLED2( HIGH );
 
-			ADC_takeData();
+			ADC0_takeData(0);
+			ADC0_takeData(1);
+			ADC0_takeData(2);
 			MovementManager_moveLeftMotor( MM_FORWARD, 90 );
 			MovementManager_moveRightMotor( MM_FORWARD, 30 );
 			break;
