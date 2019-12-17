@@ -39,8 +39,8 @@ gpioPin_t LeftMotorForward, LeftMotorBackward;
 /* @brief config pwm signals of both motor. */
 void MovementManager_configMotorPWM( void )
 {
-	// Output for PWM signal of right motor: P4_1 of LPC4337
-	SCU_SetPinFunc( 4, 1, 1 );
+	// Output for PWM signal of right motor: P4_2 of LPC4337
+	SCU_SetPinFunc( 4, 2, 1 );
 	// Output for PWM signal of left motor: P4_3 of LPC4337
 	SCU_SetPinFunc( 4, 3, 1 );
 	SCTPWM_twoOutputPWM( LEFT_MOTOR_PWM_OUTPUT, RIGHT_MOTOR_PWM_OUTPUT, PWM_FREQ );
