@@ -24,7 +24,6 @@
 #define SCU_MODE_ZIF_DIS		(1 << 7)
 #define SYSTEM_BAUD_RATE 		115200 // log baudrate
 
-
 /*==================[functions definition]===================================*/
 /* @brief config UART2 for serial logs via USB.*/
 void SerialLog_config( void )
