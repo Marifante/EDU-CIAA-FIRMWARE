@@ -9,6 +9,7 @@
 #define PROJECTS_PERIMETRALFOLLOWERCAR_INC_DISTANCEPROGRAM_H_
 
 /*==================[external functions definition]==========================*/
-void DistanceProgram( void );
+void DistanceProgramPID( void );
+void DistanceProgramStates( void );
 
 #endif /* PROJECTS_PERIMETRALFOLLOWERCAR_INC_DISTANCEPROGRAM_H_ */

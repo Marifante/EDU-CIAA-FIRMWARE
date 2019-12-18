@@ -152,4 +152,6 @@ void CCU_initADC0Clock( void );
 /* @brief enables SCT branch clock. */
 void CCU_initSCTClock( void );
 
+/* @brief enables ADC1 clock. */
+void CCU_initADC1Clock( void );
 #endif /*_LIBRARIES_LPC4337_SPECIFIC_INC_CCU_PERIPHERAL_H_*/

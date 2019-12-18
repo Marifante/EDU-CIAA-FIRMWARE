@@ -25,10 +25,47 @@ typedef enum
 
 /*==================[internal data definition]================================*/
 DistanceProgram_t DistanceState = START;
-
+int adcValues[2];
+#define NEW_VALUE 		1
+#define OLD_VALUE		0
 /*==================[external functions definition]==========================*/
+int p=10;
+int d=0;
+
+void DistanceProgramPID( void )
+{
+
+	adcValues[OLD_VALUE] = adcValues[NEW_VALUE] ;
+	adcValues[NEW_VALUE] = ADCManager_ADC0takeData( 2 );
+	adcValues[NEW_VALUE] = adcValues[NEW_VALUE] -20;
+
+	float output = adcValues[NEW_VALUE] * p + ((adcValues[NEW_VALUE] - adcValues[OLD_VALUE]) * d);
+
+	if( output < -75 )
+			output = -75;
+		if( output > 75 )
+			output = 75;
+
+	if(output>50)
+	{
+		MovementManager_moveLeftMotor( MM_FORWARD, output);
+		MovementManager_moveRightMotor( MM_FORWARD,output);
+	}else{
+		if(output<-50)
+			{
+				MovementManager_moveLeftMotor( MM_BACKWARD, -output);
+				MovementManager_moveRightMotor( MM_BACKWARD,-output);
+			}else{
+				MovementManager_stopMotors();
+			}
+	}
+
+
+
+}
+
 /* @brief Car keeps at a certain distance from the objective. */
-void DistanceProgram( void )
+void DistanceProgramStates( void )
 {
 	int distance = ADCManager_ADC0takeData(2);
 	switch( DistanceState )
