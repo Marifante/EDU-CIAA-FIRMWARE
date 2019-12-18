@@ -6,36 +6,22 @@
  *****************************************************************************/
 
 /*==================[inclusions]=============================================*/
-#include "../inc/main.h"
-/*==================[macros & constants]=====================================*/
-#define PWM_FREQUENCY	1000
+#include "../libraries/lpc4337_specific/inc/lpc_4337_chip.h"
+#include "../libraries/board_specific/inc/edu_ciaa_hl.h"
+#include "../libraries/utils.h"
+#include "../Projects/PerimetralFollowerCar/inc/PerimetralFollowerCar.h"
 
+/*==================[internal data declaration]==============================*/
 typedef enum
 {
-	NO_ACCION =	0,
-	TEST_MODE = 4
+	NO_ACCION =			0,
+	DISTANCE_MODE =		2,
+	SUMO_MODE =			3
 } CarState_t;
 
-CarState_t ProgramState = 0;
+/*==================[internal data definition]===============================*/
+CarState_t ProgramState = NO_ACCION;
 
-void ADC0_takeData( uint8_t channel )
-{
-	int analogVal[10];
-	char msg[64];
-	float adcMeasureMedian;
-	uint32_t distance;
-	for( int i = 0; i<10; i++)
-	{
-		analogVal[i] = ADC0_read(channel);
-		adcMeasureMedian += (float) analogVal[i];
-		Delay_us(10000, TIMER0);
-	}
-	adcMeasureMedian = adcMeasureMedian / 10;
-	distance =  pow( (3027.4 /(float) adcMeasureMedian), 1.2134 );
-	sprintf(msg, "CH %d: analogVal: %f, distance: %d cm\r\n", channel, adcMeasureMedian, distance);
-	SerialLog_print( msg );
-	ADC_disableChannel( ADC0, channel);
-}
 /*==================[main program]===========================================*/
 int main( void )
 {
@@ -44,12 +30,8 @@ int main( void )
 	SerialLog_config();
 	ADC0_init();
 	MovementManager_configMotors();
-	MovementManager_moveLeftMotor( MM_FORWARD, 60 );
-	MovementManager_moveRightMotor( MM_FORWARD, 60 );
-	SerialLog_print( "Test ADC\r\n" );
-	DAC_init();
-	DAC_UpdateValue(LPC_DAC, 512);
-
+	MovementManager_stopMotors();
+	ProgramState = NO_ACCION;
 	while( 1 )
 	{
 		switch( ProgramState )
@@ -57,17 +39,14 @@ int main( void )
 		case NO_ACCION:
 			MovementManager_stopMotors();
 			GPIOBoard_setAllLEDS( LOW );
-			MovementManager_moveLeftMotor( MM_FORWARD, 50 );
-			MovementManager_moveRightMotor( MM_FORWARD, 50 );
 			break;
-		case TEST_MODE:
+		case DISTANCE_MODE:
+			GPIOBoard_setLED1( HIGH );
+			DistanceProgram();
+			break;
+		case SUMO_MODE:
 			GPIOBoard_setLED2( HIGH );
-
-			ADC0_takeData(0);
-			ADC0_takeData(1);
-			ADC0_takeData(2);
-			MovementManager_moveLeftMotor( MM_FORWARD, 90 );
-			MovementManager_moveRightMotor( MM_FORWARD, 30 );
+			SumoProgram();
 			break;
 		default:
 			ProgramState = NO_ACCION;
@@ -78,23 +57,24 @@ int main( void )
 }
 
 /*==================[tec interrupt handlers]===================================*/
-
+// Tec1 interrupt handler ----
 void GPIO0_IRQHandler( void )
 {
 	GPIO_clearGPIOInterruptFlag( GPIO_INTERRUPT0 );
 }
-
+// Tec2 interrupt handler ----
 void GPIO1_IRQHandler( void )
 {
 	GPIO_clearGPIOInterruptFlag( GPIO_INTERRUPT1 );
+	ProgramState = DISTANCE_MODE;
 }
-
+// Tec3 interrupt handler ----
 void GPIO2_IRQHandler( void )
 {
 	GPIO_clearGPIOInterruptFlag( GPIO_INTERRUPT2 );
-	ProgramState = TEST_MODE;
+	ProgramState = SUMO_MODE;
 }
-
+// Tec4 interrupt handler ----
 void GPIO3_IRQHandler( void )
 {
 	GPIO_clearGPIOInterruptFlag( GPIO_INTERRUPT3 );

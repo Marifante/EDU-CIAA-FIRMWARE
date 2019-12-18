@@ -10,5 +10,8 @@
 
 /*==================[inclusions]=============================================*/
 #include "MovementManager.h"
+#include "ADCManager.h"
+#include "SumoProgram.h"
+#include "DistanceProgram.h"
 
 #endif /* PROJECTS_PERIMETRALFOLLOWERCAR_INC_PERIMETRALFOLLOWERCAR_H_ */
