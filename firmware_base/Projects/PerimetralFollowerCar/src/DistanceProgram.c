@@ -9,9 +9,12 @@
 /*==================[inclusions]=============================================*/
 #include "../../../libraries/lpc4337_specific/inc/lpc_4337_chip.h"
 #include "../../../libraries/board_specific/inc/edu_ciaa_hl.h"
-#include "../inc/SumoProgram.h"
 #include "../inc/MovementManager.h"
 #include "../inc/ADCManager.h"
+
+/*==================[macros & constants]=====================================*/
+#define OLD_VALUE			1
+#define NEW_VALUE			0
 
 /*==================[internal data declaration]===============================*/
 typedef enum
@@ -25,9 +28,8 @@ typedef enum
 
 /*==================[internal data definition]================================*/
 DistanceProgram_t DistanceState = START;
-int adcValues[2];
-#define NEW_VALUE 		1
-#define OLD_VALUE		0
+int DistanceProgram_adcValues[2];
+
 /*==================[external functions definition]==========================*/
 int p=10;
 int d=0;
@@ -35,11 +37,11 @@ int d=0;
 void DistanceProgramPID( void )
 {
 
-	adcValues[OLD_VALUE] = adcValues[NEW_VALUE] ;
-	adcValues[NEW_VALUE] = ADCManager_ADC0takeData( 2 );
-	adcValues[NEW_VALUE] = adcValues[NEW_VALUE] -20;
+	DistanceProgram_adcValues[OLD_VALUE] = DistanceProgram_adcValues[NEW_VALUE] ;
+	DistanceProgram_adcValues[NEW_VALUE] = ADCManager_ADC0takeData( 2 );
+	DistanceProgram_adcValues[NEW_VALUE] = DistanceProgram_adcValues[NEW_VALUE] -20;
 
-	float output = adcValues[NEW_VALUE] * p + ((adcValues[NEW_VALUE] - adcValues[OLD_VALUE]) * d);
+	float output = DistanceProgram_adcValues[NEW_VALUE] * p + ((DistanceProgram_adcValues[NEW_VALUE] - DistanceProgram_adcValues[OLD_VALUE]) * d);
 
 	if( output < -75 )
 			output = -75;

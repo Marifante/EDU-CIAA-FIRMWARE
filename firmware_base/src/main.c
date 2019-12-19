@@ -41,40 +41,7 @@ CarState_t ProgramState = NO_ACCION;
 //
 //velder=75-salida
 //veliz=75+salida
-/*#define OLD_VALUE			1
-#define NEW_VALUE			0
 
-
-float adcValues[2];
-void WallFollower( void )
-{
-	int p = 10;
-	int d = 0;
-	adcValues[OLD_VALUE] = adcValues[NEW_VALUE];
-	float adc0Val = ADCManager_ADC0takeData( 3 );
-	float adc1Val = ADCManager_ADC1takeData( 1 );
-	float prom = (adc0Val+adc1Val)/2;
-	adcValues[NEW_VALUE] = prom - 20;
-
-	float output = adcValues[NEW_VALUE] * p + ((adcValues[NEW_VALUE] - adcValues[OLD_VALUE]) * d);
-
-	if( output < -10 )
-		output = -10;
-	if( output > 10 )
-		output = 10;
-	float frontAdcValue = ADCManager_ADC0takeData( 2 );
-	if( frontAdcValue > 15 )
-	{
-		MovementManager_moveRightMotor( MM_FORWARD, 60-output );
-		MovementManager_moveLeftMotor( MM_FORWARD, 60+output );
-	}
-	else
-	{
-		MovementManager_stopMotors();
-	}
-
-}
-*/
 /*==================[main program]===========================================*/
 int main( void )
 {
@@ -96,7 +63,7 @@ int main( void )
 			break;
 		case WALL_FOLLOWER_MODE:
 			GPIOBoard_setLEDRGBGreen( HIGH );
-	//		WallFollower();
+			WallFollower();
 			break;
 		case DISTANCE_MODE:
 			GPIOBoard_setLED1( HIGH );
