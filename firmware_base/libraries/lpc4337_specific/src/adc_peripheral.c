@@ -49,6 +49,14 @@ ADC_CLOCK_SETUP_T ADC0_clockSetup =
 		.burstMode		= false
 };
 
+/* @brief default setup for ADC1. */
+ADC_CLOCK_SETUP_T ADC1_clockSetup =
+{
+		.adcRate 		= MAX_SAMPLE_RATE,
+		.bitsAccuracy 	= 10,
+		.burstMode		= false
+};
+
 /*==================[internal functions definition]==========================*/
 void ADC_disableAllInterrupts( ADC_T *pADC )
 {
@@ -73,6 +81,7 @@ uint8_t ADC0_getClkDiv( uint32_t adcRate )
 	return div;
 }
 
+
 /* @brief selects start mode for ADC & starts conversion. */
 void ADC_setStartMode( ADC_T *pADC, ADC_START_MODE_T startMode, ADC_EDGE_CFG_T edgeOption )
 {
@@ -93,6 +102,13 @@ void ADC_enableChannel( ADC_T *pADC, uint8_t channel )
 {
 	if( channel < 8 )
 		pADC->CR |= (1 << channel);
+}
+
+/* @brief disable channel N of the given ADC. */
+void ADC_disableChannel( ADC_T *pADC, uint8_t channel )
+{
+	if( channel < 8 )
+			pADC->CR &= ~(1 << channel);
 }
 
 /* @brief enable interrupt of channel N of the given ADC. Each ADC have 8 channel (0 to 7). */
@@ -123,5 +139,31 @@ uint16_t ADC0_read( uint8_t channel )
 	ADC_setStartMode( ADC0, ADC_START_NOW, ADC_TRIGGERMODE_RISING );
 	while( ((ADC0->STAT) & (1 << channel)) == 0 ){} // Wait until the adc reading finish
 	uint16_t data = (ADC0->DR[channel] >> 6) & 0x3FF;
+
+	return data;
+}
+
+/* @brief initializates ADC1 with default settings. */
+void ADC1_init( void )
+{
+	CCU_initADC1Clock();
+	ADC_disableAllInterrupts( ADC1 );
+
+	uint8_t div = ADC0_getClkDiv( ADC1_clockSetup.adcRate );
+	uint8_t bitAccuracy = ADC1_clockSetup.bitsAccuracy;
+
+	ADC1->CR = 	ADC_CR_PDN 			| 		// Enables ADC operation
+				ADC_CR_CLKDIV(div)	|		// Set clock divider to produce the required sampling rate.
+				ADC_CR_BITACC(bitAccuracy);	// Set bit accuracy of the conversion.
+}
+
+/* @brief reads a value from a channel of the ADC1. */
+uint16_t ADC1_read( uint8_t channel )
+{
+	ADC_enableChannel( ADC1, channel );
+	ADC_setStartMode( ADC1, ADC_START_NOW, ADC_TRIGGERMODE_RISING );
+	while( ((ADC1->STAT) & (1 << channel)) == 0 ){} // Wait until the adc reading finish
+	uint16_t data = (ADC1->DR[channel] >> 6) & 0x3FF;
+
 	return data;
 }

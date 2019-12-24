@@ -346,10 +346,13 @@ void GPIOBoard_toggleLEDRGBBlue( void )
 /* @brief Set all leds. */
 void GPIOBoard_setAllLEDS( uint8_t logicState )
 {
+	GPIOBoard_setLEDRGBRed( logicState );
+	GPIOBoard_setLEDRGBGreen( logicState );
+	GPIOBoard_setLEDRGBBlue( logicState );
 	GPIOBoard_setLED1( logicState );
 	GPIOBoard_setLED2( logicState );
 	GPIOBoard_setLED3( logicState );
-	GPIOBoard_setLED3( logicState );
+
 }
 
 /* @brief Configuracion de interrupcion para las teclas

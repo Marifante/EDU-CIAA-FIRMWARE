@@ -76,6 +76,14 @@ void CCU_initADC0Clock( void )
 										(1 << 2);	// Wake-up mechanism enabled.
 }
 
+/* @brief enables ADC1 clock. */
+void CCU_initADC1Clock( void )
+{
+	CCU1->CLKCCU[ CLK_APB3_ADC1 ].CFG =	(1 << 0) |	// Enable clock.
+										(1 << 1) |	// Auto (AHB disable mechanism) enabled.
+										(1 << 2);	// Wake-up mechanism enabled.
+}
+
 /* @brief enables SCT branch clock. */
 void CCU_initSCTClock( void )
 {

@@ -19,6 +19,9 @@
 #define ADC0_BASE             0x400E3000
 #define ADC0                  ((ADC_T *) ADC0_BASE)
 
+#define ADC1_BASE             0x400E4000
+#define ADC1                  ((ADC_T *) ADC1_BASE)
+
 /*==================[external data declaration]==============================*/
 /* @brief 10 or 12-bit ADC register block structure */
 typedef struct {					/*!< ADCn Structure */
@@ -43,9 +46,14 @@ typedef struct {
 void ADC0_init( void );
 /* @brief enable channel N of the given ADC. Each ADC have 8 channel (0 to 7). */
 void ADC_enableChannel( ADC_T *pADC, uint8_t channel );
+/* @brief disable channel N of the given ADC. */
+void ADC_disableChannel( ADC_T *pADC, uint8_t channel );
 /* @brief enable interrupt of channel N of the given ADC. Each ADC have 8 channel (0 to 7). */
 void ADC_enableChannelInterrupt( ADC_T *pADC, uint8_t channel );
 /* @brief reads a value from a channel of the ADC0. */
 uint16_t ADC0_read( uint8_t channel );
-
+/* @brief initializates ADC1 with default settings. */
+void ADC1_init( void );
+/* @brief reads a value from a channel of the ADC1. */
+uint16_t ADC1_read( uint8_t channel );
 #endif /*_LIBRARIES_LPC4337_SPECIFIC_INC_ADC_PERIPHERAL_H_ */

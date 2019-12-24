@@ -6,28 +6,53 @@
  *****************************************************************************/
 
 /*==================[inclusions]=============================================*/
-#include "../inc/main.h"
-/*==================[macros & constants]=====================================*/
-#define PWM_FREQUENCY	1000
+#include "../libraries/lpc4337_specific/inc/lpc_4337_chip.h"
+#include "../libraries/board_specific/inc/edu_ciaa_hl.h"
+#include "../libraries/utils.h"
+#include "../Projects/PerimetralFollowerCar/inc/PerimetralFollowerCar.h"
 
+/*==================[internal data declaration]==============================*/
 typedef enum
 {
-	NO_ACCION =	0,
-	TEST_MODE = 4
+	NO_ACCION =				0,
+	WALL_FOLLOWER_MODE =	1,
+	DISTANCE_MODE =			2,
+	SUMO_MODE =				3
 } CarState_t;
 
-CarState_t ProgramState = 0;
+/*==================[internal data definition]===============================*/
+CarState_t ProgramState = NO_ACCION;
+
+//p=10
+//
+//d=0:
+//
+//prom=(adc1+adc2)/2
+//
+//entrada=prom-20
+//
+//salida=entrada*p+(entrada-entradavieja)*d
+//
+//if(salida>25)
+//	salida=25
+//
+//if(salida<-25)
+//	salida=-25
+//
+//velder=75-salida
+//veliz=75+salida
 
 /*==================[main program]===========================================*/
 int main( void )
 {
 	GPIOBoard_initializateAllLeds();
 	GPIOBoard_configAllTecs();
-
+	SerialLog_config();
+	ADC0_init();
+	ADC1_init();
 	MovementManager_configMotors();
-	MovementManager_moveLeftMotor( MM_FORWARD, 60 );
-	MovementManager_moveRightMotor( MM_FORWARD, 60 );
-
+	MovementManager_stopMotors();
+	ProgramState = NO_ACCION;
 	while( 1 )
 	{
 		switch( ProgramState )
@@ -36,10 +61,17 @@ int main( void )
 			MovementManager_stopMotors();
 			GPIOBoard_setAllLEDS( LOW );
 			break;
-		case TEST_MODE:
+		case WALL_FOLLOWER_MODE:
+			GPIOBoard_setLEDRGBGreen( HIGH );
+			WallFollower();
+			break;
+		case DISTANCE_MODE:
+			GPIOBoard_setLED1( HIGH );
+			DistanceProgramPID();
+			break;
+		case SUMO_MODE:
 			GPIOBoard_setLED2( HIGH );
-			MovementManager_moveLeftMotor( MM_FORWARD, 60 );
-			MovementManager_moveRightMotor( MM_FORWARD, 60 );
+			SumoProgram();
 			break;
 		default:
 			ProgramState = NO_ACCION;
@@ -50,23 +82,25 @@ int main( void )
 }
 
 /*==================[tec interrupt handlers]===================================*/
-
+// Tec1 interrupt handler ----
 void GPIO0_IRQHandler( void )
 {
 	GPIO_clearGPIOInterruptFlag( GPIO_INTERRUPT0 );
+	ProgramState = WALL_FOLLOWER_MODE;
 }
-
+// Tec2 interrupt handler ----
 void GPIO1_IRQHandler( void )
 {
 	GPIO_clearGPIOInterruptFlag( GPIO_INTERRUPT1 );
+	ProgramState = DISTANCE_MODE;
 }
-
+// Tec3 interrupt handler ----
 void GPIO2_IRQHandler( void )
 {
 	GPIO_clearGPIOInterruptFlag( GPIO_INTERRUPT2 );
-	ProgramState = TEST_MODE;
+	ProgramState = SUMO_MODE;
 }
-
+// Tec4 interrupt handler ----
 void GPIO3_IRQHandler( void )
 {
 	GPIO_clearGPIOInterruptFlag( GPIO_INTERRUPT3 );
